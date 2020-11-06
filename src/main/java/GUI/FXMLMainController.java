@@ -146,9 +146,14 @@ public class FXMLMainController implements Initializable {
     public void resetGridItemAction() {
         if(!tableViewController.getTableModel().isSaved() && !unsavedChangesAlert()) {
             return;
+        } else {
+            Alert alert = showAlert("Reset grid to default", "Do you want to reset grid to default grid?",
+                    AlertType.CONFIRMATION);
+            if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
+                InputStream inStream = getClass().getResourceAsStream("/Data.txt");
+                lineChartController.showGraph(inStream);
+            }
         }
-        
-        System.out.println("Reset grid");
     }
     
     @FXML
