@@ -191,8 +191,7 @@ public class FXMLMainController implements Initializable {
      */
     private Double checkInput(TextField field) {
         try{
-            double inputValue = Double.parseDouble(field.getText());
-            return inputValue;
+            return Double.parseDouble(field.getText());
         } catch (NumberFormatException ex) {
             field.setStyle("-fx-border-color: red");
             informationLabel.setVisible(true);

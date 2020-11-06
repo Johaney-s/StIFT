@@ -24,8 +24,8 @@ public class TextOnly {
     public static void main(String[] args) {        
         Data data;
         try {
-            InputStream file = new FileInputStream("resources\\Data.txt");
-            data = DataExtractor.extract(file);
+            InputStream is = TextOnly.class.getClassLoader().getResourceAsStream("Data.txt");
+            data = DataExtractor.extract(is);
             System.out.println("Total number of groups: " + data.getGroupedData().size() + "\n");
             
             /*double x = 3.66883;
