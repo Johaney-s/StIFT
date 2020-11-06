@@ -3,12 +3,16 @@ package GUI;
 
 import backend.InputFileExtractor;
 import backend.Star;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -79,10 +83,18 @@ public class FXMLTableViewController implements Initializable {
         slider.setOnMouseReleased(event -> {
             handleFilterChange();
         });
+
+        CheckBox checkbox = new CheckBox("Hide empty rows");
+        checkbox.selectedProperty().addListener(
+                (ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+                    tableModel.setHideEmptyRows(!tableModel.getHideEmptyRows());
+                    updateHiddenRowsCounter();
+                });
         
         vBox.getChildren().add(label);
         vBox.getChildren().add(slider);
         vBox.getChildren().add(removeButton);
+        vBox.getChildren().add(checkbox);
     }
     
     private void handleFilterChange() {
@@ -163,10 +175,6 @@ public class FXMLTableViewController implements Initializable {
 
     public TableModel getTableModel() {
         return tableModel;
-    }
-    
-    public TableView getTableView() {
-        return tableView;
     }
     
     /**

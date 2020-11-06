@@ -18,6 +18,7 @@ public class TableModel {
     private final FilteredList<Star> filteredList = new FilteredList(resultList);
     private final Filter filter = new Filter(null, null);
     private boolean saved = true;
+    private boolean hideEmptyRows = false;
     
     public TableModel() {
         updatePredicate();
@@ -40,26 +41,11 @@ public class TableModel {
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         for (Star result : filteredList) {
-            fileWriter.write(String.format("%f %f %f %f %f %f%n", result.getTemperature(), result.getLuminosity(),result.getAge(), result.getRadius(), result.getMass(), result.getPhase()));
+            fileWriter.write(String.format("%f %f %f %f %f %f%n", result.getTemperature(),
+                    result.getLuminosity(),result.getAge(), result.getRadius(), result.getMass(), result.getPhase()));
         }
         fileWriter.close();
         saved = true;
-    }
-    
-    /**
-     * Delete all results in resultList
-     */
-    public void resetResults() {
-        resultList.clear();
-        saved = true;
-    }
-    
-    /**
-     * Checks if any result exist
-     * @return True if no result exists, false otherwise
-     */
-    public boolean isEmpty() {
-        return resultList.isEmpty();
     }
     
     public boolean isSaved() {
@@ -77,6 +63,8 @@ public class TableModel {
     public void setResults(ArrayList<Star> newResults) {
         resultList.clear();
         resultList.addAll(newResults);
+        removeFilter();
+        hideEmptyRows = false;
         saved = false;
     }
     
@@ -96,11 +84,22 @@ public class TableModel {
     
     private void updatePredicate() {
         filteredList.setPredicate(x -> {
+            if (x.getPhase() == null) { return !hideEmptyRows; }
             if (!filter.isSet()) { return true; }
-            return (x.getPhase() != null && x.getPhase() >= filter.getLowerBound() && x.getPhase() <= filter.getUpperBound());
-        });        
+            return (x.getPhase() >= filter.getLowerBound() &&
+                    x.getPhase() <= filter.getUpperBound());
+        });
     }
-    
+
+    public void setHideEmptyRows(boolean boo) {
+        hideEmptyRows = boo;
+        updatePredicate();
+    }
+
+    public boolean getHideEmptyRows() {
+        return hideEmptyRows;
+    }
+
     /**
      * @return Number of hidden rows due to filtering
      */
