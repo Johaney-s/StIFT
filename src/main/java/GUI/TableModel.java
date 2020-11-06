@@ -101,6 +101,16 @@ public class TableModel {
     }
 
     /**
+     * Clears all results and resets filters, sets flag as saved
+     */
+    public void reset() {
+        resultList.clear();
+        saved = true;
+        filter.setBounds(null, null);
+        hideEmptyRows = false;
+    }
+
+    /**
      * @return Number of hidden rows due to filtering
      */
     public int getHiddenCount() {
