@@ -79,7 +79,8 @@ public class FXMLTableViewController implements Initializable {
         Label label = new Label("Phase filter:");
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
-        
+        slider.setMajorTickUnit(0.3);
+        slider.setMinorTickCount(3);
         slider.setOnMouseReleased(event -> {
             handleFilterChange();
         });
