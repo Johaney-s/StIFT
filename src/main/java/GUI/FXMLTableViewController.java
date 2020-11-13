@@ -55,6 +55,7 @@ public class FXMLTableViewController implements Initializable {
     private final VBox vBox = new VBox();
     private final RangeSlider slider = new RangeSlider();
     private final Button removeButton = new Button("Remove filter");
+    private final CheckBox checkbox = new CheckBox("Hide empty rows");
 
     /**
      * Initializes the controller class.
@@ -85,7 +86,6 @@ public class FXMLTableViewController implements Initializable {
             handleFilterChange();
         });
 
-        CheckBox checkbox = new CheckBox("Hide empty rows");
         checkbox.selectedProperty().addListener(
                 (ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
                     tableModel.setHideEmptyRows(!tableModel.getHideEmptyRows());
@@ -184,8 +184,7 @@ public class FXMLTableViewController implements Initializable {
      */
     public void handleNewResult(Star result) {
         tableModel.addResult(result);
-        updateSliderBounds();
-        updateHiddenRowsCounter();
+        updateFilter();
     }
     
     /**
@@ -198,5 +197,22 @@ public class FXMLTableViewController implements Initializable {
         tableModel.setResults(InputFileExtractor.extract(file));
         updateSliderBounds();
         updateHiddenRowsCounter();
+    }
+
+    /**
+     * Updates slider bounds and hidden rows counter
+     */
+    public void updateFilter() {
+        updateSliderBounds();
+        updateHiddenRowsCounter();
+    }
+
+    /**
+     * Resets results in table model, resets filter and updates filter tooltip
+     */
+    public void reset() {
+        tableModel.reset();
+        updateFilter();
+        checkbox.setSelected(false);
     }
 }

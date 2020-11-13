@@ -112,7 +112,7 @@ public class FXMLMainController implements Initializable {
         if (file != null) {
             try {
                 lineChartController.showGraph(file);
-                tableViewController.getTableModel().reset();
+                tableViewController.reset();
                 disableItemsWhileNoGridAvailable(false);
                 showAlert("Upload new grid", "New grid uploaded successfuly.", AlertType.INFORMATION);
             } catch (FileNotFoundException ex) {
@@ -154,7 +154,7 @@ public class FXMLMainController implements Initializable {
             if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
                 InputStream inStream = getClass().getResourceAsStream("/Data.txt");
                 lineChartController.showGraph(inStream);
-                tableViewController.getTableModel().reset();
+                tableViewController.reset();
             }
         }
     }
