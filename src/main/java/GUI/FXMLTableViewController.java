@@ -124,8 +124,8 @@ public class FXMLTableViewController implements Initializable {
         Double upperBound = 0.0;
         
         for (Star s : tableModel.getAllResults()) {
-            if (s.getPhase() != null && s.getPhase() > upperBound) { upperBound = s.getPhase(); }
-            if (s.getPhase() != null && s.getPhase() < lowerBound) { lowerBound = s.getPhase(); }
+            if (s.getPhase() != null  && !s.getPhase().isNaN() && s.getPhase() > upperBound) { upperBound = s.getPhase(); }
+            if (s.getPhase() != null && !s.getPhase().isNaN() && s.getPhase() < lowerBound) { lowerBound = s.getPhase(); }
         }
         
         slider.setMin(lowerBound);
@@ -137,12 +137,12 @@ public class FXMLTableViewController implements Initializable {
     }
 
     private void setValueFactories() {
-        tempCol.setCellValueFactory(new PropertyValueFactory<>("temperature"));
-        lumCol.setCellValueFactory(new PropertyValueFactory<>("luminosity"));
-        massCol.setCellValueFactory(new PropertyValueFactory<>("mass"));
-        radCol.setCellValueFactory(new PropertyValueFactory<>("radius"));
-        ageCol.setCellValueFactory(new PropertyValueFactory<>("age"));
-        phaseCol.setCellValueFactory(new PropertyValueFactory<>("phase"));
+        tempCol.setCellValueFactory(new PropertyValueFactory<>("formattedTemperature"));
+        lumCol.setCellValueFactory(new PropertyValueFactory<>("formattedLuminosity"));
+        massCol.setCellValueFactory(new PropertyValueFactory<>("formattedMass"));
+        radCol.setCellValueFactory(new PropertyValueFactory<>("formattedRadius"));
+        ageCol.setCellValueFactory(new PropertyValueFactory<>("formattedAge"));
+        phaseCol.setCellValueFactory(new PropertyValueFactory<>("formattedPhase"));
     }
     
     private void showFilterIcon() {

@@ -41,8 +41,8 @@ public class TableModel {
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         for (Star result : filteredList) {
-            fileWriter.write(String.format("%f %f %f %f %f %f%n", result.getTemperature(),
-                    result.getLuminosity(),result.getAge(), result.getRadius(), result.getMass(), result.getPhase()));
+            fileWriter.write(String.format("%s %s %s %s %s %s%n", result.getFormattedTemperature(), result.getFormattedLuminosity(),
+                    result.getFormattedAge(), result.getFormattedRadius(), result.getFormattedMass(), result.getFormattedPhase()));
         }
         fileWriter.close();
         saved = true;
@@ -84,7 +84,7 @@ public class TableModel {
     
     private void updatePredicate() {
         filteredList.setPredicate(x -> {
-            if (x.getPhase() == null) { return !hideEmptyRows; }
+            if (x.getPhase() == null || x.getPhase().isNaN()) { return !hideEmptyRows; }
             if (!filter.isSet()) { return true; }
             return (x.getPhase() >= filter.getLowerBound() &&
                     x.getPhase() <= filter.getUpperBound());

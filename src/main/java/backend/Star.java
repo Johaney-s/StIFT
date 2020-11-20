@@ -42,7 +42,8 @@ public class Star {
      * Prints all characteristics of current star
      */
     public void printValues() {
-        System.out.printf("%f\t%f\t%f\t%f\t%f\t%f\n", getTemperature(), getLuminosity(), getAge(), getRadius(), getMass(), getPhase());
+        System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\n", getFormattedTemperature(), getFormattedLuminosity(), getFormattedAge(),
+                getFormattedRadius(), getFormattedMass(), getFormattedPhase());
     }
 
     /**
@@ -86,6 +87,30 @@ public class Star {
     public Double getPhase() {
         return phase;
     }
-    
+
+    /* Return string representation of attribute rounded to 4 decimal places or '-' if no such exists*/
+    public String getFormattedTemperature() {
+        return (temperature == null || temperature.isNaN()) ? "-" : String.format("%.4f", temperature);
+    }
+
+    public String getFormattedLuminosity() {
+        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format("%.4f", luminosity);
+    }
+
+    public String getFormattedAge() {
+        return (age == null || age.isNaN()) ? "-" : String.format("%.4f", age);
+    }
+
+    public String getFormattedRadius() {
+        return (radius == null || radius.isNaN()) ? "-" : String.format("%.4f", radius);
+    }
+
+    public String getFormattedMass() {
+        return (mass == null || mass.isNaN()) ? "-" : String.format("%.4f", mass);
+    }
+
+    public String getFormattedPhase() {
+        return (phase == null || phase.isNaN()) ? "-" : String.format("%.4f", phase);
+    }
     
 }

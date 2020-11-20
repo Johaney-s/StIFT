@@ -48,7 +48,7 @@ public class FXMLLineChartController implements Initializable {
             double x = getXMouseCoordinate();
             double y = getYMouseCoordinate();
             tooltip.show(lineChart, evt.getScreenX() + 50, evt.getScreenY());
-            tooltip.setText(String.format("[%.3f; %.3f]", x, y));
+            tooltip.setText(String.format("[%.4f; %.4f]", x, y));
         });
     }
     
