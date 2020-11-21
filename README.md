@@ -15,4 +15,4 @@ The method of isochrone fitting is described in
 
 ## Running the application
 Build with `mvn package`<br />
-Run with `java -jar stift-1.0-SNAPSHOT.jar` or open the .jar file directly
+In target folder run with `java -jar stift-1.0-SNAPSHOT.jar` or open the .jar file directly
