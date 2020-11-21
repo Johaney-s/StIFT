@@ -61,6 +61,10 @@ public class FXMLMainController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //optional scroll bar for extending tableview
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
         lineChartController.setMainController(this);
         disableItemsWhileNoGridAvailable(true);
         InputStream inStream = getClass().getResourceAsStream("/Data.txt");
@@ -75,7 +79,7 @@ public class FXMLMainController implements Initializable {
         fadeIn.setCycleCount(1);
         fadeIn.setAutoReverse(false);
         
-        root.setVgrow(scrollPane, Priority.ALWAYS); //FXML does not work
+        root.setVgrow(scrollPane, Priority.ALWAYS); //FXML command does not work
     }
 
     //-- MENU BAR -- File / Edit / Options

@@ -1,3 +1,7 @@
 .chart-series-line {    
 -fx-stroke-width: 1px;
 }
+
+#table-view .table-column { /*changes alignment of table view cells */
+    -fx-alignment: CENTER-LEFT;
+}

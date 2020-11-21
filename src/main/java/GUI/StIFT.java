@@ -1,8 +1,6 @@
 
 package GUI;
 
-import java.io.File;
-import java.util.Locale;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,7 +31,6 @@ public class StIFT extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Locale.setDefault(new Locale("en", "US"));
         launch(args);
     }
     
