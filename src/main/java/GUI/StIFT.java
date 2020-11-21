@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.util.Locale;
+
 /**
  * Main class
  */
@@ -31,6 +33,7 @@ public class StIFT extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Locale.setDefault(new Locale("en", "US"));
         launch(args);
     }
     
