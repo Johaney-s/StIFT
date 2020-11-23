@@ -2,7 +2,7 @@
 -fx-stroke-width: 1px;
 }
 
-#table-view .table-column { /*changes alignment of table view cells */
+#table-view .table-column {
     -fx-alignment: CENTER-LEFT;
 }
 
