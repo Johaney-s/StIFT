@@ -32,7 +32,6 @@ public class FXMLLineChartController implements Initializable {
     private Tooltip tooltip;
     private ObjectProperty<Point2D> mouseLocationInScene;
     private FXMLMainController mainController;
-    private static final int MAX_ISOCHRONES_IN_CHART = 100;
 
     /**
      * Initializes the controller class.
@@ -88,7 +87,8 @@ public class FXMLLineChartController implements Initializable {
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData().entrySet().iterator());
         } catch (IOException ex) {
-            mainController.showAlert("Unable to read / close file", "If existing, previous data instance remains valid.", Alert.AlertType.ERROR);
+            mainController.showAlert("Unable to read / close file",
+                    "If existing, previous data instance remains valid.", Alert.AlertType.ERROR);
         }
 
         lineChart.setLegendVisible(false);

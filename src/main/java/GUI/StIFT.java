@@ -25,6 +25,7 @@ public class StIFT extends Application {
         stage.setMinHeight(600);
         stage.setScene(scene);
         stage.setTitle("StIFT");
+        stage.getProperties().put("hostServices", this.getHostServices());
         stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.png")));
         stage.show();
     }

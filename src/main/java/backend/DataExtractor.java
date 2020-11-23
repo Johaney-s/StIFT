@@ -40,8 +40,6 @@ public class DataExtractor {
                 Logger.getLogger(DataExtractor.class.getName()).log(Level.SEVERE, "Invalid number of attributes on line " + recordCounter, "");
             }
 
-            //+++++++++add further attributes checks (positive age, radius, etc.)
-
             double temperature = Double.parseDouble(record[0]);
             double luminosity = Double.parseDouble(record[1]);
             double age = Double.parseDouble(record[2]);

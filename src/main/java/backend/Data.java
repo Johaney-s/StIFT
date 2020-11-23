@@ -30,7 +30,7 @@ public class Data {
             currentGroup = new ArrayList<>();
         }
     }
-    
+
     public void addCurrentGroupToGroupedData() {
         groupedData.put(currentGroup.get(0).getMass(), currentGroup);
     }
@@ -56,13 +56,13 @@ public class Data {
      * @return Array of four stars, upper neighbours first, lower neighbours second,
      *         null if no such exists
      */
-    public Star[] findNearestStars(double x, double y) { //make private --------
+    public Star[] findNearestStars(double x, double y) {
         Star upperLeft = null;
         Star upperRight = null;
         Star lowerRight = null;
         Star lowerLeft = null;
         for (ArrayList<Star> list : getGroupedData().values()) {
-            if (list.size() > 1) { //at least two stars needed -----------------
+            if (list.size() > 1) {
                 int index = 0;
                 while (index + 1 < list.size()) {
                     Star first = list.get(index);

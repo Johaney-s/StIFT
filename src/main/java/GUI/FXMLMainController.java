@@ -9,8 +9,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
+import javafx.application.HostServices;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -22,6 +26,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 /**
@@ -46,8 +53,6 @@ public class FXMLMainController implements Initializable {
     private VBox root;
     @FXML
     private ScrollPane scrollPane;
-    @FXML
-    private MenuItem setAsDefaultItem;
     @FXML
     private MenuItem uploadInputDataFile;
     @FXML
@@ -94,7 +99,7 @@ public class FXMLMainController implements Initializable {
         if (file != null) {
             try {
                 tableViewController.getTableModel().exportResults(file);
-                showAlert("Export data", "Data exported successfuly.", AlertType.INFORMATION);
+                showAlert("Export data", "Data exported successfully.", AlertType.INFORMATION);
             } catch (IOException ex) {
                 showAlert("Export failed", "Could not export data.", AlertType.ERROR);
             }
@@ -118,7 +123,7 @@ public class FXMLMainController implements Initializable {
                 lineChartController.showGraph(file);
                 tableViewController.reset();
                 disableItemsWhileNoGridAvailable(false);
-                showAlert("Upload new grid", "New grid uploaded successfuly.", AlertType.INFORMATION);
+                showAlert("Upload new grid", "New grid uploaded successfully.", AlertType.INFORMATION);
             } catch (FileNotFoundException ex) {
                 showAlert("Data file not found", "Could not find data file, previous data remain valid.", AlertType.ERROR);
             }
@@ -165,14 +170,21 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     public void aboutItemAction() {
-        System.out.println("About");
-    }
-    
-    @FXML
-    public void setAsDefaultGridItemAction() {
-        Alert alert = showAlert("Set grid as default", "Do you really want to set current grid as default?\nPath: ADD PATH TO FILE", AlertType.CONFIRMATION);
-        if(alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
-            System.out.println("Preference change to current path.");
+        FXMLLoader aboutFxmlLoader = new FXMLLoader(getClass().getResource("FXMLAboutWindow.fxml"));
+        Parent root = null;
+        try {
+            root = aboutFxmlLoader.load();
+            FXMLAboutWindowController aboutWindowController = aboutFxmlLoader.getController();
+            HostServices hs = (HostServices)scrollPane.getScene().getWindow().getProperties().get("hostServices");
+            aboutWindowController.addHostServices(hs);
+            Scene scene = new Scene(root);
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(root.getScene().getWindow());
+            dialog.setScene(scene);
+            dialog.show();
+        } catch (IOException e) {
+            showAlert("Open about section", "Could not open about section.", AlertType.ERROR);
         }
     }
     
@@ -243,7 +255,6 @@ public class FXMLMainController implements Initializable {
      * @param boo True for disabling, false for undisabling
      */
     public void disableItemsWhileNoGridAvailable(boolean boo) {
-        setAsDefaultItem.setDisable(boo);
         uploadInputDataFile.setDisable(boo);
         goButton.setDisable(boo);
     }

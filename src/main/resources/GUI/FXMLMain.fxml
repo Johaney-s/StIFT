@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLMainController">
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLMainController">
    <children>
       <MenuBar prefHeight="26.0" prefWidth="618.0">
          <menus>
@@ -41,10 +41,6 @@
                   <MenuItem mnemonicParsing="false" onAction="#resetGridItemAction" text="Reset grid to default">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem fx:id="setAsDefaultItem" disable="true" mnemonicParsing="false" onAction="#setAsDefaultGridItemAction" text="Set grid as default">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
                </items>
             </Menu>
