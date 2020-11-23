@@ -6,13 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.io.File;
 
 public class FXMLAboutWindowController implements Initializable {
 
@@ -26,13 +22,13 @@ public class FXMLAboutWindowController implements Initializable {
 
     @FXML
     public void openReadme() {
-        //try{
-            hostServices.showDocument("/Data.txt"); //TO BE FIXED YET
-
-        /*} catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Unable to open Readme file.");
+        URL url = this.getClass().getResource("/Readme.txt");
+        try {
+            hostServices.showDocument(url.toURI().toString()); //TO BE FIXED YET
+        } catch (URISyntaxException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Unable to open Readme.txt file.");
             alert.showAndWait();
-        }*/
+        }
     }
 
     public void addHostServices(HostServices hostServices) {

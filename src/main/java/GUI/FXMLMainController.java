@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -181,6 +182,7 @@ public class FXMLMainController implements Initializable {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(root.getScene().getWindow());
+            dialog.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.png")));
             dialog.setScene(scene);
             dialog.show();
         } catch (IOException e) {
