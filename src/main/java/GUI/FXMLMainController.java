@@ -47,6 +47,10 @@ public class FXMLMainController implements Initializable {
     @FXML
     private TextField luminosityField;
     @FXML
+    private TextField tempUncertaintyField;
+    @FXML
+    private TextField lumUncertaintyField;
+    @FXML
     private Label informationLabel;
     @FXML
     private Button goButton;
@@ -158,14 +162,14 @@ public class FXMLMainController implements Initializable {
     public void resetGridItemAction() {
         if(!tableViewController.getTableModel().isSaved() && !unsavedChangesAlert()) {
             return;
-        } else {
-            Alert alert = showAlert("Reset grid to default", "Do you want to reset grid to default grid?",
+        }
+        
+        Alert alert = showAlert("Reset grid to default", "Do you want to reset grid to default grid?",
                     AlertType.CONFIRMATION);
-            if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
-                InputStream inStream = getClass().getResourceAsStream("/Data.txt");
-                lineChartController.showGraph(inStream);
-                tableViewController.reset();
-            }
+        if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
+            InputStream inStream = getClass().getResourceAsStream("/Data.txt");
+            lineChartController.showGraph(inStream);
+            tableViewController.reset();
         }
     }
     
@@ -195,15 +199,22 @@ public class FXMLMainController implements Initializable {
     public void goButtonAction() {
         informationLabel.setVisible(false);
         temperatureField.setStyle(null);
+        tempUncertaintyField.setStyle(null); //fixMe!!!!!!!!
         luminosityField.setStyle(null);
+        lumUncertaintyField.setStyle(null); //fixMe!!!!!!!!!
         
         Double inputTemperatureValue = checkInput(temperatureField);
         Double inputLuminosityValue = checkInput(luminosityField);
+        Double inputTempUncertainty = checkInput(tempUncertaintyField);
+        Double inputLumUncertainty = checkInput(lumUncertaintyField);
 
-        if (inputTemperatureValue != null && inputLuminosityValue != null) {
+        if (inputTemperatureValue != null && inputTempUncertainty != null &&
+                inputLuminosityValue != null && inputLumUncertainty != null) {
             manageInput(inputTemperatureValue, inputLuminosityValue);
-            luminosityField.clear();
             temperatureField.clear();
+            tempUncertaintyField.clear();
+            luminosityField.clear();
+            lumUncertaintyField.clear();
         }
     }
 
@@ -212,14 +223,15 @@ public class FXMLMainController implements Initializable {
     
     /**
      * Checks input, if valid returns value, if not highlights problematic field
-     * @param field
+     * @param field Text field which value needs validation
      * @return Value or null, if input is not valid
      */
     private Double checkInput(TextField field) {
         try{
             return Double.parseDouble(field.getText());
         } catch (NumberFormatException ex) {
-            field.setStyle("-fx-border-color: red");
+            field.setStyle("    -fx-background-color: #efbebe;\n" +
+                    "    -fx-border-color: #be3d3d;");
             informationLabel.setVisible(true);
             fadeIn.playFromStart();
             return null;

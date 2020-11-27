@@ -51,29 +51,31 @@ public class Data {
     
     /**
      * Finds four-angled figure nearest to given coordinates
-     * @param x X coordinate of a point
-     * @param y Y coordinate of a point
-     * @return Array of four stars, upper neighbours first, lower neighbours second,
-     *         null if no such exists
+     * @param stats Computation stats including necessary [x,y] input coordinates
+     * @return true if 4 neighbours found, false otherwise
      */
-    public Star[] findNearestStars(double x, double y) {
+    public boolean findNearestStars(ComputationStats stats) {
         Star upperLeft = null;
         Star upperRight = null;
         Star lowerRight = null;
         Star lowerLeft = null;
+
         for (ArrayList<Star> list : getGroupedData().values()) {
             if (list.size() > 1) {
                 int index = 0;
                 while (index + 1 < list.size()) {
                     Star first = list.get(index);
                     Star second = list.get(index + 1);
-                    if ((first.getTemperature() <= x && second.getTemperature() > x) || (first.getTemperature() > x && second.getTemperature() <= x)) {
-                        if (intersection(first, second, x, y)[1] <= y) {
-                            if (lowerRight == null || intersection(lowerLeft, lowerRight, x, y)[1] < intersection(first, second, x, y)[1]) {
+                    if ((first.getTemperature() <= stats.getX() && second.getTemperature() > stats.getX()) ||
+                            (first.getTemperature() > stats.getX() && second.getTemperature() <= stats.getX())) {
+                        if (intersection(first, second, stats.getX(), stats.getY())[1] <= stats.getY()) {
+                            if (lowerRight == null || intersection(lowerLeft, lowerRight, stats.getX(), stats.getY())[1] <
+                                    intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 lowerLeft = first;
                                 lowerRight = second;
                             }
-                        } else if (upperRight == null || intersection(upperLeft, upperRight, x, y)[1] > intersection(first, second, x, y)[1]) {
+                        } else if (upperRight == null || intersection(upperLeft, upperRight, stats.getX(), stats.getY())[1] >
+                                intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 upperLeft = first;
                                 upperRight = second;
                         }
@@ -83,7 +85,12 @@ public class Data {
                 }
             }
         }
-        return new Star[]{upperLeft, upperRight, lowerRight, lowerLeft};
+
+        stats.setStar11(upperLeft);
+        stats.setStar12(upperRight);
+        stats.setStar21(lowerLeft);
+        stats.setStar22(lowerRight);
+        return (upperLeft != null && upperRight != null && lowerLeft != null && lowerRight != null);
     }
     
     /**
@@ -93,15 +100,14 @@ public class Data {
      * @return Estimated characteristics as a Star object (can contain null attributes)
      */
     public Star estimate(double x, double y) {
-        Star[] neighbours = findNearestStars(x, y);
-        for (Star s : neighbours) {
-            if (s == null) {
-                return new Star(x, y, null, null, null, null);
-            }
+        ComputationStats stats = new ComputationStats(x, y);
+        if (!findNearestStars(stats)) {
+            return new Star(x, y, null, null, null, null);
         }
-        double[] line = Interpolator.determineEvolutionaryStatus(neighbours[0], neighbours[1], neighbours[2], neighbours[3], x, y);
-        Star result = Interpolator.interpolateAllCharacteristics(neighbours[0], neighbours[1], neighbours[2], neighbours[3], line, x, y);
-        return result;
+
+        Interpolator.determineEvolutionaryStatus(stats);
+        Interpolator.interpolateAllCharacteristics(stats);
+        return stats.getResult();
     }
 
     /**

@@ -11,6 +11,18 @@ public class Star {
     private final Double radius;
     private final Double mass;
     private final Double phase;
+    private Double tem_uncertainity_low = 0.0;
+    private Double lum_uncertainity_low = 0.0;
+    private Double age_uncertainity_low = 0.0;
+    private Double rad_uncertainity_low = 0.0;
+    private Double mas_uncertainity_low = 0.0;
+    private Double pha_uncertainity_low = 0.0;
+    private Double tem_uncertainity_high = 0.0;
+    private Double lum_uncertainity_high = 0.0;
+    private Double age_uncertainity_high = 0.0;
+    private Double rad_uncertainity_high = 0.0;
+    private Double mas_uncertainity_high = 0.0;
+    private Double pha_uncertainity_high = 0.0;
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         this.temperature = temperature;
@@ -28,6 +40,20 @@ public class Star {
         this.radius = data[3];
         this.mass = data[4];
         this.phase = data[5];
+        if (data.length > 6) {
+            this.tem_uncertainity_low = data[6];
+            this.lum_uncertainity_low = data[7];
+            this.age_uncertainity_low = data[8];
+            this.rad_uncertainity_low = data[9];
+            this.mas_uncertainity_low = data[10];
+            this.pha_uncertainity_low = data[11];
+            this.tem_uncertainity_high = data[12];
+            this.lum_uncertainity_high = data[13];
+            this.age_uncertainity_high = data[14];
+            this.rad_uncertainity_high = data[15];
+            this.mas_uncertainity_high = data[16];
+            this.pha_uncertainity_high= data[17];
+        }
     }
     
     /**

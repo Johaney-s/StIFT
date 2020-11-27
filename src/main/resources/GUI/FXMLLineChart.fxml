@@ -3,7 +3,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 
-<LineChart fx:id="lineChart" alternativeRowFillVisible="false" animated="false" axisSortingPolicy="NONE" cacheShape="false" centerShape="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" onMouseClicked="#graphClicked" onMouseExited="#graphExited" prefHeight="353.0" prefWidth="450.0" scaleShape="false" verticalGridLinesVisible="false" verticalZeroLineVisible="false" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLLineChartController">
+<LineChart fx:id="lineChart" alternativeRowFillVisible="false" animated="false" axisSortingPolicy="NONE" cacheShape="false" centerShape="false" createSymbols="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" legendVisible="false" onMouseClicked="#graphClicked" onMouseExited="#graphExited" prefHeight="353.0" prefWidth="450.0" scaleShape="false" verticalGridLinesVisible="false" verticalZeroLineVisible="false" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLLineChartController">
     <xAxis>
         <NumberAxis forceZeroInRange="false" label="Teff" side="BOTTOM" tickMarkVisible="false" />
     </xAxis>

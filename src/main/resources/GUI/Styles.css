@@ -22,3 +22,8 @@
     -fx-padding: 0;
     -fx-shape: null;
 }
+
+.invalid_format {
+    -fx-background-color: #eca4a4;
+    -fx-border-color: #bc4949;
+}

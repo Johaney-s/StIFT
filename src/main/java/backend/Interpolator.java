@@ -9,35 +9,37 @@ public class Interpolator {
     /**
      * Processes four-angled figure into line of evolutionary status
      * naming follows steps in "Parametrization of single and binary stars"
-     * @param star11 Upper left in figure
-     * @param star12 Upper right in figure
-     * @param star22 Lower right in figure
-     * @param star21 Lower left in figure
-     * @param x X coordinate of a point
-     * @param y Y coordinate of a point
+     * Adds x1_, x2_, y1_, y2_ attributes to stats
+     * @param stats Computation stats of current input
      * Coordinates (index):
      * ****11***[x1_, y1_]***12**
      * ***********[x, y]**********
      * ****21***[x2_, y2_]***22**
-     * @return (x1_, y1_, x2_, y2_) = line of evolutionary status
      */
-    public static double[] determineEvolutionaryStatus(Star star11, Star star12, Star star22, Star star21, double x, double y) {
-        double alpha = star22.getTemperature() - star21.getTemperature(); //x22-x21
-        double beta = star12.getLuminosity() - star11.getLuminosity(); //y12-y11
-        double gamma = star12.getTemperature() - star11.getTemperature(); //x12-x11
-        double delta = star22.getLuminosity() - star21.getLuminosity(); //y22-y21
-        double epsilon = star22.getTemperature() * star21.getLuminosity() - star21.getTemperature() * star22.getLuminosity(); //x22*y21-x21*y22
-        double phi = star11.getTemperature() * star22.getTemperature() - star12.getTemperature() * star21.getTemperature(); //x11*x22-x12*x21
-        double psi = star22.getTemperature() * star11.getLuminosity() - star21.getTemperature() * star12.getLuminosity(); //x22*y11-x21*y12
-        double A = alpha * beta - gamma * delta;
-        double B = alpha * (psi - (alpha - gamma) * y - (beta - delta) * x) - gamma * epsilon - delta * phi;
-        double C = alpha * (phi * y + (epsilon - psi) * x) - epsilon * phi;
+    public static void determineEvolutionaryStatus(ComputationStats stats) {
+        stats.setAlpha(stats.getStar22().getTemperature() - stats.getStar21().getTemperature()); //x22-x21
+        stats.setBeta(stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity()); //y12-y11
+        stats.setGamma(stats.getStar12().getTemperature() - stats.getStar11().getTemperature()); //x12-x11
+        stats.setDelta(stats.getStar22().getLuminosity() - stats.getStar21().getLuminosity()); //y22-y21
+        stats.setEpsilon(stats.getStar22().getTemperature() * stats.getStar21().getLuminosity() -
+                stats.getStar21().getTemperature() * stats.getStar22().getLuminosity()); //x22*y21-x21*y22
+        stats.setPhi(stats.getStar11().getTemperature() * stats.getStar22().getTemperature() -
+                stats.getStar12().getTemperature() * stats.getStar21().getTemperature()); //x11*x22-x12*x21
+        stats.setPsi(stats.getStar22().getTemperature() * stats.getStar11().getLuminosity() -
+                stats.getStar21().getTemperature() * stats.getStar12().getLuminosity()); //x22*y11-x21*y12
+        stats.setA(stats.getAlpha() * stats.getBeta() - stats.getGamma() * stats.getDelta());
+        stats.setB(stats.getAlpha() * (stats.getPsi() - (stats.getAlpha() - stats.getGamma()) * stats.getY() -
+                (stats.getBeta() - stats.getDelta()) * stats.getX()) - stats.getGamma() * stats.getEpsilon() - stats.getDelta() * stats.getPhi());
+        stats.setC(stats.getAlpha() * (stats.getPhi() * stats.getY() + (stats.getEpsilon() - stats.getPsi()) * stats.getX()) -
+                stats.getEpsilon() * stats.getPhi());
         
-        double x2_ = quadraticEquation(A, B, C)[0]; //but which one?
-        double y1_ = star12.getLuminosity() + ((star12.getLuminosity() - star11.getLuminosity()) / (star22.getTemperature() - star21.getTemperature())) * (x2_ - star22.getTemperature());
-        double x1_ = star11.getTemperature() + ((star12.getTemperature() - star11.getTemperature()) / (star22.getTemperature() - star21.getTemperature())) * (x2_ - star21.getTemperature());
-        double y2_ = star22.getLuminosity() + ((star22.getLuminosity() - star21.getLuminosity()) / (star22.getTemperature() - star21.getTemperature())) * (x2_ - star22.getTemperature());
-        return new double[]{x1_, y1_, x2_, y2_};
+        stats.setX2_(quadraticEquation(stats.getA(), stats.getB(), stats.getC())[0]); //but which one?
+        stats.setY1_(stats.getStar12().getLuminosity() + ((stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity()) /
+                (stats.getStar22().getTemperature() - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
+        stats.setX1_(stats.getStar11().getTemperature() + ((stats.getStar12().getTemperature() - stats.getStar11().getTemperature()) /
+                (stats.getStar22().getTemperature() - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar21().getTemperature()));
+        stats.setY2_(stats.getStar22().getLuminosity() + ((stats.getStar22().getLuminosity() - stats.getStar21().getLuminosity()) /
+                (stats.getStar22().getTemperature() - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
     }
     
     /**
@@ -63,36 +65,36 @@ public class Interpolator {
     }
     
     /**
-     * Repeatedly fits atributes into equations and estimates characteristics
+     * Repeatedly fits attributes into equations and estimates characteristics
      * for given [x, y] coordinates, following "Parametrization of single and
-     * binary stars" (11, 13, 14)
-     * @param star11 Upper star 1 in figure
-     * @param star12 Upper star 2 in figure
-     * @param star22 Lower star 1 in figure
-     * @param star21 Lower star 2 in figure
-     * @param evolutionaryStatus {x1_, y1_, x2_, y2_}
-     * @param x X coordinate of selected point
-     * @param y Y coordinate of selected point
-     * @return Returns all characteristics as defined in Star class
-     * in respective order estimated for given [x,y] coordinate
+     * binary stars" (11, 13, 14). Adds results to stats.
+     * @param stats Computation stats representing current computation for [x,y] input
      */
-    public static Star interpolateAllCharacteristics(Star star11, Star star12, Star star22, Star star21, double[] evolutionaryStatus, double x, double y) {
-        double[] att11 = star11.getAllAttributes();
-        double[] att12 = star12.getAllAttributes();
-        double[] att21 = star21.getAllAttributes();
-        double[] att22 = star22.getAllAttributes();
+    public static void interpolateAllCharacteristics(ComputationStats stats) {
+        double[] att11 = stats.getStar11().getAllAttributes();
+        double[] att12 = stats.getStar12().getAllAttributes();
+        double[] att21 = stats.getStar21().getAllAttributes();
+        double[] att22 = stats.getStar22().getAllAttributes();
         Double[] finalEstimation = new Double[att11.length];
-        finalEstimation[0] = x;
-        finalEstimation[1] = y;
-        for (int index = 2; index < star11.getAllAttributes().length; index++) {
-            Double numerator = evolutionaryStatus[2] - att21[0]; //(x2_ - x21)
+        Double[] result1Estimation = new Double[att11.length];
+        Double[] result2Estimation = new Double[att11.length];
+        for (int index = 0; index < stats.getStar11().getAllAttributes().length; index++) {
+            Double numerator = stats.getX2_() - att21[0]; //(x2_ - x21)
             Double denominator = att22[0] - att21[0]; //(x22 - x21)            
             Double result1_ = att11[index] + ((att12[index] - att11[index]) / denominator) * numerator; //(13)
+            result1Estimation[index] = result1_;
             Double result2_ = att21[index] + ((att22[index] - att21[index]) / denominator) * numerator; //(14)
-            Double result = result1_ + ((result2_ - result1_) / (evolutionaryStatus[3] - evolutionaryStatus[1])) * (y - evolutionaryStatus[1]);
+            result2Estimation[index] = result2_;
+            Double result = result1_ + ((result2_ - result1_) /
+                    (stats.getY2_() - stats.getY1_())) * (stats.getY() - stats.getY1_()); //(11) [X -> Y]
             finalEstimation[index] = result;
         }
-        
-        return new Star(finalEstimation);
+
+        finalEstimation[0] = stats.getX(); //to correspond with given input
+        finalEstimation[1] = stats.getY();
+
+        stats.setResult1_(new Star(result1Estimation));
+        stats.setResult2_(new Star(result2Estimation));
+        stats.setResult(new Star(finalEstimation));
     }
 }
