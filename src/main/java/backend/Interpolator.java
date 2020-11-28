@@ -21,25 +21,30 @@ public class Interpolator {
         stats.setBeta(stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity()); //y12-y11
         stats.setGamma(stats.getStar12().getTemperature() - stats.getStar11().getTemperature()); //x12-x11
         stats.setDelta(stats.getStar22().getLuminosity() - stats.getStar21().getLuminosity()); //y22-y21
-        stats.setEpsilon(stats.getStar22().getTemperature() * stats.getStar21().getLuminosity() -
-                stats.getStar21().getTemperature() * stats.getStar22().getLuminosity()); //x22*y21-x21*y22
-        stats.setPhi(stats.getStar11().getTemperature() * stats.getStar22().getTemperature() -
-                stats.getStar12().getTemperature() * stats.getStar21().getTemperature()); //x11*x22-x12*x21
-        stats.setPsi(stats.getStar22().getTemperature() * stats.getStar11().getLuminosity() -
-                stats.getStar21().getTemperature() * stats.getStar12().getLuminosity()); //x22*y11-x21*y12
+        stats.setEpsilon(stats.getStar22().getTemperature() * stats.getStar21().getLuminosity()
+                - stats.getStar21().getTemperature() * stats.getStar22().getLuminosity()); //x22*y21-x21*y22
+        stats.setPhi(stats.getStar11().getTemperature() * stats.getStar22().getTemperature()
+                - stats.getStar12().getTemperature() * stats.getStar21().getTemperature()); //x11*x22-x12*x21
+        stats.setPsi(stats.getStar22().getTemperature() * stats.getStar11().getLuminosity()
+                - stats.getStar21().getTemperature() * stats.getStar12().getLuminosity()); //x22*y11-x21*y12
+
         stats.setA(stats.getAlpha() * stats.getBeta() - stats.getGamma() * stats.getDelta());
-        stats.setB(stats.getAlpha() * (stats.getPsi() - (stats.getAlpha() - stats.getGamma()) * stats.getY() -
-                (stats.getBeta() - stats.getDelta()) * stats.getX()) - stats.getGamma() * stats.getEpsilon() - stats.getDelta() * stats.getPhi());
-        stats.setC(stats.getAlpha() * (stats.getPhi() * stats.getY() + (stats.getEpsilon() - stats.getPsi()) * stats.getX()) -
-                stats.getEpsilon() * stats.getPhi());
+        stats.setB(stats.getAlpha() * (stats.getPsi() - (stats.getAlpha() - stats.getGamma()) * stats.getY()
+                - (stats.getBeta() - stats.getDelta()) * stats.getX()) - stats.getGamma()
+                * stats.getEpsilon() - stats.getDelta() * stats.getPhi());
+        stats.setC(stats.getAlpha() * (stats.getPhi() * stats.getY() + (stats.getEpsilon()
+                - stats.getPsi()) * stats.getX()) - stats.getEpsilon() * stats.getPhi());
         
-        stats.setX2_(quadraticEquation(stats.getA(), stats.getB(), stats.getC())[0]); //but which one?
-        stats.setY1_(stats.getStar12().getLuminosity() + ((stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity()) /
-                (stats.getStar22().getTemperature() - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
-        stats.setX1_(stats.getStar11().getTemperature() + ((stats.getStar12().getTemperature() - stats.getStar11().getTemperature()) /
-                (stats.getStar22().getTemperature() - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar21().getTemperature()));
-        stats.setY2_(stats.getStar22().getLuminosity() + ((stats.getStar22().getLuminosity() - stats.getStar21().getLuminosity()) /
-                (stats.getStar22().getTemperature() - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
+        stats.setX2_(quadraticEquation(stats.getA(), stats.getB(), stats.getC())[0]);
+        stats.setY1_(stats.getStar12().getLuminosity() + ((stats.getStar12().getLuminosity()
+                - stats.getStar11().getLuminosity()) / (stats.getStar22().getTemperature()
+                - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
+        stats.setX1_(stats.getStar11().getTemperature() + ((stats.getStar12().getTemperature()
+                - stats.getStar11().getTemperature()) / (stats.getStar22().getTemperature()
+                - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar21().getTemperature()));
+        stats.setY2_(stats.getStar22().getLuminosity() + ((stats.getStar22().getLuminosity()
+                - stats.getStar21().getLuminosity()) / (stats.getStar22().getTemperature()
+                - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
     }
     
     /**
