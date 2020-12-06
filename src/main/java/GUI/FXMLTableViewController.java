@@ -137,12 +137,12 @@ public class FXMLTableViewController implements Initializable {
     }
 
     private void setValueFactories() {
-        tempCol.setCellValueFactory(new PropertyValueFactory<>("formattedTemperature"));
-        lumCol.setCellValueFactory(new PropertyValueFactory<>("formattedLuminosity"));
-        massCol.setCellValueFactory(new PropertyValueFactory<>("formattedMass"));
-        radCol.setCellValueFactory(new PropertyValueFactory<>("formattedRadius"));
-        ageCol.setCellValueFactory(new PropertyValueFactory<>("formattedAge"));
-        phaseCol.setCellValueFactory(new PropertyValueFactory<>("formattedPhase"));
+        tempCol.setCellValueFactory(new PropertyValueFactory<>("TeXTemperature"));
+        lumCol.setCellValueFactory(new PropertyValueFactory<>("TeXLuminosity"));
+        massCol.setCellValueFactory(new PropertyValueFactory<>("TeXMass"));
+        radCol.setCellValueFactory(new PropertyValueFactory<>("TeXRadius"));
+        ageCol.setCellValueFactory(new PropertyValueFactory<>("TeXAge"));
+        phaseCol.setCellValueFactory(new PropertyValueFactory<>("TeXPhase"));
     }
     
     private void showFilterIcon() {

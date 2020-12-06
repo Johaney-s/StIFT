@@ -40,6 +40,16 @@
             <artifactId>controlsfx</artifactId>
             <version>11.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.scilab.forge</groupId>
+            <artifactId>jlatexmath</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>13</version>
+        </dependency>
         <!-- include OS-dependent libraries, see https://stackoverflow.com/questions/52653836/maven-shade-javafx-runtime-components-are-missing -->
         <dependency>
             <groupId>org.openjfx</groupId>

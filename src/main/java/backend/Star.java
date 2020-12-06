@@ -1,6 +1,16 @@
 
 package backend;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import org.scilab.forge.jlatexmath.TeXConstants;
+import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXIcon;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 /**
  * Representation of a star
  */
@@ -23,6 +33,8 @@ public class Star {
     private Double rad_uncertainity_high = 0.0;
     private Double mas_uncertainity_high = 0.0;
     private Double pha_uncertainity_high = 0.0;
+    private final String LATEX_FORMAT = "%.4f_{-%.4f}^{+%.4f}";
+    private final String ROUNDING_FORMAT = "%.4f";
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         this.temperature = temperature;
@@ -80,7 +92,7 @@ public class Star {
      * Prints all characteristics of current star
      */
     public void printValues() {
-        System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\n", getFormattedTemperature(), getFormattedLuminosity(), getFormattedAge(),
+        System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", temperature, luminosity, age,
                 getFormattedRadius(), getFormattedMass(), getFormattedPhase());
     }
 
@@ -126,29 +138,96 @@ public class Star {
         return phase;
     }
 
-    /* Return string representation of attribute rounded to 4 decimal places or '-' if no such exists*/
+    //Returns TeX representation of value and uncertainties
+    public ImageView getTeXTemperature() {
+        String latex = (temperature == null || temperature.isNaN()) ? "-"
+                : String.format(LATEX_FORMAT, temperature, Math.abs(tem_uncertainity_low), tem_uncertainity_high);
+
+        return latexToImage(latex);
+    }
+
+    public ImageView getTeXLuminosity() {
+        String latex = (luminosity == null || luminosity.isNaN()) ? "-"
+                : String.format(LATEX_FORMAT, luminosity, Math.abs(lum_uncertainity_low), lum_uncertainity_high);
+
+        return latexToImage(latex);
+    }
+
+    public ImageView getTeXAge() {
+        String latex = (age == null || age.isNaN()) ? "-"
+                : String.format(LATEX_FORMAT, age, Math.abs(age_uncertainity_low), age_uncertainity_high);
+
+        return latexToImage(latex);
+    }
+
+    public ImageView getTeXRadius() {
+        String latex = (radius == null || radius.isNaN()) ? "-"
+                : String.format(LATEX_FORMAT, radius, Math.abs(rad_uncertainity_low), rad_uncertainity_high);
+
+        return latexToImage(latex);
+    }
+
+    public ImageView getTeXMass() {
+        String latex = (mass == null || mass.isNaN()) ? "-"
+                : String.format(LATEX_FORMAT, mass, Math.abs(mas_uncertainity_low), mas_uncertainity_high);
+
+        return latexToImage(latex);
+    }
+
+    public ImageView getTeXPhase() {
+        String latex = (phase == null || phase.isNaN()) ? "-"
+                : String.format(LATEX_FORMAT, phase, Math.abs(pha_uncertainity_low), pha_uncertainity_high);
+
+        return latexToImage(latex);
+    }
+
+    //Returns string representation of rounded result
     public String getFormattedTemperature() {
-        return (temperature == null || temperature.isNaN()) ? "-" : String.format("%.4f", temperature);
+        return (temperature == null || temperature.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, temperature);
     }
 
     public String getFormattedLuminosity() {
-        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format("%.4f", luminosity);
+        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, luminosity);
     }
 
     public String getFormattedAge() {
-        return (age == null || age.isNaN()) ? "-" : String.format("%.4f", age);
+        return (age == null || age.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, age);
     }
 
     public String getFormattedRadius() {
-        return (radius == null || radius.isNaN()) ? "-" : String.format("%.4f", radius);
+        return (radius == null || radius.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, radius);
     }
 
     public String getFormattedMass() {
-        return (mass == null || mass.isNaN()) ? "-" : String.format("%.4f", mass);
+        return (mass == null || mass.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, mass);
     }
 
     public String getFormattedPhase() {
-        return (phase == null || phase.isNaN()) ? "-" : String.format("%.4f", phase);
+        return (phase == null || phase.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, phase);
+    }
+
+    /**
+     * Function converting latex string to image as described in:
+     * https://stackoverflow.com/questions/49970704/javafx-format-math-during-input
+     */
+    public static ImageView latexToImage(String latex){
+        String start  ="\\begin{array}{l}" + latex + "\\end{array}";
+        TeXFormula formula = new TeXFormula(start);
+        TeXIcon icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY).setSize(16f).build();
+        icon.setInsets(new Insets(1, 1, 1, 1));
+
+        BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2 = image.createGraphics();
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0,0,icon.getIconWidth(),icon.getIconHeight());
+        JLabel jl = new JLabel();
+        jl.setForeground(new Color(0, 0, 0));
+        g2.setComposite(AlphaComposite.Src);
+        icon.paintIcon(null, g2, 0, 0);
+
+        WritableImage writableImage = SwingFXUtils.toFXImage(image , null);
+        return new ImageView(writableImage);
     }
     
 }

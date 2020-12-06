@@ -63,11 +63,11 @@
                         <Insets right="10.0" />
                      </BorderPane.margin>
                      <children>
-                        <TextField fx:id="temperatureField" alignment="CENTER" layoutX="38.0" layoutY="114.0" prefHeight="26.0" prefWidth="81.0" />
-                        <TextField fx:id="luminosityField" alignment="CENTER" layoutX="38.0" layoutY="176.0" prefHeight="26.0" prefWidth="81.0" />
+                        <TextField fx:id="temperatureField" alignment="CENTER" layoutX="54.0" layoutY="114.0" prefHeight="26.0" prefWidth="66.0" />
+                        <TextField fx:id="luminosityField" alignment="CENTER" layoutX="54.0" layoutY="176.0" prefHeight="26.0" prefWidth="66.0" />
                           <Button fx:id="goButton" alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="260.0" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="4.0" layoutY="114.0" prefHeight="26.0" prefWidth="31.0" text="Teff" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="5.0" layoutY="176.0" prefHeight="26.0" prefWidth="17.0" text="L" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="4.0" layoutY="114.0" prefHeight="26.0" prefWidth="46.0" text="lg Teff" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="4.0" layoutY="176.0" prefHeight="26.0" prefWidth="34.0" text="lg L" textAlignment="CENTER" />
                         <Label alignment="CENTER" layoutX="2.0" layoutY="86.0" prefHeight="22.0" prefWidth="122.0" text="Estimate result">
                            <font>
                               <Font name="System Bold" size="16.0" />
@@ -82,7 +82,7 @@
                            </effect>
                         </Label>
                         <Label layoutX="9.0" layoutY="145.0" prefHeight="26.0" prefWidth="68.0" text="Uncertainty" />
-                        <Label layoutX="11.0" layoutY="213.0" text="Uncertainty" />
+                        <Label layoutX="9.0" layoutY="213.0" prefHeight="18.0" prefWidth="63.0" text="Uncertainty" />
                         <TextField fx:id="tempUncertaintyField" layoutX="80.0" layoutY="145.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
                         <TextField fx:id="lumUncertaintyField" layoutX="80.0" layoutY="208.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
                      </children>
