@@ -23,7 +23,9 @@
     -fx-shape: null;
 }
 
-.invalid_format {
+.text-field.invalid {
     -fx-background-color: #eca4a4;
     -fx-border-color: #bc4949;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
 }

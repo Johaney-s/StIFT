@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Extractor and parser for data from file
@@ -25,19 +23,19 @@ public class DataExtractor {
      */
     public static Data extract(InputStream inStream) throws IOException, FileNotFoundException {        
         if (inStream == null) {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException("Cannot find file containing grid data.");
         }
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
         Data data = new Data();
         String row;
-        int recordCounter = 0;
+        int recordCounter = 1;
 
         while ((row = reader.readLine()) != null) {
             String[] record = row.split(",|\\s"); //delimiters
 
             if (record.length != 6) { //validate number of attributes
-                Logger.getLogger(DataExtractor.class.getName()).log(Level.SEVERE, "Invalid number of attributes on line " + recordCounter, "");
+                throw new IOException("Invalid number of attributes on line " + recordCounter);
             }
 
             double temperature = Double.parseDouble(record[0]);

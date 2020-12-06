@@ -51,7 +51,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+      <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" stylesheets="@Styles.css" vbarPolicy="ALWAYS">
          <content>
             <BorderPane>
                <center>
@@ -70,7 +70,7 @@
                         <Label alignment="CENTER" layoutX="5.0" layoutY="176.0" prefHeight="26.0" prefWidth="17.0" text="L" textAlignment="CENTER" />
                         <Label alignment="CENTER" layoutX="2.0" layoutY="86.0" prefHeight="22.0" prefWidth="122.0" text="Estimate result">
                            <font>
-                              <Font name="System Bold" size="15.0" />
+                              <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
                         <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="234.0" prefHeight="20.0" prefWidth="81.0" text="Invalid input" textFill="#d21818" visible="false">

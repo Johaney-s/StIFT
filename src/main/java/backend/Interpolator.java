@@ -102,4 +102,53 @@ public class Interpolator {
         stats.setResult2_(new Star(result2Estimation));
         stats.setResult(new Star(finalEstimation));
     }
+
+    public static void determineUncertainties(ComputationStats stats) {
+        double LOG_E = 0.4342944819;
+        double pt1 = (stats.getAlpha() * (stats.getBeta() - stats.getDelta())) / (2 * stats.getA());
+        double der_denominator = Math.sqrt(stats.getB() * stats.getB() - 4 * stats.getA() * stats.getC());
+        double pt2 = (stats.getB() + 2 * stats.getA() * ((stats.getEpsilon() - stats.getPsi())
+                / (stats.getBeta() - stats.getDelta()))) / der_denominator;
+        double dx2_Idxminus = pt1 * (1 - pt2); // (21)
+        double dx2_Idxplus = pt1 * (1 + pt2);
+        
+        double pt3 = (stats.getAlpha() * (stats.getAlpha() - stats.getGamma())) / (2 * stats.getA());
+        double pt4 = (stats.getB() + 2 * stats.getA() * (stats.getPhi() / (stats.getAlpha() - stats.getGamma())))
+                / der_denominator;
+        double dx2_Idyminus = pt3 * (1 - pt4); // (22)
+        double dx2_Idyplus = pt3 * (1 + pt4);
+
+        double gamal_1 = (stats.getGamma() / stats.getAlpha()) - 1;
+        double phial = stats.getPhi() / stats.getAlpha();
+        double repetative = stats.getX2_() * gamal_1 + phial;
+        double fml3 = stats.getX() * gamal_1 + phial;
+
+        for (int index = 0; index < stats.getResult().getAllAttributes().length; index++) {
+            double D = (stats.getStar22().getAllAttributes()[index] - stats.getStar21().getAllAttributes()[index]
+                    - stats.getStar12().getAllAttributes()[index] + stats.getStar11().getAllAttributes()[index])
+                    * (stats.getX2_() - stats.getX());
+            double fml1 = ((stats.getStar22().getAllAttributes()[index] - stats.getStar21().getAllAttributes()[index])
+                    * repetative + D) / (stats.getAlpha() * repetative);
+            double fml2 = (stats.getResult2_().getAllAttributes()[index] - stats.getResult1_().getAllAttributes()[index])
+                    /(repetative * repetative);
+            double derx1 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative);
+            double derx2 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxplus - repetative);
+            double derx3 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative);
+            double derx4 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxminus - repetative);
+            //System.out.printf("Attribute %d : Dx: %f\t%f\t%f\t%f\t", index, derx1, derx2, derx3, derx4);
+
+            double dery1 = fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus;
+            double dery2 = fml1 * dx2_Idyminus+ fml2 * fml3 * dx2_Idyplus;
+            double dery3 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus;
+            double dery4 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyminus;
+            //System.out.printf("Dy: %f\t%f\t%f\t%f\n", dery1, dery2, dery3, dery4);
+
+            double est1 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx1;
+            double est2 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx2;
+            double est3 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx3;
+            double est4 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx4;
+            //System.out.printf("dm/dx: %f\n", est3);
+        }
+    }
+
 }

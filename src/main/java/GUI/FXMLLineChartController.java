@@ -93,8 +93,7 @@ public class FXMLLineChartController implements Initializable {
 
         lineChart.setLegendVisible(false);
         lineChart.applyCss();
-        String css = StIFT.class.getResource("Styles.css").toExternalForm();
-        lineChart.getStylesheets().add(css);
+        lineChart.getStylesheets().add(StIFT.class.getResource("Styles.css").toExternalForm());
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(false);
     }
@@ -109,7 +108,7 @@ public class FXMLLineChartController implements Initializable {
      * @param iter Iterator of collection of groups of stars
      */
     private void addIsochronesToChart(Iterator<Map.Entry<Double, ArrayList<Star>>> iter) {
-        while (iter.hasNext()) {            
+        while (iter.hasNext()) {
             Map.Entry<Double, ArrayList<Star>> isochrone = iter.next();
             XYChart.Series series = new XYChart.Series();
             int index = 0;

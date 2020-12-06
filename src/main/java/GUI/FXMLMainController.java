@@ -198,10 +198,10 @@ public class FXMLMainController implements Initializable {
     @FXML
     public void goButtonAction() {
         informationLabel.setVisible(false);
-        temperatureField.setStyle(null);
-        tempUncertaintyField.setStyle(null); //fixMe!!!!!!!!
-        luminosityField.setStyle(null);
-        lumUncertaintyField.setStyle(null); //fixMe!!!!!!!!!
+        temperatureField.getStyleClass().removeAll("invalid");
+        tempUncertaintyField.getStyleClass().removeAll("invalid");
+        luminosityField.getStyleClass().removeAll("invalid");
+        lumUncertaintyField.getStyleClass().removeAll("invalid");
         
         Double inputTemperatureValue = checkInput(temperatureField);
         Double inputLuminosityValue = checkInput(luminosityField);
@@ -212,9 +212,9 @@ public class FXMLMainController implements Initializable {
                 inputLuminosityValue != null && inputLumUncertainty != null) {
             manageInput(inputTemperatureValue, inputLuminosityValue);
             temperatureField.clear();
-            tempUncertaintyField.clear();
+            tempUncertaintyField.setText("0.0");
             luminosityField.clear();
-            lumUncertaintyField.clear();
+            lumUncertaintyField.setText("0.0");
         }
     }
 
@@ -230,8 +230,7 @@ public class FXMLMainController implements Initializable {
         try{
             return Double.parseDouble(field.getText());
         } catch (NumberFormatException ex) {
-            field.setStyle("    -fx-background-color: #efbebe;\n" +
-                    "    -fx-border-color: #be3d3d;");
+            field.getStyleClass().add("invalid");
             informationLabel.setVisible(true);
             fadeIn.playFromStart();
             return null;

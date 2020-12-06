@@ -42,18 +42,30 @@ public class Star {
         this.phase = data[5];
         if (data.length > 6) {
             this.tem_uncertainity_low = data[6];
+            this.tem_uncertainity_high = data[6];
+            this.lum_uncertainity_high = data[7];
             this.lum_uncertainity_low = data[7];
-            this.age_uncertainity_low = data[8];
-            this.rad_uncertainity_low = data[9];
-            this.mas_uncertainity_low = data[10];
-            this.pha_uncertainity_low = data[11];
-            this.tem_uncertainity_high = data[12];
-            this.lum_uncertainity_high = data[13];
-            this.age_uncertainity_high = data[14];
-            this.rad_uncertainity_high = data[15];
-            this.mas_uncertainity_high = data[16];
-            this.pha_uncertainity_high= data[17];
         }
+    }
+
+    /**
+     * Set uncertainties to characteristics
+     * Order copies order of attributes in Star class, first negative, then positive uncertainty
+     * @param data
+     */
+    public void setUncertainties(double[] data) {
+        this.tem_uncertainity_low = data[0];
+        this.tem_uncertainity_high = data[1];
+        this.lum_uncertainity_low = data[2];
+        this.lum_uncertainity_high = data[3];
+        this.age_uncertainity_low = data[4];
+        this.age_uncertainity_high = data[5];
+        this.rad_uncertainity_low = data[6];
+        this.rad_uncertainity_high = data[7];
+        this.mas_uncertainity_low = data[8];
+        this.mas_uncertainity_high = data[9];
+        this.pha_uncertainity_low = data[10];
+        this.pha_uncertainity_high= data[11];
     }
     
     /**
