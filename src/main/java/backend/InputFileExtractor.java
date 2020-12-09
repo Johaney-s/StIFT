@@ -16,19 +16,25 @@ public class InputFileExtractor {
         ArrayList<Star> newResults = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String row;
-        int recordCounter = 0;
 
         while ((row = reader.readLine()) != null) {
             String[] record = row.split(",|\\s"); //delimiters
 
-            if (record.length != 2) { //validate number of attributes --> throw errors
-                throw new IOException("Invalid number of parameters");
-            }
+            if (record.length != 2 && record.length != 4) { throw new IOException("Invalid number of parameters"); }
 
             double temperature = Double.parseDouble(record[0]);
             double luminosity = Double.parseDouble(record[1]);
-            newResults.add(DataExtractor.getCurrentData().estimate(temperature, luminosity));
+            double temp_unc = 0.0;
+            double lum_unc = 0.0;
+
+            if (record.length == 4) {
+                temp_unc = Double.parseDouble(record[2]);
+                lum_unc = Double.parseDouble(record[3]);
             }
+
+            newResults.add(DataExtractor.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
+        }
+
         reader.close();
         return newResults;
     }

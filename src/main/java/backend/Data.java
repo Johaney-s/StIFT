@@ -97,16 +97,21 @@ public class Data {
      * Estimates characteristics for given input [x,y]
      * @param x X coordinate of user input
      * @param y Y coordinate of user input
+     * @param temp_unc Temperature uncertainty
+     * @param lum_unc Luminosity uncertainty
      * @return Estimated characteristics as a Star object (can contain null attributes)
      */
-    public Star estimate(double x, double y) {
+    public Star estimate(double x, double y, double temp_unc, double lum_unc) {
         ComputationStats stats = new ComputationStats(x, y);
         if (!findNearestStars(stats)) {
-            return new Star(x, y, null, null, null, null);
+            Star result = new Star(x, y, null, null, null, null);
+            result.setInputUncertainties(temp_unc, lum_unc);
+            return result;
         }
 
         Interpolator.determineEvolutionaryStatus(stats);
         Interpolator.interpolateAllCharacteristics(stats);
+        stats.getResult().setInputUncertainties(temp_unc, lum_unc);
         return stats.getResult();
     }
 

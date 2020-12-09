@@ -206,4 +206,8 @@ public class ComputationStats {
         this.result = result;
     }
 
+    public String toString() {
+        return "Alpha: " + alpha + " Beta: " + beta + " Gamma: " + gamma + " Delta: " + delta + " Epsilon: " + epsilon
+                + " Psi: " + psi + " Phi: " + phi + " A: " + A + " B: " + B + " C: " + C;
+    }
 }

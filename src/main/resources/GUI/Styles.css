@@ -29,3 +29,8 @@
     -fx-background-radius: 3px;
     -fx-border-radius: 3px;
 }
+
+#root {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}

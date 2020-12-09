@@ -35,12 +35,12 @@ public class TextOnly {
             double x = 4.387308533916849;
             double y = 5.664536741214057; <-- WEIRD PHASE RESULT
             */
-            double x = 3.6;
-            double y = 4.5;
+            double x = 4;
+            double y = 3.5;
             
             ComputationStats stats = new ComputationStats(x,y);
             data.findNearestStars(stats);
-            System.out.printf("Input:\n%f\t%f%n", x, y);
+            System.out.printf("Input:\n%f\t%f\n", x, y);
 
             System.out.println("Neighbours:");
             stats.getStar11().printValues();
@@ -56,8 +56,9 @@ public class TextOnly {
             System.out.println("Result:");
             stats.getResult().printValues();
 
-            //System.out.println("Derivation:");
-            //Interpolator.determineUncertainties(stats);
+            //System.out.println(stats.toString());
+            //System.out.println("Derivation:\n+ | -");
+            Interpolator.determineUncertainties(stats);
         } catch (IOException ex) {
             Logger.getLogger(TextOnly.class.getName()).log(Level.SEVERE, "Error reading file", ex);
         }

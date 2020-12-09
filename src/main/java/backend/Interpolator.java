@@ -104,7 +104,6 @@ public class Interpolator {
     }
 
     public static void determineUncertainties(ComputationStats stats) {
-        double LOG_E = 0.4342944819;
         double pt1 = (stats.getAlpha() * (stats.getBeta() - stats.getDelta())) / (2 * stats.getA());
         double der_denominator = Math.sqrt(stats.getB() * stats.getB() - 4 * stats.getA() * stats.getC());
         double pt2 = (stats.getB() + 2 * stats.getA() * ((stats.getEpsilon() - stats.getPsi())
@@ -131,23 +130,14 @@ public class Interpolator {
                     * repetative + D) / (stats.getAlpha() * repetative);
             double fml2 = (stats.getResult2_().getAllAttributes()[index] - stats.getResult1_().getAllAttributes()[index])
                     /(repetative * repetative);
+
             double derx1 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative);
-            double derx2 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxplus - repetative);
             double derx3 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative);
-            double derx4 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxminus - repetative);
-            //System.out.printf("Attribute %d : Dx: %f\t%f\t%f\t%f\t", index, derx1, derx2, derx3, derx4);
 
             double dery1 = fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus;
-            double dery2 = fml1 * dx2_Idyminus+ fml2 * fml3 * dx2_Idyplus;
             double dery3 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus;
-            double dery4 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyminus;
-            //System.out.printf("Dy: %f\t%f\t%f\t%f\n", dery1, dery2, dery3, dery4);
 
-            double est1 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx1;
-            double est2 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx2;
-            double est3 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx3;
-            double est4 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx4;
-            //System.out.printf("dm/dx: %f\n", est3);
+            //System.out.println(Math.sqrt(derx1*derx1 + dery1*dery1) + " | " + Math.sqrt(derx3*derx3 + dery3*dery3));
         }
     }
 

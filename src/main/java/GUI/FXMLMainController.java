@@ -210,7 +210,7 @@ public class FXMLMainController implements Initializable {
 
         if (inputTemperatureValue != null && inputTempUncertainty != null &&
                 inputLuminosityValue != null && inputLumUncertainty != null) {
-            manageInput(inputTemperatureValue, inputLuminosityValue);
+            manageInput(inputTemperatureValue, inputLuminosityValue, inputTempUncertainty, inputLumUncertainty);
             temperatureField.clear();
             tempUncertaintyField.setText("0.0");
             luminosityField.clear();
@@ -256,9 +256,11 @@ public class FXMLMainController implements Initializable {
      * Processes input and handles result to tableview
      * @param x X input coordinate
      * @param y Y input coordinate
+     * @param temp_unc temperature uncertainty
+     * @param lum_unc temperature uncertainty
      */
-    public void manageInput(double x, double y) {
-        Star result = DataExtractor.getCurrentData().estimate(x, y);
+    public void manageInput(double x, double y, double temp_unc, double lum_unc) {
+        Star result = DataExtractor.getCurrentData().estimate(x, y, temp_unc, lum_unc);
         tableViewController.handleNewResult(result);
     }
     

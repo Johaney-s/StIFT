@@ -61,7 +61,7 @@ public class FXMLLineChartController implements Initializable {
         if (!lineChart.getData().isEmpty()) {
             double x = getXMouseCoordinate();
             double y = getYMouseCoordinate();
-            mainController.manageInput(x, y);
+            mainController.manageInput(x, y, 0.0, 0.0);
         }
     }
     
