@@ -46,6 +46,7 @@ public class DataExtractor {
             double phase = Double.parseDouble(record[5]);
             Star star = new Star(temperature, luminosity, age, radius, mass, phase);
             data.addStar(star);
+            recordCounter++;
         }
 
         reader.close();
