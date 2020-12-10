@@ -24,15 +24,17 @@ public class Data {
     public void addStar(Star star){        
         if (currentGroup.isEmpty() || 
                 Math.abs(currentGroup.get(currentGroup.size() - 1).getMass() - star.getMass()) < 0.05) {
-            currentGroup.add(star);
         } else {
-            if (currentGroup.size() > 1) { addCurrentGroupToGroupedData(); }
+            addCurrentGroupToGroupedData();
             currentGroup = new ArrayList<>();
         }
+        currentGroup.add(star);
     }
 
     public void addCurrentGroupToGroupedData() {
-        groupedData.put(currentGroup.get(0).getMass(), currentGroup);
+        if (currentGroup.size() > 1) {
+            groupedData.put(currentGroup.get(0).getMass(), currentGroup);
+        }
     }
     
     /**
