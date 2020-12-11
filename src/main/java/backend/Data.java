@@ -22,12 +22,11 @@ public class Data {
      * @param star New star
      */
     public void addStar(Star star){        
-        if (currentGroup.isEmpty() || 
-                Math.abs(currentGroup.get(currentGroup.size() - 1).getMass() - star.getMass()) < 0.05) {
-        } else {
+        if (!currentGroup.isEmpty() && Math.abs(currentGroup.get(currentGroup.size() - 1).getMass() - star.getMass()) > 0.05) {
             addCurrentGroupToGroupedData();
             currentGroup = new ArrayList<>();
         }
+
         currentGroup.add(star);
     }
 
@@ -99,22 +98,84 @@ public class Data {
      * Estimates characteristics for given input [x,y]
      * @param x X coordinate of user input
      * @param y Y coordinate of user input
-     * @param temp_unc Temperature uncertainty
-     * @param lum_unc Luminosity uncertainty
-     * @return Estimated characteristics as a Star object (can contain null attributes)
+     * @return Stats with either result containing null values or computed stats parameters
      */
-    public Star estimate(double x, double y, double temp_unc, double lum_unc) {
+    public ComputationStats estimate_star(double x, double y) {
         ComputationStats stats = new ComputationStats(x, y);
         if (!findNearestStars(stats)) {
-            Star result = new Star(x, y, null, null, null, null);
-            result.setInputUncertainties(temp_unc, lum_unc);
-            return result;
+            stats.setResult(new Star(x, y, null, null, null, null));
+            return stats;
         }
 
         Interpolator.determineEvolutionaryStatus(stats);
         Interpolator.interpolateAllCharacteristics(stats);
-        stats.getResult().setInputUncertainties(temp_unc, lum_unc);
-        return stats.getResult();
+        return stats;
+    }
+
+    /**
+     * Estimate characteristics and uncertainties for given input and uncertainties, save results to stats
+     * Call this method directly if stats are further used
+     * @param x input x coordinate
+     * @param y input y coordinate
+     * @param temp_unc Temperature uncertainty
+     * @param lum_unc Luminosity uncertainty
+     * @return stats with uncertainties_estimations filled out
+     */
+    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc) {
+        int NUMBER_OF_SIGMA_REGION_POINTS = 8;
+        ComputationStats mean_value_stats = estimate_star(x, y);
+        mean_value_stats.getResult().setInputUncertainties(temp_unc, lum_unc);
+        Star[] stars = new Star[9]; //sigma region
+        double[] xs = {x, x - temp_unc, x + temp_unc};
+        double[] ys = {y, y - lum_unc, y + lum_unc};
+        int index = 0;
+
+        //Find data points
+        for (double current_x : xs) {
+            for (double current_y : ys) {
+                Star star = estimate_star(current_x, current_y).getResult();
+                if (star ==  null || star.getAge() == null) { return mean_value_stats; }
+                stars[index] = star;
+                index++;
+            }
+        }
+        mean_value_stats.setSigmaRegion(stars);
+
+        //For each data point, find the square of its distance to the mean and sum the values
+        double[] deviation = {0, 0, 0, 0};
+        for (Star star : stars) {
+            double age_diff = Math.pow(10, star.getAge()) - Math.pow(10, mean_value_stats.getResult().getAge());
+            deviation[0] += Math.pow(age_diff, 2);
+            for (int inx = 3; inx < 6; inx++) { //except input params and age all are linear
+                deviation[inx - 2] += Math.pow(star.getAllAttributes()[inx]
+                        - mean_value_stats.getResult().getAllAttributes()[inx], 2);
+            }
+        }
+        mean_value_stats.setDeviations(deviation);
+
+        //Divide by number of data points and find square root
+        double[] uncertainties = new double[4];
+        for (int i = 0; i < 4; i++) {
+            uncertainties[i] = deviation[i] / NUMBER_OF_SIGMA_REGION_POINTS;
+            uncertainties[i] = Math.sqrt(uncertainties[i]);
+        }
+
+        uncertainties[0] = (Math.abs(uncertainties[0]) < 1) ? 0 : Math.log10(uncertainties[0]); //back to dex
+        uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean_value_stats.getResult().getAge()) * Math.log(10));
+        mean_value_stats.getResult().setUncertainties(uncertainties);
+        return mean_value_stats;
+    }
+
+    /**
+     * Returns completely estimated star including uncertainties
+     * @param x
+     * @param y
+     * @param x_unc
+     * @param y_unc
+     * @return Star result
+     */
+    public Star estimate(double x, double y, double x_unc, double y_unc) {
+        return estimate_stats(x, y, x_unc, y_unc).getResult();
     }
 
     /**

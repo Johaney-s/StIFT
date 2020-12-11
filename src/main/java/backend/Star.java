@@ -13,19 +13,13 @@ public class Star {
     private final Double radius;
     private final Double mass;
     private final Double phase;
-    private Double tem_uncertainity_low = 0.0;
-    private Double lum_uncertainity_low = 0.0;
-    private Double age_uncertainity_low = 0.0;
-    private Double rad_uncertainity_low = 0.0;
-    private Double mas_uncertainity_low = 0.0;
-    private Double pha_uncertainity_low = 0.0;
-    private Double tem_uncertainity_high = 0.0;
-    private Double lum_uncertainity_high = 0.0;
-    private Double age_uncertainity_high = 0.0;
-    private Double rad_uncertainity_high = 0.0;
-    private Double mas_uncertainity_high = 0.0;
-    private Double pha_uncertainity_high = 0.0;
-    private final String LATEX_FORMAT = "%.4f_{-%.4f}^{+%.4f}";
+    private Double tem_uncertainty = 0.0;
+    private Double lum_uncertainty = 0.0;
+    private Double age_uncertainty;
+    private Double rad_uncertainty;
+    private Double mas_uncertainty;
+    private Double pha_uncertainty;
+    private final String LATEX_FORMAT = "%.4f_\\pm%.4f";
     private final String ROUNDING_FORMAT = "%.4f";
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
@@ -52,14 +46,10 @@ public class Star {
      * @param data Uncertainties excluding the temperature and luminosity (input) uncertainties
      */
     public void setUncertainties(double[] data) {
-        this.age_uncertainity_low = data[4];
-        this.age_uncertainity_high = data[5];
-        this.rad_uncertainity_low = data[6];
-        this.rad_uncertainity_high = data[7];
-        this.mas_uncertainity_low = data[8];
-        this.mas_uncertainity_high = data[9];
-        this.pha_uncertainity_low = data[10];
-        this.pha_uncertainity_high= data[11];
+        this.age_uncertainty = data[0];
+        this.rad_uncertainty = data[1];
+        this.mas_uncertainty = data[2];
+        this.pha_uncertainty = data[3];
     }
 
     /**
@@ -68,10 +58,8 @@ public class Star {
      * @param lum_unc Luminosity uncertainty
      */
     public void setInputUncertainties(double temp_unc, double lum_unc) {
-        this.tem_uncertainity_low = temp_unc;
-        this.tem_uncertainity_high = temp_unc;
-        this.lum_uncertainity_low = lum_unc;
-        this.lum_uncertainity_high = lum_unc;
+        this.tem_uncertainty = temp_unc;
+        this.lum_uncertainty = lum_unc;
     }
     
     /**
@@ -133,44 +121,24 @@ public class Star {
     }
 
     //Returns TeX representation of value and uncertainties
-    public ImageView getTeXTemperature() {
-        String latex = (temperature == null || temperature.isNaN()) ? "-"
-                : String.format(LATEX_FORMAT, temperature, Math.abs(tem_uncertainity_low), tem_uncertainity_high);
+    public ImageView getTeXTemperature() { return getImageView(temperature, tem_uncertainty); }
 
-        return ResultFormatter.latexToImage(latex);
-    }
+    public ImageView getTeXLuminosity() { return getImageView(luminosity, lum_uncertainty); }
 
-    public ImageView getTeXLuminosity() {
-        String latex = (luminosity == null || luminosity.isNaN()) ? "-"
-                : String.format(LATEX_FORMAT, luminosity, Math.abs(lum_uncertainity_low), lum_uncertainity_high);
+    public ImageView getTeXAge() { return getImageView(age, age_uncertainty); }
 
-        return ResultFormatter.latexToImage(latex);
-    }
+    public ImageView getTeXRadius() { return getImageView(radius, rad_uncertainty); }
 
-    public ImageView getTeXAge() {
-        String latex = (age == null || age.isNaN()) ? "-"
-                : String.format(LATEX_FORMAT, age, Math.abs(age_uncertainity_low), age_uncertainity_high);
+    public ImageView getTeXMass() { return getImageView(mass, mas_uncertainty); }
 
-        return ResultFormatter.latexToImage(latex);
-    }
+    public ImageView getTeXPhase() { return getImageView(phase, pha_uncertainty); }
 
-    public ImageView getTeXRadius() {
-        String latex = (radius == null || radius.isNaN()) ? "-"
-                : String.format(LATEX_FORMAT, radius, Math.abs(rad_uncertainity_low), rad_uncertainity_high);
-
-        return ResultFormatter.latexToImage(latex);
-    }
-
-    public ImageView getTeXMass() {
-        String latex = (mass == null || mass.isNaN()) ? "-"
-                : String.format(LATEX_FORMAT, mass, Math.abs(mas_uncertainity_low), mas_uncertainity_high);
-
-        return ResultFormatter.latexToImage(latex);
-    }
-
-    public ImageView getTeXPhase() {
-        String latex = (phase == null || phase.isNaN()) ? "-"
-                : String.format(LATEX_FORMAT, phase, Math.abs(pha_uncertainity_low), pha_uncertainity_high);
+    /** Generates imageView of result */
+    private ImageView getImageView(Double attribute, Double uncertainty) {
+        String latex;
+        if (attribute == null || attribute.isNaN()) { latex = "-"; }
+        else if (uncertainty == null) { latex = String.format(ROUNDING_FORMAT, attribute); }
+        else { latex = String.format(LATEX_FORMAT, attribute, Math.abs(uncertainty)); }
 
         return ResultFormatter.latexToImage(latex);
     }
@@ -198,5 +166,10 @@ public class Star {
 
     public String getFormattedPhase() {
         return (phase == null || phase.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, phase);
+    }
+
+    public void printAllUncertainties() {
+        System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", tem_uncertainty, lum_uncertainty, age_uncertainty,
+                rad_uncertainty, mas_uncertainty, pha_uncertainty);
     }
 }

@@ -30,7 +30,7 @@
     -fx-border-radius: 3px;
 }
 
-#root {
+.scroll-pane {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }

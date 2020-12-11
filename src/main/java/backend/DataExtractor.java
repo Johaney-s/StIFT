@@ -21,7 +21,7 @@ public class DataExtractor {
      * @throws IOException Could not read data file
      * @throws FileNotFoundException Could not find data file
      */
-    public static Data extract(InputStream inStream) throws IOException, FileNotFoundException {        
+    public static Data extract(InputStream inStream) throws IOException, FileNotFoundException, NumberFormatException {
         if (inStream == null) {
             throw new FileNotFoundException("Cannot find file containing grid data.");
         }

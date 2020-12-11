@@ -1,16 +1,6 @@
 package backend;
 
 public class ComputationStats {
-    private double alpha;
-    private double beta;
-    private double gamma;
-    private double delta;
-    private double epsilon;
-    private double phi;
-    private double psi;
-    private double A;
-    private double B;
-    private double C;
     private double x2_;
     private double y1_;
     private double x1_;
@@ -24,6 +14,8 @@ public class ComputationStats {
     private Star result1_;
     private Star result2_;
     private Star result;
+    private Star[] sigma_region = null; //estimations for stars in sigma region of input
+    private double[] deviations = null;
 
     public ComputationStats(double x, double y) {
         this.x = x;
@@ -54,34 +46,6 @@ public class ComputationStats {
         this.star22 = star22;
     }
 
-    public void setAlpha(double alpha) {
-        this.alpha = alpha;
-    }
-
-    public void setBeta(double beta) {
-        this.beta = beta;
-    }
-
-    public void setGamma(double gamma) {
-        this.gamma = gamma;
-    }
-
-    public void setDelta(double delta) {
-        this.delta = delta;
-    }
-
-    public void setEpsilon(double epsilon) {
-        this.epsilon = epsilon;
-    }
-
-    public void setPhi(double phi) {
-        this.phi = phi;
-    }
-
-    public void setPsi(double psi) {
-        this.psi = psi;
-    }
-
     public Star getStar11() {
         return star11;
     }
@@ -96,58 +60,6 @@ public class ComputationStats {
 
     public Star getStar22() {
         return star22;
-    }
-
-    public double getAlpha() {
-        return alpha;
-    }
-
-    public double getBeta() {
-        return beta;
-    }
-
-    public double getGamma() {
-        return gamma;
-    }
-
-    public double getDelta() {
-        return delta;
-    }
-
-    public double getEpsilon() {
-        return epsilon;
-    }
-
-    public double getPhi() {
-        return phi;
-    }
-
-    public double getPsi() {
-        return psi;
-    }
-
-    public double getA() {
-        return A;
-    }
-
-    public double getB() {
-        return B;
-    }
-
-    public double getC() {
-        return C;
-    }
-
-    public void setA(double a) {
-        this.A = a;
-    }
-
-    public void setB(double b) {
-        this.B = b;
-    }
-
-    public void setC(double c) {
-        this.C = c;
     }
 
     public void setX2_(double x2_) {
@@ -206,8 +118,19 @@ public class ComputationStats {
         this.result = result;
     }
 
-    public String toString() {
-        return "Alpha: " + alpha + " Beta: " + beta + " Gamma: " + gamma + " Delta: " + delta + " Epsilon: " + epsilon
-                + " Psi: " + psi + " Phi: " + phi + " A: " + A + " B: " + B + " C: " + C;
+    public Star[] getSigmaRegion() {
+        return sigma_region;
+    }
+
+    public void setSigmaRegion(Star[] uncertainty_estimations) {
+        this.sigma_region = uncertainty_estimations;
+    }
+
+    public double[] getDeviations() {
+        return deviations;
+    }
+
+    public void setDeviations(double[] deviations) {
+        this.deviations = deviations;
     }
 }
