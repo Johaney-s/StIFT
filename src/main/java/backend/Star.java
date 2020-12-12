@@ -1,8 +1,6 @@
 
 package backend;
 
-import javafx.scene.image.ImageView;
-
 /**
  * Representation of a star
  */
@@ -19,7 +17,6 @@ public class Star {
     private Double rad_uncertainty;
     private Double mas_uncertainty;
     private Double pha_uncertainty;
-    private final String LATEX_FORMAT = "%.4f_\\pm%.4f";
     private final String ROUNDING_FORMAT = "%.4f";
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
@@ -121,26 +118,26 @@ public class Star {
     }
 
     //Returns TeX representation of value and uncertainties
-    public ImageView getTeXTemperature() { return getImageView(temperature, tem_uncertainty); }
+    public String getTeXTemperature() { return getFormattedResult(temperature, tem_uncertainty); }
 
-    public ImageView getTeXLuminosity() { return getImageView(luminosity, lum_uncertainty); }
+    public String getTeXLuminosity() { return getFormattedResult(luminosity, lum_uncertainty); }
 
-    public ImageView getTeXAge() { return getImageView(age, age_uncertainty); }
+    public String getTeXAge() { return getFormattedResult(age, age_uncertainty); }
 
-    public ImageView getTeXRadius() { return getImageView(radius, rad_uncertainty); }
+    public String getTeXRadius() { return getFormattedResult(radius, rad_uncertainty); }
 
-    public ImageView getTeXMass() { return getImageView(mass, mas_uncertainty); }
+    public String getTeXMass() { return getFormattedResult(mass, mas_uncertainty); }
 
-    public ImageView getTeXPhase() { return getImageView(phase, pha_uncertainty); }
+    public String getTeXPhase() { return getFormattedResult(phase, pha_uncertainty); }
 
-    /** Generates imageView of result */
-    private ImageView getImageView(Double attribute, Double uncertainty) {
-        String latex;
-        if (attribute == null || attribute.isNaN()) { latex = "-"; }
-        else if (uncertainty == null) { latex = String.format(ROUNDING_FORMAT, attribute); }
-        else { latex = String.format(LATEX_FORMAT, attribute, Math.abs(uncertainty)); }
+    /** Generates string of mean value and uncertainty for tableView use */
+    private String getFormattedResult(Double attribute, Double uncertainty) {
+        String text;
+        if (attribute == null || attribute.isNaN()) { text = "-"; }
+        else if (uncertainty == null) { text = String.format(ROUNDING_FORMAT + " ± N/A", attribute); }
+        else { text = String.format("%.4f ± %.4f", attribute, Math.abs(uncertainty)); }
 
-        return ResultFormatter.latexToImage(latex);
+        return text;
     }
 
     //Returns string representation of rounded result

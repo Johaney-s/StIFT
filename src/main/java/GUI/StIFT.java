@@ -1,7 +1,6 @@
 
 package GUI;
 
-import backend.ResultFormatter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +27,6 @@ public class StIFT extends Application {
         stage.setTitle("StIFT");
         stage.getProperties().put("hostServices", this.getHostServices());
         stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.png")));
-        ResultFormatter.latexToImage("PRERENDER TEX"); //first rendered result is slower, prerender now
         stage.show();
     }
 
