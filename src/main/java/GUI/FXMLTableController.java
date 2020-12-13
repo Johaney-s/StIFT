@@ -68,6 +68,7 @@ public class FXMLTableViewController implements Initializable {
         tableView.setPlaceholder(new Label("No results."));
         tableView.setItems(tableModel.getResults());
         tooltip.setGraphic(vBox);
+        vBox.getStyleClass().add("filterBox");
         
         removeButton.setOnMouseClicked(event -> {
             slider.setLowValue(slider.getMin());
@@ -148,14 +149,12 @@ public class FXMLTableViewController implements Initializable {
     private void showFilterIcon() {
         Image phaseIcon = new Image("filter.png", 15, 15, true, true);
         hiddenRowsCounter = new Label();
-        hiddenRowsCounter.setStyle("-fx-text-fill: red;");
-        hiddenRowsCounter.setMaxSize(25.0, 17.0);
-        hiddenRowsCounter.setMinSize(15.0, 15.0);
+        hiddenRowsCounter.getStyleClass().add("hiddenRowsCounter");
         hiddenRowsCounter.setBackground(new Background(new BackgroundImage(
                 phaseIcon,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT, 
+                BackgroundPosition.CENTER,
                 BackgroundSize.DEFAULT)));
         HBox wrappingBox = new HBox(hiddenRowsCounter);
         Label phaseColHeader = new Label("Phase", wrappingBox);

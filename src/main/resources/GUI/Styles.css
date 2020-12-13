@@ -2,7 +2,16 @@
 -fx-stroke-width: 1px;
 }
 
-#table-view .table-column {
+.hiddenRowsCounter {
+    -fx-text-fill: red;
+    -fx-min-width: 15px;
+    -fx-min-height: 15px;
+    -fx-max-width: 25px;
+    -fx-max-height: 17px;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-column {
     -fx-alignment: CENTER-LEFT;
 }
 
@@ -30,7 +39,40 @@
     -fx-border-radius: 3px;
 }
 
-.scroll-pane {
+.scroll-pane:selected {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+}
+
+.scroll-pane:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.table-view:selected {
+    -fx-faint-focus-color: -fx-box-border;
+    -fx-focus-color: -fx-box-border;
+    -fx-table-header-border-color: -fx-box-border;
+}
+
+.table-view:focused {
+    -fx-faint-focus-color: -fx-box-border;
+    -fx-focus-color: -fx-box-border;
+    -fx-table-header-border-color: -fx-box-border;
+}
+
+.filterBox {
+    -fx-faint-focus-color: #039ED322;
+    -fx-focus-color: #039ED3;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background: -fx-control-inner-background ;
+    -fx-background-color: -fx-table-cell-border-color, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-table-cell-border-color: derive(-fx-color, 5%);
+}
+
+.table-row-cell:odd:filled:selected {
+    -fx-background: -fx-control-inner-background-alt;
 }
