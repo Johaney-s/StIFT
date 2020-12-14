@@ -1,0 +1,58 @@
+/* Stars generator available at:
+https://www.smiffysplace.com/stars.html */
+
+.progress-indicator:indeterminate .segment0 {
+    -fx-shape:"M 41.980 18.240 L 42.862 15.954 L 45.309 15.822 L 43.407 14.276 L 44.037 11.908 L 41.980 13.240 L 39.923 11.908 L 40.553 14.276 L 38.651 15.822 L 41.098 15.954 L 41.980 18.240";
+}
+
+.progress-indicator:indeterminate .segment1 {
+    -fx-shape:"M 33.750 10.010 L 34.632 7.724 L 37.079 7.592 L 35.177 6.046 L 35.807 3.678 L 33.750 5.010 L 31.693 3.678 L 32.323 6.046 L 30.421 7.592 L 32.868 7.724 L 33.750 10.010";
+}
+
+.progress-indicator:indeterminate .segment2 {
+    -fx-shape:"M 22.490 7.000 L 23.372 4.714 L 25.819 4.582 L 23.917 3.036 L 24.547 0.668 L 22.490 2.000 L 20.433 0.668 L 21.063 3.036 L 19.161 4.582 L 21.608 4.714 L 22.490 7.000";
+}
+
+.progress-indicator:indeterminate .segment3 {
+    -fx-shape: "M 11.240 10.010 L 12.122 7.724 L 14.569 7.592 L 12.667 6.046 L 13.297 3.678 L 11.240 5.010 L 9.183 3.678 L 9.813 6.046 L 7.911 7.592 L 10.358 7.724 L 11.240 10.010";
+}
+
+.progress-indicator:indeterminate .segment4 {
+    -fx-shape: "M 3.010 18.240 L 3.892 15.954 L 6.339 15.822 L 4.437 14.276 L 5.067 11.908 L 3.010 13.240 L 0.953 11.908 L 1.583 14.276 L -0.319 15.822 L 2.128 15.954 L 3.010 18.240";
+}
+
+.progress-indicator:indeterminate .segment5 {
+    -fx-shape:"M 0.000 29.500 L 0.882 27.214 L 3.329 27.082 L 1.427 25.536 L 2.057 23.168 L 0.000 24.500 L -2.057 23.168 L -1.427 25.536 L -3.329 27.082 L -0.882 27.214 L 0.000 29.500";
+}
+
+.progress-indicator:indeterminate .segment6 {
+    -fx-shape:"M 3.010 40.750 L 3.892 38.464 L 6.339 38.332 L 4.437 36.786 L 5.067 34.418 L 3.010 35.750 L 0.953 34.418 L 1.583 36.786 L -0.319 38.332 L 2.128 38.464 L 3.010 40.750";
+}
+
+.progress-indicator:indeterminate .segment7 {
+    -fx-shape:"M 11.250 48.980 L 12.132 46.694 L 14.579 46.562 L 12.677 45.016 L 13.307 42.648 L 11.250 43.980 L 9.193 42.648 L 9.823 45.016 L 7.921 46.562 L 10.368 46.694 L 11.250 48.980";
+}
+
+.progress-indicator:indeterminate .segment8 {
+    -fx-shape:"M 22.500 52.000 L 23.382 49.714 L 25.829 49.582 L 23.927 48.036 L 24.557 45.668 L 22.500 47.000 L 20.443 45.668 L 21.073 48.036 L 19.171 49.582 L 21.618 49.714 L 22.500 52.000";
+}
+
+.progress-indicator:indeterminate .segment9 {
+    -fx-shape:"M 33.750 48.980 L 34.632 46.694 L 37.079 46.562 L 35.177 45.016 L 35.807 42.648 L 33.750 43.980 L 31.693 42.648 L 32.323 45.016 L 30.421 46.562 L 32.868 46.694 L 33.750 48.980";
+}
+
+.progress-indicator:indeterminate .segment10 {
+    -fx-shape:"M 41.980 40.750 L 42.862 38.464 L 45.309 38.332 L 43.407 36.786 L 44.037 34.418 L 41.980 35.750 L 39.923 34.418 L 40.553 36.786 L 38.651 38.332 L 41.098 38.464 L 41.980 40.750";
+}
+
+.progress-indicator:indeterminate .segment11 {
+    -fx-shape:"M 45.000 29.500 L 45.882 27.214 L 48.329 27.082 L 46.427 25.536 L 47.057 23.168 L 45.000 24.500 L 42.943 23.168 L 43.573 25.536 L 41.671 27.082 L 44.118 27.214 L 45.000 29.500";
+}
+
+.progress-indicator:indeterminate {
+    -fx-background-color: transparent;
+}
+
+.root {
+    -fx-background-color: transparent;
+}

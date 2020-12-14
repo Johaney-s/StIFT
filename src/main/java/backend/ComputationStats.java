@@ -16,6 +16,16 @@ public class ComputationStats {
     private Star result;
     private Star[] sigma_region = null; //estimations for stars in sigma region of input
     private double[] deviations = null;
+    private double alpha;
+    private double beta;
+    private double gamma;
+    private double delta;
+    private double epsilon;
+    private double phi;
+    private double psi;
+    private double A;
+    private double B;
+    private double C;
 
     public ComputationStats(double x, double y) {
         this.x = x;
@@ -132,5 +142,90 @@ public class ComputationStats {
 
     public void setDeviations(double[] deviations) {
         this.deviations = deviations;
+    }
+
+    public String toString() {
+        return "Alpha:" + alpha + "\nBeta: " + beta + "\nGamma: " + gamma + "\nDelta: " + delta + "\nEpsilon: "
+                + epsilon + "\nPsi: " + psi + "\nPhi: " + phi + "\nA: " + A + "\nB: " + B + "\nC: " + C;
+    }
+
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+
+    public void setGamma(double gamma) {
+        this.gamma = gamma;
+    }
+
+    public void setDelta(double delta) {
+        this.delta = delta;
+    }
+
+    public void setEpsilon(double epsilon) {
+        this.epsilon = epsilon;
+    }
+
+    public void setPhi(double phi) {
+        this.phi = phi;
+    }
+
+    public void setPsi(double psi) {
+        this.psi = psi;
+    }
+
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public double getBeta() {
+        return beta;
+    }
+
+    public double getGamma() {
+        return gamma;
+    }
+
+    public double getDelta() {
+        return delta;
+    }
+
+    public double getEpsilon() {
+        return epsilon;
+    }
+
+    public double getPhi() {
+        return phi;
+    }
+
+    public double getPsi() {
+        return psi;
+    }
+
+    public double getA() {
+        return A;
+    }
+
+    public double getB() {
+        return B;
+    }
+
+    public double getC() {
+        return C;
+    }
+
+    public void setA(double a) {
+        this.A = a;
+    }
+
+    public void setB(double b) {
+        this.B = b;
+    }
+
+    public void setC(double c) {
+        this.C = c;
     }
 }

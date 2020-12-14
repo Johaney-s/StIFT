@@ -1,6 +1,6 @@
 package GUI;
 
-import backend.DataExtractor;
+import backend.GridFileParser;
 import backend.Star;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,12 +29,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
 
 /**
- *
- * @author Admin
+ * Main controller class
  */
 public class FXMLMainController implements Initializable {
     
@@ -63,7 +61,7 @@ public class FXMLMainController implements Initializable {
     @FXML
     private FXMLLineChartController lineChartController;
     @FXML
-    private FXMLTableViewController tableViewController;
+    private FXMLTableController tableViewController;
     
     private final FadeTransition fadeIn = new FadeTransition(
         Duration.millis(1000)
@@ -150,10 +148,9 @@ public class FXMLMainController implements Initializable {
         if (file != null) {
             try {
                 tableViewController.setResults(file);
-            } catch (FileNotFoundException ex) {
-                showAlert("Data file not found", "Could not find data file, previous data remain valid.", AlertType.ERROR);
-            } catch (IOException ex) {
-                showAlert("Data file not found", ex.getMessage(), AlertType.ERROR);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showAlert("Upload input data file error", ex.getMessage(), AlertType.ERROR);
             }
         }
     }
@@ -176,16 +173,15 @@ public class FXMLMainController implements Initializable {
     @FXML
     public void aboutItemAction() {
         FXMLLoader aboutFxmlLoader = new FXMLLoader(getClass().getResource("FXMLAboutWindow.fxml"));
-        Parent root = null;
         try {
-            root = aboutFxmlLoader.load();
+            Parent loaderRoot = aboutFxmlLoader.load();
             FXMLAboutWindowController aboutWindowController = aboutFxmlLoader.getController();
             HostServices hs = (HostServices)scrollPane.getScene().getWindow().getProperties().get("hostServices");
             aboutWindowController.addHostServices(hs);
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(loaderRoot);
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initOwner(root.getScene().getWindow());
+            dialog.initOwner(loaderRoot.getScene().getWindow());
             dialog.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.png")));
             dialog.setScene(scene);
             dialog.show();
@@ -260,7 +256,7 @@ public class FXMLMainController implements Initializable {
      * @param lum_unc temperature uncertainty
      */
     public void manageInput(double x, double y, double temp_unc, double lum_unc) {
-        Star result = DataExtractor.getCurrentData().estimate(x, y, temp_unc, lum_unc);
+        Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc);
         tableViewController.handleNewResult(result);
     }
     

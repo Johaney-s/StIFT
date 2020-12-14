@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 
-<TableView id="table-view" fx:id="tableView" focusTraversable="false" maxHeight="1.7976931348623157E308" prefHeight="132.0" prefWidth="619.0" stylesheets="@Styles.css" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLTableViewController">
+<TableView id="table-view" fx:id="tableView" focusTraversable="false" maxHeight="1.7976931348623157E308" prefHeight="132.0" prefWidth="619.0" stylesheets="@Styles.css" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLTableController">
     <columns>
         <TableColumn fx:id="tempCol" editable="false" prefWidth="75.0" sortable="false" text="Teff [lg K]" />
         <TableColumn fx:id="lumCol" editable="false" prefWidth="75.0" sortable="false" text="Lum. [lg L☉]" />

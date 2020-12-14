@@ -51,7 +51,7 @@ public class Data {
     }
     
     /**
-     * Finds four-angled figure nearest to given coordinates
+     * Finds four-angled figure nearest to given coordinates, sets corresponding attributes in stats
      * @param stats Computation stats including necessary [x,y] input coordinates
      * @return true if 4 neighbours found, false otherwise
      */
@@ -87,13 +87,32 @@ public class Data {
             }
         }
 
+        sort(upperLeft, upperRight);
+        sort(lowerLeft, lowerRight);
+
         stats.setStar11(upperLeft);
         stats.setStar12(upperRight);
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
         return (upperLeft != null && upperRight != null && lowerLeft != null && lowerRight != null);
     }
-    
+
+    /**
+     * Sort neighbours by x coordinate
+     * @param left
+     * @param right
+     */
+    private void sort(Star left, Star right) {
+        if (left == null || right == null) { return;}
+        if (left.getTemperature() > right.getTemperature()) {
+            Star switcher;
+            switcher = left;
+            left = right;
+            right = switcher;
+        }
+    }
+
+
     /**
      * Estimates characteristics for given input [x,y]
      * @param x X coordinate of user input

@@ -2,7 +2,7 @@
 package GUI;
 
 import backend.Data;
-import backend.DataExtractor;
+import backend.GridFileParser;
 import backend.Star;
 import java.io.*;
 import java.net.URL;
@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -38,6 +40,10 @@ public class FXMLLineChartController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        lineChart.setLegendVisible(false);
+        lineChart.setAnimated(false);
+        lineChart.setCreateSymbols(false);
+
         //-- Tooltip for lineChart
         mouseLocationInScene = new SimpleObjectProperty<>();
         tooltip = new Tooltip();
@@ -83,19 +89,13 @@ public class FXMLLineChartController implements Initializable {
      */
     public void showGraph(InputStream inStream) {
         try {
-            Data newData = DataExtractor.extract(inStream);
+            Data newData = GridFileParser.extract(inStream);
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData().entrySet().iterator());
         } catch (IOException ex) {
             mainController.showAlert("Unable to read / close file",
                     "If existing, previous data instance remains valid.", Alert.AlertType.ERROR);
         }
-
-        lineChart.setLegendVisible(false);
-        lineChart.applyCss();
-        lineChart.getStylesheets().add(StIFT.class.getResource("Styles.css").toExternalForm());
-        lineChart.setAnimated(false);
-        lineChart.setCreateSymbols(false);
     }
     
     public void showGraph(File file) throws FileNotFoundException {
@@ -110,15 +110,30 @@ public class FXMLLineChartController implements Initializable {
     private void addIsochronesToChart(Iterator<Map.Entry<Double, ArrayList<Star>>> iter) {
         while (iter.hasNext()) {
             Map.Entry<Double, ArrayList<Star>> isochrone = iter.next();
-            XYChart.Series series = new XYChart.Series();
-            int index = 0;
-            for (Star s : isochrone.getValue()) {
-                if (index % 4 != 0) { index++; continue; } //faster rendering
-                series.getData().add(new XYChart.Data(s.getTemperature(), s.getLuminosity()));
-                index++;
-            }
-            
-            lineChart.getData().add(series);
+
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            XYChart.Series series = new XYChart.Series();
+                            int index = 0;
+                            for (Star s : isochrone.getValue()) {
+                                if (index % 4 != 0) { index++; continue; } //faster rendering
+                                series.getData().add(new XYChart.Data(s.getTemperature(),s.getLuminosity()));
+                                index++;
+                            }
+                            lineChart.getData().add(series);
+                        }
+                    });
+                    return null;
+                }
+            };
+
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
         }
     }
     

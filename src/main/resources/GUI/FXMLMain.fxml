@@ -66,14 +66,14 @@
                         <TextField fx:id="temperatureField" alignment="CENTER" layoutX="54.0" layoutY="114.0" prefHeight="26.0" prefWidth="66.0" />
                         <TextField fx:id="luminosityField" alignment="CENTER" layoutX="54.0" layoutY="176.0" prefHeight="26.0" prefWidth="66.0" />
                           <Button fx:id="goButton" alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="260.0" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="4.0" layoutY="114.0" prefHeight="26.0" prefWidth="46.0" text="lg Teff" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="4.0" layoutY="176.0" prefHeight="26.0" prefWidth="34.0" text="lg L" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="9.0" layoutY="114.0" prefHeight="26.0" prefWidth="34.0" text="lg Teff" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="9.0" layoutY="176.0" prefHeight="26.0" prefWidth="20.0" text="lg L" textAlignment="CENTER" />
                         <Label alignment="CENTER" layoutX="2.0" layoutY="86.0" prefHeight="22.0" prefWidth="122.0" text="Estimate result">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="234.0" prefHeight="20.0" prefWidth="81.0" text="Invalid input" textFill="#d21818" visible="false">
+                        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="4.5" layoutY="237.0" prefHeight="20.0" prefWidth="81.0" text="Invalid input" textFill="#d21818" visible="false">
                            <font>
                               <Font size="13.0" />
                            </font>

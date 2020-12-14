@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
  * Extractor and parser for data from file
  * 
  */
-public class DataExtractor {
+public class GridFileParser {
     
     private static Data currentData;
     

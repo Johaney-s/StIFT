@@ -3,14 +3,7 @@ package GUI;
 
 import backend.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Alternative class for printing steps to console
@@ -37,7 +30,7 @@ public class TextOnly {
             }
         } catch (NumberFormatException ex) {
             System.out.println("Invalid arguments - please provide valid input parameters.");
-            System.out.println("Use command 'java -jar file_name.jar text TEMP LUM TEMPunc LUMunc'.\nMissing uncertainties"
+            System.out.println("Use command 'java -jar file_name.jar text TEMP LUM TEMPunc LUMunc'.\nMissing uncertainties "
                     + "will be treated as 0.0 values.");
             System.out.println("===================================");
             return;
@@ -45,7 +38,7 @@ public class TextOnly {
 
         try {
             InputStream is = TextOnly.class.getClassLoader().getResourceAsStream("Data.txt");
-            data = DataExtractor.extract(is);
+            data = GridFileParser.extract(is);
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size() + "\n");
             ComputationStats stats = data.estimate_stats(x, y, x_unc, y_unc);
@@ -68,12 +61,16 @@ public class TextOnly {
             System.out.println("Sigma region:");
             for (Star star : stats.getSigmaRegion()) { star.printValues(); }
 
-            System.out.println("Sum of squared differences:\n[age, radius, mass, phase]");
-            System.out.printf("%.4f\t%.4f\t%4f\t%.4f\n", stats.getDeviations()[0], stats.getDeviations()[1],
-                    stats.getDeviations()[2], stats.getDeviations()[3]);
+            //System.out.println("Sum of squared differences:\n[age, radius, mass, phase]");
+            //System.out.printf("%.4f\t%.4f\t%4f\t%.4f\n", stats.getDeviations()[0], stats.getDeviations()[1],
+            //        stats.getDeviations()[2], stats.getDeviations()[3]);
 
-            System.out.println("Uncertainties:");
+            System.out.println("Standard deviation:");
             stats.getResult().printAllUncertainties();
+
+            //System.out.println(stats.toString()); ALPHA - PSI, A, B, C
+
+            Interpolator.determineUncertainties(stats);
 
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");

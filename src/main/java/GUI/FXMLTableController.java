@@ -1,7 +1,7 @@
 
 package GUI;
 
-import backend.InputFileExtractor;
+import backend.InputFileParser;
 import backend.Star;
 
 import java.io.File;
@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button;
@@ -27,12 +28,13 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.controlsfx.control.RangeSlider;
 
 /**
  * FXML Controller class
  */
-public class FXMLTableViewController implements Initializable {
+public class FXMLTableController implements Initializable {
     
     @FXML
     private TableView tableView;
@@ -56,6 +58,7 @@ public class FXMLTableViewController implements Initializable {
     private final RangeSlider slider = new RangeSlider();
     private final Button removeButton = new Button("Remove filter");
     private final CheckBox checkbox = new CheckBox("Hide empty rows");
+    private final InputFileParser nip = new InputFileParser();
 
     /**
      * Initializes the controller class.
@@ -75,6 +78,7 @@ public class FXMLTableViewController implements Initializable {
             slider.setHighValue(slider.getMax());
             handleFilterChange();
         });
+
     }
 
     private void constructTooltipGraphic() {
@@ -108,7 +112,7 @@ public class FXMLTableViewController implements Initializable {
         updateHiddenRowsCounter();
     }
 
-    private void updateHiddenRowsCounter() {
+    public void updateHiddenRowsCounter() {
         int hiddenRows = tableModel.getHiddenCount();
         if (hiddenRows == 0) {
             hiddenRowsCounter.setText("");
@@ -120,7 +124,7 @@ public class FXMLTableViewController implements Initializable {
     /**
      * Sets bounds to slider accordingly to current results
      */
-    private void updateSliderBounds() {
+    public void updateSliderBounds() {
         Double lowerBound = 200.0;
         Double upperBound = 0.0;
         
@@ -188,14 +192,17 @@ public class FXMLTableViewController implements Initializable {
     
     /**
      * Adds whole collection of results obtained from input data file,
-     * changes filtering slider's value
-     * @param file Inpud data file
+     * updates filters
+     * @param file Input data file
      * @throws IOException File not found / could not be read
      */
     public void setResults(File file) throws IOException {
-        tableModel.setResults(InputFileExtractor.extract(file));
-        updateSliderBounds();
-        updateHiddenRowsCounter();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXMLLoading.fxml"));
+        fxmlLoader.load();
+        FXMLLoadingController loadingController = fxmlLoader.getController();
+        loadingController.setOwner((Stage) tableView.getScene().getWindow());
+
+        nip.extract(file, tableModel, loadingController, this);
     }
 
     /**

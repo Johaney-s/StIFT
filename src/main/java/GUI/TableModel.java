@@ -11,7 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 
 /**
- * Class storing resultList shown in table
+ * Model class for storing estimated results
  */
 public class TableModel {
     private final ObservableList<Star> resultList = FXCollections.observableArrayList();
