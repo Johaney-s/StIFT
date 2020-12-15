@@ -56,3 +56,7 @@ https://www.smiffysplace.com/stars.html */
 .root {
     -fx-background-color: transparent;
 }
+
+* :disabled {
+    -fx-opacity: 1;
+}

@@ -6,54 +6,57 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="root" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLMainController">
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLMainController">
    <children>
-      <MenuBar prefHeight="26.0" prefWidth="618.0">
-         <menus>
-            <Menu mnemonicParsing="false" text="File">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#exportDataItemAction" text="Export data">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem fx:id="uploadInputDataFile" mnemonicParsing="false" onAction="#uploadInputDataFileAction" text="Upload input data file">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#uploadNewGridItemAction" text="Upload new grid">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#resetGridItemAction" text="Reset grid to default">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <items>
-                  <MenuItem fx:id="aboutItem" mnemonicParsing="false" onAction="#aboutItemAction" text="About" />
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
-      <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" stylesheets="@Styles.css" vbarPolicy="ALWAYS">
-         <content>
-            <BorderPane>
+      <VBox fx:id="vBox" stylesheets="@Styles.css">
+         <children>
+            <MenuBar prefHeight="26.0" prefWidth="618.0">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#exportDataItemAction" text="Export data">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#uploadInputDataFileAction" text="Upload input data file">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#uploadNewGridItemAction" text="Upload new grid">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#resetGridItemAction" text="Reset grid to default">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#aboutItemAction" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <BorderPane fx:id="borderPane">
                <center>
                   <fx:include fx:id="lineChart" source="FXMLLineChart.fxml" />
                </center>
@@ -64,8 +67,10 @@
                      </BorderPane.margin>
                      <children>
                         <TextField fx:id="temperatureField" alignment="CENTER" layoutX="54.0" layoutY="114.0" prefHeight="26.0" prefWidth="66.0" />
+                        <TextField fx:id="tempUncertaintyField" layoutX="80.0" layoutY="145.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
                         <TextField fx:id="luminosityField" alignment="CENTER" layoutX="54.0" layoutY="176.0" prefHeight="26.0" prefWidth="66.0" />
-                          <Button fx:id="goButton" alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="260.0" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER" />
+                        <TextField fx:id="lumUncertaintyField" layoutX="80.0" layoutY="208.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
+                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="260.0" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER" />
                         <Label alignment="CENTER" layoutX="9.0" layoutY="114.0" prefHeight="26.0" prefWidth="34.0" text="lg Teff" textAlignment="CENTER" />
                         <Label alignment="CENTER" layoutX="9.0" layoutY="176.0" prefHeight="26.0" prefWidth="20.0" text="lg L" textAlignment="CENTER" />
                         <Label alignment="CENTER" layoutX="2.0" layoutY="86.0" prefHeight="22.0" prefWidth="122.0" text="Estimate result">
@@ -83,8 +88,6 @@
                         </Label>
                         <Label layoutX="9.0" layoutY="145.0" prefHeight="26.0" prefWidth="68.0" text="Uncertainty" />
                         <Label layoutX="9.0" layoutY="213.0" prefHeight="18.0" prefWidth="63.0" text="Uncertainty" />
-                        <TextField fx:id="tempUncertaintyField" layoutX="80.0" layoutY="145.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
-                        <TextField fx:id="lumUncertaintyField" layoutX="80.0" layoutY="208.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
                      </children>
                   </AnchorPane>
                </right>
@@ -92,7 +95,8 @@
                    <fx:include fx:id="tableView" source="FXMLTableView.fxml" />
                </bottom>
             </BorderPane>
-         </content>
-      </ScrollPane>
+         </children>
+      </VBox>
+      <fx:include fx:id="loading" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLoading.fxml" StackPane.alignment="CENTER" />
    </children>
-</VBox>
+</StackPane>

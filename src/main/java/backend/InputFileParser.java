@@ -7,6 +7,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Parent;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,7 +27,7 @@ public class InputFileParser {
      * @param fxmlTableController parent controller
      * @throws IOException File not found or couldn't be opened
      */
-    public Void extract(File file, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) throws IOException {
+    public Void extract(File file, Parent root, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) throws IOException {
         InputService service = new InputService();
         service.setFile(file);
 
@@ -33,20 +35,22 @@ public class InputFileParser {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 tableModel.setResults(service.getResults());
-                loadingController.stopLoading();
+                loadingController.hideLoadingPane();
                 fxmlTableController.updateSliderBounds();
                 fxmlTableController.updateHiddenRowsCounter();
+                root.getScene().getRoot().setDisable(false); //refactor
             }
         });
 
         service.setOnFailed(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
-                loadingController.startLoading();
+                loadingController.hideLoadingPane();
+                root.getScene().getRoot().setDisable(false); //refactor
             }
         });
 
-        loadingController.startLoading();
+        loadingController.showLoadingPane();
         service.start();
         return null;
     }

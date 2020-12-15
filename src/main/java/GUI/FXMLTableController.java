@@ -11,7 +11,6 @@ import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button;
@@ -21,14 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.layout.*;
 import org.controlsfx.control.RangeSlider;
 
 /**
@@ -59,6 +51,7 @@ public class FXMLTableController implements Initializable {
     private final Button removeButton = new Button("Remove filter");
     private final CheckBox checkbox = new CheckBox("Hide empty rows");
     private final InputFileParser nip = new InputFileParser();
+    private FXMLLoadingController loadingController;
 
     /**
      * Initializes the controller class.
@@ -197,12 +190,8 @@ public class FXMLTableController implements Initializable {
      * @throws IOException File not found / could not be read
      */
     public void setResults(File file) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXMLLoading.fxml"));
-        fxmlLoader.load();
-        FXMLLoadingController loadingController = fxmlLoader.getController();
-        loadingController.setOwner((Stage) tableView.getScene().getWindow());
-
-        nip.extract(file, tableModel, loadingController, this);
+        tableView.getScene().getRoot().setDisable(true);
+        nip.extract(file, tableView.getScene().getRoot(), tableModel, loadingController, this);
     }
 
     /**
@@ -220,5 +209,9 @@ public class FXMLTableController implements Initializable {
         tableModel.reset();
         updateFilter();
         checkbox.setSelected(false);
+    }
+
+    public void setLoadingController(FXMLLoadingController loadingController) {
+        this.loadingController = loadingController;
     }
 }

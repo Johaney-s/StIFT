@@ -21,9 +21,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -35,7 +36,7 @@ import javafx.util.Duration;
  * Main controller class
  */
 public class FXMLMainController implements Initializable {
-    
+
     @FXML
     private URL location;
     @FXML
@@ -51,17 +52,15 @@ public class FXMLMainController implements Initializable {
     @FXML
     private Label informationLabel;
     @FXML
-    private Button goButton;
+    private VBox vBox;
     @FXML
-    private VBox root;
-    @FXML
-    private ScrollPane scrollPane;
-    @FXML
-    private MenuItem uploadInputDataFile;
+    private BorderPane borderPane;
     @FXML
     private FXMLLineChartController lineChartController;
     @FXML
     private FXMLTableController tableViewController;
+    @FXML
+    private FXMLLoadingController loadingController;
     
     private final FadeTransition fadeIn = new FadeTransition(
         Duration.millis(1000)
@@ -69,16 +68,12 @@ public class FXMLMainController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //optional scroll bar for extending tableview
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         lineChartController.setMainController(this);
-        disableItemsWhileNoGridAvailable(true);
         InputStream inStream = getClass().getResourceAsStream("/Data.txt");
         lineChartController.showGraph(inStream);
         tableViewController.getTableModel().reset();
-        disableItemsWhileNoGridAvailable(false);
+        tableViewController.setLoadingController(loadingController);
         
         //-- Information label fade in effect
         fadeIn.setNode(informationLabel);
@@ -87,7 +82,7 @@ public class FXMLMainController implements Initializable {
         fadeIn.setCycleCount(1);
         fadeIn.setAutoReverse(false);
         
-        root.setVgrow(scrollPane, Priority.ALWAYS); //FXML command does not work
+        vBox.setVgrow(borderPane, Priority.ALWAYS); //FXML command does not work
     }
 
     //-- MENU BAR -- File / Edit / Options
@@ -97,7 +92,7 @@ public class FXMLMainController implements Initializable {
         fileChooser.setTitle("Export data");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT file (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(root.getScene().getWindow());
+        File file = fileChooser.showSaveDialog(vBox.getScene().getWindow());
 
         if (file != null) {
             try {
@@ -120,12 +115,11 @@ public class FXMLMainController implements Initializable {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         
-        File file = fileChooser.showOpenDialog(root.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(vBox.getScene().getWindow());
         if (file != null) {
             try {
                 lineChartController.showGraph(file);
                 tableViewController.reset();
-                disableItemsWhileNoGridAvailable(false);
                 showAlert("Upload new grid", "New grid uploaded successfully.", AlertType.INFORMATION);
             } catch (FileNotFoundException ex) {
                 showAlert("Data file not found", "Could not find data file, previous data remain valid.", AlertType.ERROR);
@@ -144,7 +138,7 @@ public class FXMLMainController implements Initializable {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         
-        File file = fileChooser.showOpenDialog(root.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(vBox.getScene().getWindow());
         if (file != null) {
             try {
                 tableViewController.setResults(file);
@@ -177,7 +171,7 @@ public class FXMLMainController implements Initializable {
         try {
             Parent loaderRoot = aboutFxmlLoader.load();
             FXMLAboutWindowController aboutWindowController = aboutFxmlLoader.getController();
-            HostServices hs = (HostServices)scrollPane.getScene().getWindow().getProperties().get("hostServices");
+            HostServices hs = (HostServices)borderPane.getScene().getWindow().getProperties().get("hostServices");
             aboutWindowController.addHostServices(hs);
             Scene scene = new Scene(loaderRoot);
             final Stage dialog = new Stage();
@@ -259,16 +253,6 @@ public class FXMLMainController implements Initializable {
     public void manageInput(double x, double y, double temp_unc, double lum_unc) {
         Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc);
         tableViewController.handleNewResult(result);
-    }
-    
-    /**
-     * Public method for disabling menu items that should be disabled when
-     * no graph is currently shown
-     * @param boo True for disabling, false for undisabling
-     */
-    public void disableItemsWhileNoGridAvailable(boolean boo) {
-        uploadInputDataFile.setDisable(boo);
-        goButton.setDisable(boo);
     }
     
     /**
