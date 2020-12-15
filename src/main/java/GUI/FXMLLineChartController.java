@@ -114,16 +114,17 @@ public class FXMLLineChartController implements Initializable {
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
+                    XYChart.Series series = new XYChart.Series();
+                    int index = 0;
+                    for (Star s : isochrone.getValue()) {
+                        if (index % 4 != 0) { index++; continue; } //faster rendering
+                        series.getData().add(new XYChart.Data(s.getTemperature(),s.getLuminosity()));
+                        index++;
+                    }
+
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            XYChart.Series series = new XYChart.Series();
-                            int index = 0;
-                            for (Star s : isochrone.getValue()) {
-                                if (index % 4 != 0) { index++; continue; } //faster rendering
-                                series.getData().add(new XYChart.Data(s.getTemperature(),s.getLuminosity()));
-                                index++;
-                            }
                             lineChart.getData().add(series);
                         }
                     });

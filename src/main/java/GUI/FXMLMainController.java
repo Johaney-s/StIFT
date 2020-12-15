@@ -167,6 +167,7 @@ public class FXMLMainController implements Initializable {
             InputStream inStream = getClass().getResourceAsStream("/Data.txt");
             lineChartController.showGraph(inStream);
             tableViewController.reset();
+            showAlert("Reset grid", "New grid uploaded successfully.", AlertType.INFORMATION);
         }
     }
     
