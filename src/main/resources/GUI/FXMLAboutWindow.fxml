@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="272.0" prefWidth="268.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLAboutWindowController">
+<AnchorPane minHeight="272.0" minWidth="268.0" prefHeight="272.0" prefWidth="268.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLAboutWindowController">
    <children>
       <Label layoutX="18.0" layoutY="14.0" text="StIFT">
          <font>
@@ -26,7 +26,7 @@
       <Hyperlink fx:id="gitLink" layoutX="58.0" layoutY="190.0" onMouseClicked="#openGit" text="https://github.com/Johaney-s/StIFT" />
       <Button layoutX="18.0" layoutY="225.0" mnemonicParsing="false" onMouseClicked="#openReadme" text="Readme" />
       <Label layoutX="18.0" layoutY="172.0" text="Author: Johana Supíková" />
-      <Label layoutX="17.0" layoutY="51.0" prefHeight="114.0" prefWidth="233.0" text="StIFT is a tool for estimating stellar&#10;characteristics. Description available&#10;in Readme file." />
+      <Label layoutX="17.0" layoutY="51.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="114.0" prefWidth="233.0" text="StIFT is a tool for estimating stellar&#10;characteristics. Description available&#10;in Readme file." />
    </children>
    <effect>
       <DropShadow />

@@ -15,27 +15,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLMainController">
+<StackPane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLMainController">
    <children>
-      <VBox fx:id="vBox" stylesheets="@Styles.css">
+      <VBox fx:id="vBox" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@Styles.css">
          <children>
-            <MenuBar prefHeight="26.0" prefWidth="618.0">
+            <MenuBar minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="618.0">
                <menus>
                   <Menu mnemonicParsing="false" text="File">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#exportDataItemAction" text="Export data">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#uploadInputDataFileAction" text="Upload input data file">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Edit">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#uploadNewGridItemAction" text="Upload new grid">
                            <accelerator>
@@ -49,6 +35,25 @@
                         </MenuItem>
                      </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#exportDataItemAction" text="Export data">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#uploadInputDataFileAction" text="Upload input data file">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="U" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#resetResultsAction" text="Reset result table">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                     </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="Help">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#aboutItemAction" text="About" />
@@ -56,29 +61,29 @@
                   </Menu>
                </menus>
             </MenuBar>
-            <BorderPane fx:id="borderPane">
+            <BorderPane fx:id="borderPane" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
                <center>
-                  <fx:include fx:id="lineChart" source="FXMLLineChart.fxml" />
+                  <fx:include fx:id="lineChart" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLineChart.fxml" />
                </center>
                <right>
-                  <AnchorPane prefHeight="353.0" prefWidth="127.0" BorderPane.alignment="CENTER_RIGHT">
+                  <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="354.0" prefWidth="130.0" BorderPane.alignment="CENTER_RIGHT">
                      <BorderPane.margin>
                         <Insets right="10.0" />
                      </BorderPane.margin>
                      <children>
-                        <TextField fx:id="temperatureField" alignment="CENTER" layoutX="54.0" layoutY="114.0" prefHeight="26.0" prefWidth="66.0" />
-                        <TextField fx:id="tempUncertaintyField" layoutX="80.0" layoutY="145.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
-                        <TextField fx:id="luminosityField" alignment="CENTER" layoutX="54.0" layoutY="176.0" prefHeight="26.0" prefWidth="66.0" />
-                        <TextField fx:id="lumUncertaintyField" layoutX="80.0" layoutY="208.0" prefHeight="26.0" prefWidth="39.0" text="0.0" />
-                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="260.0" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="9.0" layoutY="114.0" prefHeight="26.0" prefWidth="34.0" text="lg Teff" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="9.0" layoutY="176.0" prefHeight="26.0" prefWidth="20.0" text="lg L" textAlignment="CENTER" />
-                        <Label alignment="CENTER" layoutX="2.0" layoutY="86.0" prefHeight="22.0" prefWidth="122.0" text="Estimate result">
+                        <TextField fx:id="temperatureField" alignment="CENTER" layoutX="54.0" layoutY="114.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="66.0" />
+                        <TextField fx:id="tempUncertaintyField" layoutX="80.0" layoutY="145.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="39.0" text="0.0" />
+                        <TextField fx:id="luminosityField" alignment="CENTER" layoutX="54.0" layoutY="176.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="66.0" />
+                        <TextField fx:id="lumUncertaintyField" layoutX="80.0" layoutY="208.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="39.0" text="0.0" />
+                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="260.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="9.0" layoutY="118.0" minHeight="-Infinity" minWidth="-Infinity" text="lg Teff" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="9.0" layoutY="180.0" minHeight="-Infinity" minWidth="-Infinity" text="lg L" textAlignment="CENTER" />
+                        <Label alignment="CENTER" layoutX="9.0" layoutY="82.0" minHeight="-Infinity" minWidth="-Infinity" text="Estimate result">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="4.5" layoutY="237.0" prefHeight="20.0" prefWidth="81.0" text="Invalid input" textFill="#d21818" visible="false">
+                        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="237.0" minHeight="-Infinity" minWidth="-Infinity" text="Invalid input" textFill="#d21818" visible="false">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -86,13 +91,13 @@
                               <Blend />
                            </effect>
                         </Label>
-                        <Label layoutX="9.0" layoutY="145.0" prefHeight="26.0" prefWidth="68.0" text="Uncertainty" />
-                        <Label layoutX="9.0" layoutY="213.0" prefHeight="18.0" prefWidth="63.0" text="Uncertainty" />
+                        <Label layoutX="9.0" layoutY="149.0" minHeight="-Infinity" minWidth="-Infinity" text="Uncertainty" />
+                        <Label layoutX="9.0" layoutY="213.0" minHeight="-Infinity" minWidth="-Infinity" text="Uncertainty" />
                      </children>
                   </AnchorPane>
                </right>
                <bottom>
-                   <fx:include fx:id="tableView" source="FXMLTableView.fxml" />
+                   <fx:include fx:id="tableView" minHeight="-Infinity" minWidth="-Infinity" source="FXMLTableView.fxml" />
                </bottom>
             </BorderPane>
          </children>

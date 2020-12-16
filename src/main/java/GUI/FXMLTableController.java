@@ -10,8 +10,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,6 +22,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import org.controlsfx.control.RangeSlider;
 
@@ -48,7 +52,7 @@ public class FXMLTableController implements Initializable {
     private final Tooltip tooltip = new Tooltip();
     private final VBox vBox = new VBox();
     private final RangeSlider slider = new RangeSlider();
-    private final Button removeButton = new Button("Remove filter");
+    private final Button removeButton = new Button("REMOVE FILTER");
     private final CheckBox checkbox = new CheckBox("Hide empty rows");
     private final InputFileParser nip = new InputFileParser();
     private FXMLLoadingController loadingController;
@@ -75,6 +79,8 @@ public class FXMLTableController implements Initializable {
     }
 
     private void constructTooltipGraphic() {
+        ImageView image = new ImageView(new Image(getClass().getClassLoader().getResource("cancel.png").toString(),
+                8, 8, false, false));
         Label label = new Label("Phase filter:");
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
@@ -89,10 +95,22 @@ public class FXMLTableController implements Initializable {
                     tableModel.setHideEmptyRows(!tableModel.getHideEmptyRows());
                     updateHiddenRowsCounter();
                 });
-        
-        vBox.getChildren().add(label);
+
+        image.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                tooltip.hide();
+            }
+        });
+
+        vBox.setMaxWidth(100);
+        BorderPane firstRow = new BorderPane();
+        firstRow.setRight(image);
+        firstRow.setLeft(label);
+        vBox.getChildren().add(firstRow);
         vBox.getChildren().add(slider);
         vBox.getChildren().add(removeButton);
+        vBox.setMargin(removeButton, new Insets(0, 0, 5, 0));
         vBox.getChildren().add(checkbox);
     }
     
@@ -144,7 +162,7 @@ public class FXMLTableController implements Initializable {
     }
     
     private void showFilterIcon() {
-        Image phaseIcon = new Image("filter.png", 15, 15, true, true);
+        Image phaseIcon = new Image("filter.png", 18, 18, true, true);
         hiddenRowsCounter = new Label();
         hiddenRowsCounter.getStyleClass().add("hiddenRowsCounter");
         hiddenRowsCounter.setBackground(new Background(new BackgroundImage(
@@ -158,14 +176,13 @@ public class FXMLTableController implements Initializable {
         phaseCol.setGraphic(phaseColHeader);
         
         //prevents tooltip from showing by hovering over icon
-        hiddenRowsCounter.setOnMouseMoved(event ->
-            event.consume());
+        hiddenRowsCounter.setOnMouseMoved(event -> event.consume());
         
         wrappingBox.setOnMouseClicked(event -> {
             if (tooltip.isShowing()) {
                 tooltip.hide();
             } else {
-                tooltip.show(tableView, event.getScreenX() - 80, event.getScreenY() - 120);
+                tooltip.show(tableView, event.getScreenX() - 110, event.getScreenY() - 135);
             }
         });
     }

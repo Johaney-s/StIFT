@@ -17,15 +17,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -81,8 +77,6 @@ public class FXMLMainController implements Initializable {
         fadeIn.setToValue(1.0);
         fadeIn.setCycleCount(1);
         fadeIn.setAutoReverse(false);
-        
-        vBox.setVgrow(borderPane, Priority.ALWAYS); //FXML command does not work
     }
 
     //-- MENU BAR -- File / Edit / Options
@@ -175,13 +169,24 @@ public class FXMLMainController implements Initializable {
             aboutWindowController.addHostServices(hs);
             Scene scene = new Scene(loaderRoot);
             final Stage dialog = new Stage();
+            dialog.setMinHeight(300);
+            dialog.setMinWidth(290);
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(loaderRoot.getScene().getWindow());
-            dialog.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.png")));
+            dialog.getIcons().add(new Image(this.getClass().getResourceAsStream("/manual.png")));
             dialog.setScene(scene);
             dialog.show();
         } catch (IOException e) {
             showAlert("Open about section", "Could not open about section.", AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    public void resetResultsAction() {
+        Alert alert = showAlert("Reset results table", "Do you want to reset the results table?",
+                AlertType.CONFIRMATION);
+        if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
+            tableViewController.getTableModel().reset();
         }
     }
     
@@ -239,6 +244,16 @@ public class FXMLMainController implements Initializable {
         Alert alert = new Alert(type);
         alert.setHeaderText(header);
         alert.setContentText(message);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        switch(type) {
+            case ERROR: stage.getIcons().add(new Image(this.getClass().getResource("/error.png").toString()));
+                        break;
+            case CONFIRMATION: stage.getIcons().add(new Image(this.getClass().getResource("/question.png").toString()));
+                        break;
+            case INFORMATION: stage.getIcons().add(new Image(this.getClass().getResource("/ok.png").toString()));
+                        break;
+        }
+
         alert.showAndWait();
         return alert;
     }
@@ -262,6 +277,8 @@ public class FXMLMainController implements Initializable {
     private boolean unsavedChangesAlert() {
         Alert alert = new Alert(AlertType.NONE,  "Some results might not be saved, would you like to export data?",
                 ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(this.getClass().getResource("/question.png").toString()));
         alert.setHeaderText("Unsaved results");
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
