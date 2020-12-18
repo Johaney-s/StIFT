@@ -65,7 +65,7 @@ public class TextOnly {
 
             Star mean_result = stats.getResult();
 
-            System.out.printf("Interpolation error:\n\t\t\t\t%.4f\t%.4f\t%.4f\t%.4f\n", mean_result.getErrors()[0],
+            System.out.printf("Interpolation error:\n-\t-\t%.4f\t%.4f\t%.4f\t%.4f\n", mean_result.getErrors()[0],
                     mean_result.getErrors()[1], mean_result.getErrors()[2], mean_result.getErrors()[3]);
 
             System.out.printf("Uncertainties: <-------------------"

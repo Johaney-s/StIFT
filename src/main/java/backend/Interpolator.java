@@ -122,6 +122,7 @@ public class Interpolator {
      */
     public static void determineError(ComputationStats stats) {
         double ZERO_CONST = 0.0000009;
+        double ZERO_CONST2 = 0.0000000000001;
         double pt1 = (stats.getAlpha() * (stats.getBeta() - stats.getDelta())) / (2 * stats.getA());
         double der_denominator = Math.sqrt(stats.getB() * stats.getB() - 4 * stats.getA() * stats.getC());
         double pt2 = (stats.getB() + 2 * stats.getA() * ((stats.getEpsilon() - stats.getPsi())
@@ -152,12 +153,12 @@ public class Interpolator {
                     * repetative + D) / (stats.getAlpha() * repetative);
             double fml2 = (stats.getResult2_().getAllAttributes()[index] - stats.getResult1_().getAllAttributes()[index])
                     /(repetative * repetative);
-            double derx1 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative);
-            double derx3 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative);
+            double derx1 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative) : 0;
+            double derx3 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative) : 0;
             //System.out.printf("Attribute %d : Dx (fml 23): %f\t%f\t", index, derx1, derx3);
 
-            double dery1 = fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus;
-            double dery3 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus;
+            double dery1 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus : 0;
+            double dery3 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus : 0;
             //System.out.printf("Dy (fml 24): %f\t%f\t\n", dery1, dery3);
 
             double grad1 = Math.sqrt(Math.pow(derx1, 2) + Math.pow(dery1, 2));
