@@ -15,7 +15,7 @@ public class ComputationStats {
     private Star result2_;
     private Star result;
     private Star[] sigma_region = null; //estimations for stars in sigma region of input
-    private double[] deviations = null;
+    private double[] deviations = null; //standard deviation
     private double alpha;
     private double beta;
     private double gamma;
@@ -227,5 +227,9 @@ public class ComputationStats {
 
     public void setC(double c) {
         this.C = c;
+    }
+
+    public void setErrors(double[] errors) {
+        result.setErrors(errors);
     }
 }

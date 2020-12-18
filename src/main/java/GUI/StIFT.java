@@ -27,7 +27,6 @@ public class StIFT extends Application {
         stage.getProperties().put("hostServices", this.getHostServices());
         stage.getIcons().add(new Image(this.getClass().getResourceAsStream("/icon.png")));
         stage.show();
-
     }
 
     /**

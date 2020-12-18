@@ -141,6 +141,7 @@ public class Data {
      * @return stats with uncertainties_estimations filled out
      */
     public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc) {
+        boolean validSD = true;
         int NUMBER_OF_SIGMA_REGION_POINTS = 8;
         ComputationStats mean_value_stats = estimate_star(x, y);
         mean_value_stats.getResult().setInputUncertainties(temp_unc, lum_unc);
@@ -153,35 +154,46 @@ public class Data {
         for (double current_x : xs) {
             for (double current_y : ys) {
                 Star star = estimate_star(current_x, current_y).getResult();
-                if (star ==  null || star.getAge() == null) { return mean_value_stats; }
+                if (star ==  null || star.getAge() == null) {
+                    validSD = false;
+                    mean_value_stats.getResult().setInvalidSD();
+                    break;
+                }
                 stars[index] = star;
                 index++;
             }
         }
-        mean_value_stats.setSigmaRegion(stars);
 
         //For each data point, find the square of its distance to the mean and sum the values
-        double[] deviation = {0, 0, 0, 0};
-        for (Star star : stars) {
-            double age_diff = Math.pow(10, star.getAge()) - Math.pow(10, mean_value_stats.getResult().getAge());
-            deviation[0] += Math.pow(age_diff, 2);
-            for (int inx = 3; inx < 6; inx++) { //except input params and age all are linear
-                deviation[inx - 2] += Math.pow(star.getAllAttributes()[inx]
-                        - mean_value_stats.getResult().getAllAttributes()[inx], 2);
+        if (validSD) {
+            mean_value_stats.setSigmaRegion(stars);
+            double[] deviation = {0, 0, 0, 0};
+            for (Star star : stars) {
+                double age_diff = Math.pow(10, star.getAge()) - Math.pow(10, mean_value_stats.getResult().getAge());
+                deviation[0] += Math.pow(age_diff, 2);
+                for (int inx = 3; inx < 6; inx++) { //except input params and age all are linear
+                    deviation[inx - 2] += Math.pow(star.getAllAttributes()[inx]
+                            - mean_value_stats.getResult().getAllAttributes()[inx], 2);
+                }
             }
-        }
-        mean_value_stats.setDeviations(deviation);
+            mean_value_stats.setDeviations(deviation);
 
-        //Divide by number of data points and find square root
-        double[] uncertainties = new double[4];
-        for (int i = 0; i < 4; i++) {
-            uncertainties[i] = deviation[i] / NUMBER_OF_SIGMA_REGION_POINTS;
-            uncertainties[i] = Math.sqrt(uncertainties[i]);
+
+            //Divide by number of data points and find square root
+            double[] uncertainties = new double[4];
+            for (int i = 0; i < 4; i++) {
+                uncertainties[i] = deviation[i] / NUMBER_OF_SIGMA_REGION_POINTS;
+                uncertainties[i] = Math.sqrt(uncertainties[i]);
+            }
+
+            uncertainties[0] = (Math.abs(uncertainties[0]) < 1) ? 0 : Math.log10(uncertainties[0]); //back to dex
+            uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean_value_stats.getResult().getAge()) * Math.log(10));
+            mean_value_stats.getResult().setDeviations(uncertainties);
         }
 
-        uncertainties[0] = (Math.abs(uncertainties[0]) < 1) ? 0 : Math.log10(uncertainties[0]); //back to dex
-        uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean_value_stats.getResult().getAge()) * Math.log(10));
-        mean_value_stats.getResult().setUncertainties(uncertainties);
+        if (mean_value_stats.getResult().getAge() != null) {
+            Interpolator.determineError(mean_value_stats);
+        }
         return mean_value_stats;
     }
 

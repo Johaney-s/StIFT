@@ -55,22 +55,23 @@ public class TextOnly {
             stats.getResult1_().printValues();
             stats.getResult2_().printValues();
 
-            System.out.println("Mean value:");
+            System.out.println("Mean value: <----------------------");
             stats.getResult().printValues();
 
             System.out.println("Sigma region:");
             for (Star star : stats.getSigmaRegion()) { star.printValues(); }
-
-            //System.out.println("Sum of squared differences:\n[age, radius, mass, phase]");
-            //System.out.printf("%.4f\t%.4f\t%4f\t%.4f\n", stats.getDeviations()[0], stats.getDeviations()[1],
-            //        stats.getDeviations()[2], stats.getDeviations()[3]);
-
             System.out.println("Standard deviation:");
             stats.getResult().printAllUncertainties();
 
-            //System.out.println(stats.toString()); ALPHA - PSI, A, B, C
+            Star mean_result = stats.getResult();
 
-            Interpolator.determineUncertainties(stats);
+            System.out.printf("Interpolation error:\n\t\t\t\t%.4f\t%.4f\t%.4f\t%.4f\n", mean_result.getErrors()[0],
+                    mean_result.getErrors()[1], mean_result.getErrors()[2], mean_result.getErrors()[3]);
+
+            System.out.printf("Uncertainties: <-------------------"
+                            + "\n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", mean_result.getUncertainties()[0],
+                    mean_result.getUncertainties()[1], mean_result.getUncertainties()[2], mean_result.getUncertainties()[3],
+                    mean_result.getUncertainties()[4], mean_result.getUncertainties()[5]);
 
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
@@ -81,15 +82,3 @@ public class TextOnly {
         System.out.println("===================================");
     }
 }
-
-/* Sgt. Pepper's lonely values club band
-            double x = 3.66883;
-            double y = -0.71457;
-            double x = 4;
-            double y = 3.5;
-            double x = 4.4;
-            double y = 5.5;
-            double x = 4.9849557522123895;
-            double y = 6.017082785808146; <---------BUGGED LINE POINTS
-            double x = 4.387308533916849;
-            double y = 5.664536741214057; <-- WEIRD PHASE RESULT*/

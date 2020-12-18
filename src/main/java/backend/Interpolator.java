@@ -116,29 +116,35 @@ public class Interpolator {
         stats.setResult(new Star(finalEstimation));
     }
 
-    public static void determineUncertainties(ComputationStats stats) {
-        double LOG_E = 0.4342944819;
+    /**
+     * Determine interpolation error - call AFTER deviation computation (changes stats!!!)
+     * @param stats computation stats
+     */
+    public static void determineError(ComputationStats stats) {
+        double ZERO_CONST = 0.0000009;
         double pt1 = (stats.getAlpha() * (stats.getBeta() - stats.getDelta())) / (2 * stats.getA());
         double der_denominator = Math.sqrt(stats.getB() * stats.getB() - 4 * stats.getA() * stats.getC());
         double pt2 = (stats.getB() + 2 * stats.getA() * ((stats.getEpsilon() - stats.getPsi())
                 / (stats.getBeta() - stats.getDelta()))) / der_denominator;
-        double dx2_Idxminus = pt1 * (1 - pt2); // (21)
-        double dx2_Idxplus = pt1 * (1 + pt2);
+        double dx2_Idxminus = (Math.abs(stats.getBeta() - stats.getDelta()) > ZERO_CONST) ? pt1 * (1 - pt2) : 0; // (21)
+        double dx2_Idxplus = (Math.abs(stats.getBeta() - stats.getDelta()) > ZERO_CONST) ? pt1 * (1 + pt2) : 0;
 
         double pt3 = (stats.getAlpha() * (stats.getAlpha() - stats.getGamma())) / (2 * stats.getA());
-        double pt4 = (stats.getB() + 2 * stats.getA() * (stats.getPhi() / (stats.getAlpha() - stats.getGamma())))
-                / der_denominator;
-        double dx2_Idyminus = pt3 * (1 - pt4); // (22)
-        double dx2_Idyplus = pt3 * (1 + pt4);
+        double pt4 = (stats.getB() + 2 * stats.getA() * (stats.getPhi() / (stats.getAlpha() - stats.getGamma()))) / der_denominator;
+        double dx2_Idyminus = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST) ? pt3 * (1 - pt4) : 0; // (22)
+        double dx2_Idyplus = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST) ? pt3 * (1 + pt4) : 0;
+        //System.out.printf("Dx2*/dx: %f\t%f Dx2*/dy:\t%f\t%f\n", dx2_Idxplus, dx2_Idxminus, dx2_Idyplus, dx2_Idyminus);
+
+        //CHANGING STATS !!!
+        makeStatsPositive(stats);
 
         double gamal_1 = (stats.getGamma() / stats.getAlpha()) - 1;
         double phial = stats.getPhi() / stats.getAlpha();
         double repetative = stats.getX2_() * gamal_1 + phial;
         double fml3 = stats.getX() * gamal_1 + phial;
 
-        /*System.out.println("(Gamma/alpha - 1) = " + gamal_1 + "\nPhi/alpha = " + phial + "\nX2 * (gamma/alpha - 1) + phi/alpha ="
-                + repetative + "\nX * (gamma/alpha - 1) + phi/alpha = " + fml3 + "\n");*/
-        for (int index = 0; index < stats.getResult().getAllAttributes().length; index++) {
+        double[] errors = new double[4];
+        for (int index = 2; index < stats.getResult().getAllAttributes().length; index++) {
             double D = (stats.getStar22().getAllAttributes()[index] - stats.getStar21().getAllAttributes()[index]
                     - stats.getStar12().getAllAttributes()[index] + stats.getStar11().getAllAttributes()[index])
                     * (stats.getX2_() - stats.getX());
@@ -147,23 +153,30 @@ public class Interpolator {
             double fml2 = (stats.getResult2_().getAllAttributes()[index] - stats.getResult1_().getAllAttributes()[index])
                     /(repetative * repetative);
             double derx1 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative);
-            double derx2 = fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxplus - repetative);
             double derx3 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative);
-            double derx4 = fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxminus - repetative);
-            //System.out.printf("Attribute %d : Dx: %f\t%f\t%f\t%f\t", index, derx1, derx2, derx3, derx4);
+            //System.out.printf("Attribute %d : Dx (fml 23): %f\t%f\t", index, derx1, derx3);
 
             double dery1 = fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus;
-            double dery2 = fml1 * dx2_Idyminus+ fml2 * fml3 * dx2_Idyplus;
             double dery3 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus;
-            double dery4 = fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyminus;
-            //System.out.printf("Dy: %f\t%f\t%f\t%f\n", dery1, dery2, dery3, dery4);
+            //System.out.printf("Dy (fml 24): %f\t%f\t\n", dery1, dery3);
 
-            double est1 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx1;
-            double est2 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx2;
-            double est3 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx3;
-            double est4 = (stats.getResult().getAllAttributes()[index] / LOG_E) * derx4;
-            //System.out.printf("dm/dx: %f\n", est3);
+            double grad1 = Math.sqrt(Math.pow(derx1, 2) + Math.pow(dery1, 2));
+            double grad3 = Math.sqrt(Math.pow(derx3, 2) + Math.pow(dery3, 2));
+            //System.out.printf("√(dx^2 + dy^2) = %f\t%f\n", grad1, grad3);
+
+            errors[index - 2] = Math.min(grad1, grad3);
         }
+        stats.setErrors(errors);
+    }
+
+    private static void makeStatsPositive(ComputationStats stats) {
+        stats.setAlpha(Math.abs(stats.getAlpha()));
+        stats.setBeta(Math.abs(stats.getBeta()));
+        stats.setGamma(Math.abs(stats.getGamma()));
+        stats.setDelta(Math.abs(stats.getDelta()));
+        stats.setEpsilon(Math.abs(stats.getEpsilon()));
+        stats.setPhi(Math.abs(stats.getPhi()));
+        stats.setPsi(Math.abs(stats.getPsi()));
     }
 
 }
