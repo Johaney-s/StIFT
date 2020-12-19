@@ -30,8 +30,8 @@ public class TextOnly {
             }
         } catch (NumberFormatException ex) {
             System.out.println("Invalid arguments - please provide valid input parameters.");
-            System.out.println("Use command 'java -jar file_name.jar text TEMP LUM TEMPunc LUMunc'.\nMissing uncertainties "
-                    + "will be treated as 0.0 values.");
+            System.out.println("Use command 'java -jar file_name.jar text TEMP LUM TEMPunc LUMunc'.");
+            System.out.println("Missing uncertainties will be treated as 0.0 values.");
             System.out.println("===================================");
             return;
         }
@@ -40,10 +40,10 @@ public class TextOnly {
             InputStream is = TextOnly.class.getClassLoader().getResourceAsStream("Data.txt");
             data = GridFileParser.extract(is);
 
-            System.out.println("Total number of isochrones: " + data.getGroupedData().size() + "\n");
-            ComputationStats stats = data.estimate_stats(x, y, x_unc, y_unc);
+            System.out.println("Total number of isochrones: " + data.getGroupedData().size());
+            ComputationStats stats = data.estimate_stats(x, y, x_unc, y_unc, true, true);
 
-            System.out.printf("Input:\n%.4f\t%.4f uncertainties: %.4f\t%.4f\n", x, y, x_unc, y_unc);
+            System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
 
             System.out.println("Neighbours:");
             stats.getStar11().printValues();
@@ -65,14 +65,13 @@ public class TextOnly {
 
             Star mean_result = stats.getResult();
 
-            System.out.printf("Interpolation error:\n-\t-\t%.4f\t%.4f\t%.4f\t%.4f\n", mean_result.getErrors()[0],
-                    mean_result.getErrors()[1], mean_result.getErrors()[2], mean_result.getErrors()[3]);
+            System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getErrors()[2],
+                    mean_result.getErrors()[3], mean_result.getErrors()[4], mean_result.getErrors()[5]);
 
             System.out.printf("Uncertainties: <-------------------"
-                            + "\n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", mean_result.getUncertainties()[0],
+                            + "%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getUncertainties()[0],
                     mean_result.getUncertainties()[1], mean_result.getUncertainties()[2], mean_result.getUncertainties()[3],
                     mean_result.getUncertainties()[4], mean_result.getUncertainties()[5]);
-
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
         } catch (Exception ex) {

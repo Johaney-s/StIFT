@@ -77,8 +77,8 @@ public class Data {
                             }
                         } else if (upperRight == null || intersection(upperLeft, upperRight, stats.getX(), stats.getY())[1] >
                                 intersection(first, second, stats.getX(), stats.getY())[1]) {
-                                upperLeft = first;
-                                upperRight = second;
+                            upperLeft = first;
+                            upperRight = second;
                         }
                         break;
                     }
@@ -87,31 +87,12 @@ public class Data {
             }
         }
 
-        sort(upperLeft, upperRight);
-        sort(lowerLeft, lowerRight);
-
         stats.setStar11(upperLeft);
         stats.setStar12(upperRight);
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
         return (upperLeft != null && upperRight != null && lowerLeft != null && lowerRight != null);
     }
-
-    /**
-     * Sort neighbours by x coordinate
-     * @param left
-     * @param right
-     */
-    private void sort(Star left, Star right) {
-        if (left == null || right == null) { return;}
-        if (left.getTemperature() > right.getTemperature()) {
-            Star switcher;
-            switcher = left;
-            left = right;
-            right = switcher;
-        }
-    }
-
 
     /**
      * Estimates characteristics for given input [x,y]
@@ -140,10 +121,12 @@ public class Data {
      * @param lum_unc Luminosity uncertainty
      * @return stats with uncertainties_estimations filled out
      */
-    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc) {
+    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc, boolean includeError, boolean includeDeviation) {
         boolean validSD = true;
         int NUMBER_OF_SIGMA_REGION_POINTS = 8;
         ComputationStats mean_value_stats = estimate_star(x, y);
+        if (!includeError) { mean_value_stats.getResult().setHideError(); }
+        if (!includeDeviation) { mean_value_stats.getResult().setHideSD(); }
         mean_value_stats.getResult().setInputUncertainties(temp_unc, lum_unc);
         Star[] stars = new Star[9]; //sigma region
         double[] xs = {x, x - temp_unc, x + temp_unc};
@@ -205,8 +188,12 @@ public class Data {
      * @param y_unc
      * @return Star result
      */
+    public Star estimate(double x, double y, double x_unc, double y_unc, boolean includeError, boolean includeDeviation) {
+        return estimate_stats(x, y, x_unc, y_unc, includeError, includeDeviation).getResult();
+    }
+
     public Star estimate(double x, double y, double x_unc, double y_unc) {
-        return estimate_stats(x, y, x_unc, y_unc).getResult();
+        return estimate(x, y, x_unc, y_unc, true, true);
     }
 
     /**

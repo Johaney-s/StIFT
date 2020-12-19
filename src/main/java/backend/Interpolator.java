@@ -98,7 +98,7 @@ public class Interpolator {
         Double[] result2Estimation = new Double[att11.length];
         for (int index = 0; index < stats.getStar11().getAllAttributes().length; index++) {
             Double numerator = stats.getX2_() - att21[0]; //(x2_ - x21)
-            Double denominator = att22[0] - att21[0]; //(x22 - x21)            
+            Double denominator = att22[0] - att21[0]; //(x22 - x21)
             Double result1_ = att11[index] + ((att12[index] - att11[index]) / denominator) * numerator; //(13)
             result1Estimation[index] = result1_;
             Double result2_ = att21[index] + ((att22[index] - att21[index]) / denominator) * numerator; //(14)
@@ -121,8 +121,8 @@ public class Interpolator {
      * @param stats computation stats
      */
     public static void determineError(ComputationStats stats) {
-        double ZERO_CONST = 0.0000009;
-        double ZERO_CONST2 = 0.0000000000001;
+        double ZERO_CONST = 0.0000009; //alpha, beta, gamma, delta are zero if smaller than this value
+        double ZERO_CONST2 = 0.0000000000001; //other stats symbols zero limit
         double pt1 = (stats.getAlpha() * (stats.getBeta() - stats.getDelta())) / (2 * stats.getA());
         double der_denominator = Math.sqrt(stats.getB() * stats.getB() - 4 * stats.getA() * stats.getC());
         double pt2 = (stats.getB() + 2 * stats.getA() * ((stats.getEpsilon() - stats.getPsi())
@@ -153,12 +153,16 @@ public class Interpolator {
                     * repetative + D) / (stats.getAlpha() * repetative);
             double fml2 = (stats.getResult2_().getAllAttributes()[index] - stats.getResult1_().getAllAttributes()[index])
                     /(repetative * repetative);
-            double derx1 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative) : 0;
-            double derx3 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative) : 0;
+            double derx1 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
+                    ? fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative) : 0;
+            double derx3 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
+                    ? fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative) : 0;
             //System.out.printf("Attribute %d : Dx (fml 23): %f\t%f\t", index, derx1, derx3);
 
-            double dery1 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus : 0;
-            double dery3 = (stats.getPhi() > ZERO_CONST2) ? fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus : 0;
+            double dery1 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
+                    ? fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus : 0;
+            double dery3 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
+                    ? fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus : 0;
             //System.out.printf("Dy (fml 24): %f\t%f\t\n", dery1, dery3);
 
             double grad1 = Math.sqrt(Math.pow(derx1, 2) + Math.pow(dery1, 2));

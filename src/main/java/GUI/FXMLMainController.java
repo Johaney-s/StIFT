@@ -15,11 +15,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -57,6 +54,16 @@ public class FXMLMainController implements Initializable {
     private FXMLTableController tableViewController;
     @FXML
     private FXMLLoadingController loadingController;
+    @FXML
+    private Menu gridMenu;
+    @FXML
+    private Menu dataMenu;
+    @FXML
+    private Menu helpMenu;
+    @FXML
+    private CheckBox includeErrorBox;
+    @FXML
+    private CheckBox includeDeviationBox;
     
     private final FadeTransition fadeIn = new FadeTransition(
         Duration.millis(1000)
@@ -186,7 +193,7 @@ public class FXMLMainController implements Initializable {
         Alert alert = showAlert("Reset results table", "Do you want to reset the results table?",
                 AlertType.CONFIRMATION);
         if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
-            tableViewController.getTableModel().reset();
+            tableViewController.reset();
         }
     }
     
@@ -266,7 +273,9 @@ public class FXMLMainController implements Initializable {
      * @param lum_unc temperature uncertainty
      */
     public void manageInput(double x, double y, double temp_unc, double lum_unc) {
-        Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc);
+        boolean includeError = includeErrorBox.isSelected();
+        boolean includeDeviation = includeDeviationBox.isSelected();
+        Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation);
         tableViewController.handleNewResult(result);
     }
     

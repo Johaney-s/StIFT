@@ -146,7 +146,7 @@ public class ComputationStats {
 
     public String toString() {
         return "Alpha:" + alpha + "\nBeta: " + beta + "\nGamma: " + gamma + "\nDelta: " + delta + "\nEpsilon: "
-                + epsilon + "\nPsi: " + psi + "\nPhi: " + phi + "\nA: " + A + "\nB: " + B + "\nC: " + C;
+                + epsilon + "\nPhi: " + phi + "\nPsi: " + psi + "\nA: " + A + "\nB: " + B + "\nC: " + C;
     }
 
     public void setAlpha(double alpha) {

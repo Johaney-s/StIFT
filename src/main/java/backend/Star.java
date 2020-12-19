@@ -1,6 +1,8 @@
 
 package backend;
 
+import static backend.State.*;
+
 /**
  * Representation of a star
  */
@@ -11,17 +13,12 @@ public class Star {
     private final Double radius;
     private final Double mass;
     private final Double phase;
-    private Double tem_dev = 0.0;
-    private Double lum_dev = 0.0;
-    private Double age_dev = Double.MAX_VALUE; //prevent hidden errors
-    private Double rad_dev = Double.MAX_VALUE;
-    private Double mas_dev = Double.MAX_VALUE;
-    private Double pha_dev = Double.MAX_VALUE;
-    private double[] errors = {0, 0, 0, 0};
+    private Double[] deviations = {0.0, 0.0, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
+    private double[] errors = {0, 0, 0, 0, 0, 0};
     private double[] uncertainties = {0, 0, 0, 0, 0, 0};
-    private final String ROUNDING_FORMAT = "%.4f";
-    private boolean validSD = true;
-    private boolean validError = true;
+    private final String ROUNDING_FORMAT = "%.6f";
+    private State sd = VALID;
+    private State error = VALID;
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         this.temperature = temperature;
@@ -47,10 +44,10 @@ public class Star {
      * @param data Uncertainties excluding the temperature and luminosity (input) uncertainties
      */
     public void setDeviations(double[] data) {
-        this.age_dev = data[0];
-        this.rad_dev = data[1];
-        this.mas_dev = data[2];
-        this.pha_dev = data[3];
+        this.deviations[2] = data[0];
+        this.deviations[3] = data[1];
+        this.deviations[4] = data[2];
+        this.deviations[5] = data[3];
     }
 
     /**
@@ -59,8 +56,8 @@ public class Star {
      * @param lum_unc Luminosity uncertainty
      */
     public void setInputUncertainties(double temp_unc, double lum_unc) {
-        this.tem_dev = temp_unc;
-        this.lum_dev = lum_unc;
+        this.deviations[0] = temp_unc;
+        this.deviations[1] = lum_unc;
     }
     
     /**
@@ -130,31 +127,26 @@ public class Star {
         return (luminosity == null || luminosity.isNaN()) ? "-" : String.format("%.4f±%.4f", luminosity, uncertainties[1]);
     }
 
-    public String getAgeColumnText() { return getTextRepresentation(age, uncertainties[2]); }
+    public String getAgeColumnText() { return getTextRepresentation(age, 2); }
 
-    public String getRadColumnText() { return getTextRepresentation(radius, uncertainties[3]); }
+    public String getRadColumnText() { return getTextRepresentation(radius, 3); }
 
-    public String getMasColumnText() { return getTextRepresentation(mass, uncertainties[4]); }
+    public String getMasColumnText() { return getTextRepresentation(mass, 4); }
 
-    public String getPhaColumnText() { return getTextRepresentation(phase, uncertainties[5]); }
+    public String getPhaColumnText() { return getTextRepresentation(phase, 5); }
 
     /**
      * Returns string representation to fit in tableView
      * @param attribute Mean value
-     * @param uncertainty Root of summed error and deviation for value
-     * @return String representation of value and uncertainty
+     * @param index index of attribute (used as index in lists)
+     * @return String representation of value and uncertainty according to valid attributes
      */
-    private String getTextRepresentation(Double attribute, Double uncertainty) {
-        String latex;
-        if (attribute == null || attribute.isNaN()) {
-            latex = "-";
-        } else {
-            latex = String.format("%.4f±%.4f", attribute, uncertainty);
-            if (!validSD) {
-                latex += " \\SD";
-            }
-        }
-        return latex;
+    private String getTextRepresentation(Double attribute, int index) {
+        if (attribute == null || attribute.isNaN()) { return "-"; }
+        if (sd != VALID && error != VALID) { return String.format("%.4f \\SD\\Err", attribute); }
+        if (sd != VALID) { return String.format("%.4f±%.4f \\SD", attribute, errors[index]); }
+        if (error != VALID) { return String.format("%.4f±%.4f \\Err", attribute, deviations[index]); }
+        return String.format("%.4f±%.4f", attribute, uncertainties[index]);
     }
 
     //Returns string representation of rounded result
@@ -183,36 +175,43 @@ public class Star {
     }
 
     public void printAllUncertainties() {
-        System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", tem_dev, lum_dev, age_dev,
-                rad_dev, mas_dev, pha_dev);
+        System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", deviations[0], deviations[1], deviations[2],
+                deviations[3], deviations[4], deviations[5]);
     }
 
     /**
      * Set and convert errors to absolute values, sum with SD error and save to uncertainties
-     * Ommit SD if invalid
+     * Omit SD if invalid
      * @param input_errors [age, rad, mass, phase] in percent
      */
     public void setErrors(double[] input_errors) {
-        this.errors = new double[]{(age / 100) * input_errors[0], (radius / 100) * input_errors[1],
+        this.errors = new double[]{0, 0, (age / 100) * input_errors[0], (radius / 100) * input_errors[1],
                 (mass / 100) * input_errors[2], (phase / 100) * input_errors[3]};
-        this.uncertainties[0] = tem_dev;
-        this.uncertainties[1] = lum_dev;
-        this.uncertainties[2] = (validSD) ? Math.sqrt(Math.pow(age_dev, 2) + Math.pow(errors[0], 2)) : errors[0];
-        this.uncertainties[3] = (validSD) ? Math.sqrt(Math.pow(rad_dev, 2) + Math.pow(errors[1], 2)) : errors[1];
-        this.uncertainties[4] = (validSD) ? Math.sqrt(Math.pow(mas_dev, 2) + Math.pow(errors[2], 2)) : errors[2];
-        this.uncertainties[5] = (validSD) ? Math.sqrt(Math.pow(pha_dev, 2) + Math.pow(errors[3], 2)) : errors[3];
+        this.uncertainties[0] = deviations[0];
+        this.uncertainties[1] = deviations[1];
+        this.uncertainties[2] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[2], 2) + Math.pow(errors[2], 2)) : errors[2];
+        this.uncertainties[3] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[3], 2) + Math.pow(errors[3], 2)) : errors[3];
+        this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
+        this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
     }
 
     public double[] getErrors() {
         return this.errors;
     }
 
-    public void setInvalidError() {
-        validError = false;
+    public void setHideError() {
+        error = HIDE;
     }
 
     public void setInvalidSD() {
-        validSD = false;
+        sd = INVALID;
+    }
+
+    /**
+     * Hide SD in results, but don't overwrite INVALID state
+     */
+    public void setHideSD() {
+        sd = (sd != INVALID) ? HIDE : sd;
     }
 
     public double[] getUncertainties() {

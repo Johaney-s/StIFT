@@ -40,8 +40,9 @@ public class TableModel {
      */
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write("Teff[lg K] L[lg Lsun] Age[dex yrs] R[Rsun] M[Msun] Phase" + System.getProperty("line.separator"));
         for (Star result : filteredList) {
-            fileWriter.write(String.format("%s %s %s %s %s %s%n", result.getFormattedTemperature(), result.getFormattedLuminosity(),
+            fileWriter.write(String.format("%s %s %s %s %s %s" + System.getProperty("line.separator"), result.getFormattedTemperature(), result.getFormattedLuminosity(),
                     result.getFormattedAge(), result.getFormattedRadius(), result.getFormattedMass(), result.getFormattedPhase()));
         }
         fileWriter.close();
