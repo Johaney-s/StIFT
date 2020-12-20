@@ -16,7 +16,7 @@ public class Star {
     private Double[] deviations = {0.0, 0.0, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private double[] errors = {0, 0, 0, 0, 0, 0};
     private double[] uncertainties = {0, 0, 0, 0, 0, 0};
-    private final String ROUNDING_FORMAT = "%.4f";
+    private final String ROUNDING_FORMAT = "%.4f %.4f %s";
     private State sd = VALID;
     private State error = VALID;
 
@@ -72,8 +72,11 @@ public class Star {
      * Prints all characteristics of current star
      */
     public void printValues() {
-        System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\n", getFormattedTemperature(), getFormattedLuminosity(),
-                getFormattedAge(), getFormattedRadius(), getFormattedMass(), getFormattedPhase());
+        System.out.printf("%.4f\t%.4f\t%s\t%s\t%s\t%s\n", temperature, luminosity,
+                (age != null) ? String.format("%.4f",age) : "-",
+                (radius != null) ? String.format("%.4f", radius) : "-",
+                (mass != null) ? String.format("%.4f",mass) : "-",
+                (phase != null) ? String.format("%.4f",phase) : "-");
     }
 
     /**
@@ -151,27 +154,31 @@ public class Star {
 
     //Returns string representation of rounded result
     public String getFormattedTemperature() {
-        return (temperature == null || temperature.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, temperature);
+        return (temperature == null || temperature.isNaN()) ? "-" : String.format("%.4f %.4f", temperature, deviations[0]);
     }
 
     public String getFormattedLuminosity() {
-        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, luminosity);
+        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format("%.4f %.4f", luminosity, deviations[1]);
     }
 
     public String getFormattedAge() {
-        return (age == null || age.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, age);
+        return (age == null || age.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, age, errors[2],
+                (sd != VALID) ? "-" : String.format("%.4f", deviations[2]));
     }
 
     public String getFormattedRadius() {
-        return (radius == null || radius.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, radius);
+        return (radius == null || radius.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, radius, errors[3],
+                (sd != VALID) ? "-" : String.format("%.4f", deviations[3]));
     }
 
     public String getFormattedMass() {
-        return (mass == null || mass.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, mass);
+        return (mass == null || mass.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, mass, errors[4],
+                (sd != VALID) ? "-" : String.format("%.4f", deviations[4]));
     }
 
     public String getFormattedPhase() {
-        return (phase == null || phase.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, phase);
+        return (phase == null || phase.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, phase, errors[5],
+                (sd != VALID) ? "-" : String.format("%.4f", deviations[5]));
     }
 
     public void printAllUncertainties() {
@@ -207,14 +214,16 @@ public class Star {
         sd = INVALID;
     }
 
-    /**
-     * Hide SD in results, but don't overwrite INVALID state
-     */
+    /** Hide SD in results, but don't overwrite INVALID state */
     public void setHideSD() {
         sd = (sd != INVALID) ? HIDE : sd;
     }
 
     public double[] getUncertainties() {
         return this.uncertainties;
+    }
+
+    public boolean isValidSD() {
+        return sd == VALID;
     }
 }

@@ -76,3 +76,7 @@
 .table-row-cell:odd:filled:selected {
     -fx-background: -fx-control-inner-background-alt;
 }
+
+.root {
+    -fx-font-family: Arial, Helvetica, sans-serif;
+}

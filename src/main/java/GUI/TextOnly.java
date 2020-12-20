@@ -59,9 +59,13 @@ public class TextOnly {
             stats.getResult().printValues();
 
             System.out.println("Sigma region:");
-            for (Star star : stats.getSigmaRegion()) { star.printValues(); }
-            System.out.println("Standard deviation:");
-            stats.getResult().printAllUncertainties();
+            if (stats.getResult().isValidSD()) {
+                for (Star star : stats.getSigmaRegion()) { star.printValues(); }
+                System.out.println("Standard deviation:");
+                stats.getResult().printAllUncertainties();
+            } else {
+                System.out.println("No stars in sigma region <- no deviation results");
+            }
 
             Star mean_result = stats.getResult();
 

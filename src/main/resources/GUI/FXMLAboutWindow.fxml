@@ -13,20 +13,38 @@
    <children>
       <Label layoutX="18.0" layoutY="14.0" text="StIFT">
          <font>
-            <Font size="18.0" />
+            <Font name="Arial Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="18.0" layoutY="41.0" text="Stellar isochrone fitting tool" />
+      <Label layoutX="18.0" layoutY="41.0" text="Stellar isochrone fitting tool">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Label>
       <ImageView fitHeight="36.0" fitWidth="39.0" layoutX="211.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../icon.png" />
          </image>
       </ImageView>
-      <Label layoutX="17.0" layoutY="193.0" text="GitHub:" />
-      <Hyperlink fx:id="gitLink" layoutX="58.0" layoutY="190.0" onMouseClicked="#openGit" text="https://github.com/Johaney-s/StIFT" />
-      <Button layoutX="18.0" layoutY="225.0" mnemonicParsing="false" onMouseClicked="#openReadme" text="Readme" />
-      <Label layoutX="18.0" layoutY="172.0" text="Author: Johana Supíková" />
-      <Label layoutX="17.0" layoutY="51.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="114.0" prefWidth="233.0" text="StIFT is a tool for estimating stellar&#10;characteristics. Description available&#10;in Readme file." />
+      <Label layoutX="17.0" layoutY="193.0" text="GitHub: ">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Label>
+      <Hyperlink fx:id="gitLink" layoutX="58.0" layoutY="190.0" onMouseClicked="#openGit" text="https://github.com/Johaney-s/StIFT">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Hyperlink>
+      <Button layoutX="18.0" layoutY="225.0" mnemonicParsing="false" onMouseClicked="#openReadme" text="Readme">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Label layoutX="18.0" layoutY="172.0" text="Author: Johana Supíková">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Label>
+      <Label layoutX="17.0" layoutY="51.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="114.0" prefWidth="233.0" text="StIFT is a tool for estimating stellar&#10;characteristics. Description available&#10;in Readme file.">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Label>
    </children>
    <effect>
       <DropShadow />
