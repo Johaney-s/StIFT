@@ -60,6 +60,9 @@ public class Interpolator {
      * @return Array of root(s) of quadratic equation
      */
     public static double[] quadraticEquation(double a, double b, double c) {
+        if (Math.abs(a) < 0.0000000001) {
+            return new double[]{-c/b, -c/b};
+        }
         double determinant = b * b - 4 * a * c;
         double square = Math.sqrt(determinant);
 

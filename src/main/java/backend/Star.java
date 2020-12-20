@@ -16,7 +16,7 @@ public class Star {
     private Double[] deviations = {0.0, 0.0, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private double[] errors = {0, 0, 0, 0, 0, 0};
     private double[] uncertainties = {0, 0, 0, 0, 0, 0};
-    private final String ROUNDING_FORMAT = "%.6f";
+    private final String ROUNDING_FORMAT = "%.4f";
     private State sd = VALID;
     private State error = VALID;
 
