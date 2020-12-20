@@ -16,6 +16,9 @@ Methods of estimation are discussed in
 - Interpolation error estimation
 - Total uncertainty estimation
 
+## Requirements
+Running the application requires Java 11, consider updating JRE in case relevant error message pops up.
+
 ## Running the application
 Build with `mvn package`.<br />
 In target folder run with `java -jar stift-1.0-SNAPSHOT.jar` or open the .jar file directly.
