@@ -67,6 +67,7 @@ public class TextOnly {
                 System.out.println("No stars in sigma region <- no deviation results");
             }
 
+            //System.out.println(stats);
             Star mean_result = stats.getResult();
 
             System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getErrors()[2],
