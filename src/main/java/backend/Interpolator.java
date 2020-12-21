@@ -72,7 +72,7 @@ public class Interpolator {
     }
 
     /**
-     * Returns root within the interval
+     * Returns root within the interval or corrects precision errors smaller than 0.0001
      * @param stats Computation stats
      * @param roots Two roots from quadratic equation
      * @return root to be used
@@ -80,8 +80,11 @@ public class Interpolator {
     public static double verifyRoots(ComputationStats stats, double[] roots) {
         double[] neighbours = {stats.getStar11().getTemperature(), stats.getStar12().getTemperature(),
             stats.getStar21().getTemperature(), stats.getStar22().getTemperature()};
-
+        Arrays.sort(roots);
         Arrays.sort(neighbours);
+
+        if (roots[0] - neighbours[0] < 0.0001 && roots[0] - neighbours[0] > 0) { return neighbours[0]; } //correct precision
+        if (neighbours[3] - roots[1] < 0.0001 && neighbours[3] - roots[1] > 0) { return neighbours[3]; } //correct precision
         return (roots[0] <= neighbours[3] && roots[0] >= neighbours[0]) ? roots[0] : roots[1];
     }
     
