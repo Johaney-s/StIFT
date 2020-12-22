@@ -79,4 +79,5 @@
 
 .root {
     -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-ellipsis-string: "";
 }

@@ -10,16 +10,33 @@ interpolates to create a line points and interpolates
 again to obtain result estimation.
 
 To upload custom grid, choose Grid > Upload new grid.
-Accepted format is a .txt file without a header line with
-space delimiter between attributes. To obtain correct uncertainty
+StIFT groups stars of similar mass and shows only every 4th point
+in the line chart, but all points are taken into account when
+doing the computation. Accepted format is a .txt file without a header
+line with space delimiter between attributes. To obtain correct uncertainty
 results, please follow the results table's header for specification
 of values representation:
 Teff[lg] Lum[lg] Age[dex] Rad Mass Phase
+(example)
+3.66943 -0.72127 8.23306 10.66660 0.75000 5.0000000000
+3.66932 -0.72112 8.26683 10.66690 0.75000 5.0005302886
+3.66922 -0.72095 8.30172 10.66718 0.75000 5.0011231535
+3.66912 -0.72077 8.33767 10.66747 0.75000 5.0017859950
+...
 
 To upload input data, choose Data > Upload input data file.
 Provide a .txt file without header with lines containing either
 TEMPERATURE LUMINOSITY
+(example)
+3.944 1.508
+4.053 2.383
+...
 or
 TEMPERATURE LUMINOSITY TEMPuncertainty LUMuncertainty
+
+(example)
+3.944 1.508 0.014 0.023
+4.053 2.383 0.008 0.027
+...
 attributes separated by space. Missing uncertainties attributes
 will be set to 0.

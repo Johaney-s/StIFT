@@ -62,38 +62,35 @@
                   </Menu>
                </menus>
             </MenuBar>
-            <BorderPane fx:id="borderPane" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
-               <center>
-                  <fx:include fx:id="lineChart" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLineChart.fxml" />
-               </center>
+            <BorderPane minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="SOMETIMES">
                <right>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="354.0" prefWidth="150.0" BorderPane.alignment="CENTER_RIGHT">
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="150.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets right="10.0" />
                      </BorderPane.margin>
                      <children>
-                        <TextField fx:id="temperatureField" alignment="CENTER" layoutX="54.0" layoutY="73.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="66.0" />
-                        <TextField fx:id="tempUncertaintyField" layoutX="80.0" layoutY="104.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="39.0" text="0.0" />
-                        <TextField fx:id="luminosityField" alignment="CENTER" layoutX="54.0" layoutY="135.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="66.0" />
-                        <TextField fx:id="lumUncertaintyField" layoutX="80.0" layoutY="167.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="39.0" text="0.0" />
-                        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="80.0" layoutY="219.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER">
+                        <TextField fx:id="temperatureField" alignment="CENTER" layoutX="64.0" layoutY="64.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="65.0" />
+                        <TextField fx:id="tempUncertaintyField" layoutX="90.0" layoutY="95.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="39.0" text="0.0" />
+                        <TextField fx:id="luminosityField" alignment="CENTER" layoutX="64.0" layoutY="126.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="65.0" />
+                        <TextField fx:id="lumUncertaintyField" layoutX="90.0" layoutY="158.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="39.0" text="0.0" />
+                        <Button alignment="CENTER" contentDisplay="CENTER" layoutX="90.0" layoutY="210.0" minHeight="-Infinity" minWidth="-Infinity" onAction="#goButtonAction" prefHeight="26.0" prefWidth="38.0" text="GO" textAlignment="CENTER">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font></Button>
-                        <Label layoutX="9.0" layoutY="77.0" minHeight="-Infinity" minWidth="-Infinity" text="lg Teff" wrapText="true">
+                        <Label layoutX="19.0" layoutY="68.0" minHeight="-Infinity" minWidth="-Infinity" text="lg Teff" wrapText="true">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font></Label>
-                        <Label layoutX="9.0" layoutY="139.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="lg L" wrapText="true">
+                        <Label layoutX="19.0" layoutY="130.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="lg L" wrapText="true">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font></Label>
-                        <Label alignment="CENTER" layoutX="8.0" layoutY="41.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="116.0" text="Estimate result">
+                        <Label alignment="CENTER" ellipsisString="" layoutX="17.0" layoutY="32.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="118.4" text="Estimate result" wrapText="true">
                            <font>
-                              <Font name="Arial Bold" size="16.0" />
+                              <Font name="Arial Black" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="196.0" minHeight="-Infinity" minWidth="-Infinity" text="Invalid input" textFill="#d21818" visible="false">
+                        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="19.0" layoutY="187.0" minHeight="-Infinity" minWidth="-Infinity" text="Invalid input" textFill="#d21818" visible="false">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font>
@@ -101,22 +98,22 @@
                               <Blend />
                            </effect>
                         </Label>
-                        <Label layoutX="9.0" layoutY="108.0" minHeight="-Infinity" minWidth="-Infinity" text="Uncertainty" wrapText="true">
+                        <Label layoutX="19.0" layoutY="99.0" minHeight="-Infinity" minWidth="-Infinity" text="Uncertainty" wrapText="true">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font></Label>
-                        <Label layoutX="9.0" layoutY="172.0" minHeight="-Infinity" minWidth="-Infinity" text="Uncertainty" wrapText="true">
+                        <Label layoutX="19.0" layoutY="163.0" minHeight="-Infinity" minWidth="-Infinity" text="Uncertainty" wrapText="true">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font></Label>
-                        <CheckBox fx:id="includeErrorBox" focusTraversable="false" layoutX="9.0" layoutY="261.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" selected="true" text="Include error">
+                        <CheckBox fx:id="includeErrorBox" focusTraversable="false" layoutX="19.0" layoutY="252.0" mnemonicParsing="false" selected="true" text="Include error">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font>
                            <padding>
                               <Insets left="0.1" />
                            </padding></CheckBox>
-                        <CheckBox fx:id="includeDeviationBox" focusTraversable="false" layoutX="9.0" layoutY="286.0" mnemonicParsing="false" selected="true" text="Include deviation">
+                        <CheckBox fx:id="includeDeviationBox" focusTraversable="false" layoutX="19.0" layoutY="277.0" mnemonicParsing="false" selected="true" text="Include deviation">
                            <font>
                               <Font name="Arial" size="12.0" />
                            </font>
@@ -125,14 +122,15 @@
                            </padding></CheckBox>
                      </children>
                      <padding>
-                        <Insets right="20.0" top="20.0" />
+                        <Insets right="10.0" />
                      </padding>
                   </AnchorPane>
                </right>
-               <bottom>
-                   <fx:include fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" source="FXMLTableView.fxml" />
-               </bottom>
+               <center>
+                  <fx:include fx:id="lineChart" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLineChart.fxml" />
+               </center>
             </BorderPane>
+             <fx:include fx:id="tableView" minHeight="-Infinity" minWidth="-Infinity" source="FXMLTableView.fxml" VBox.vgrow="SOMETIMES" />
          </children>
       </VBox>
       <fx:include fx:id="loading" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLoading.fxml" StackPane.alignment="CENTER" />

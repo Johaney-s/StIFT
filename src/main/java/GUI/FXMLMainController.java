@@ -18,7 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -46,8 +46,6 @@ public class FXMLMainController implements Initializable {
     private Label informationLabel;
     @FXML
     private VBox vBox;
-    @FXML
-    private BorderPane borderPane;
     @FXML
     private FXMLLineChartController lineChartController;
     @FXML
@@ -172,7 +170,7 @@ public class FXMLMainController implements Initializable {
         try {
             Parent loaderRoot = aboutFxmlLoader.load();
             FXMLAboutWindowController aboutWindowController = aboutFxmlLoader.getController();
-            HostServices hs = (HostServices)borderPane.getScene().getWindow().getProperties().get("hostServices");
+            HostServices hs = (HostServices)vBox.getScene().getWindow().getProperties().get("hostServices");
             aboutWindowController.addHostServices(hs);
             Scene scene = new Scene(loaderRoot);
             final Stage dialog = new Stage();
@@ -261,6 +259,8 @@ public class FXMLMainController implements Initializable {
                         break;
         }
 
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node
+                -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE)); //fix for broken linux dialogues
         alert.showAndWait();
         return alert;
     }
@@ -289,6 +289,8 @@ public class FXMLMainController implements Initializable {
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(this.getClass().getResource("/question.png").toString()));
         alert.setHeaderText("Unsaved results");
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node
+                -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE)); //fix for broken linux dialogues
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             exportDataItemAction();
