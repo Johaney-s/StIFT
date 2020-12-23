@@ -9,7 +9,7 @@ import java.util.Map;
  * Data represented by a Map of stars (values) grouped by initial mass (key)
  */
 public class Data {
-    private static Map<Double, ArrayList<Star>> groupedData;
+    private Map<Double, ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
     
     public Data() {
@@ -180,14 +180,7 @@ public class Data {
         return mean_value_stats;
     }
 
-    /**
-     * Returns completely estimated star including uncertainties
-     * @param x
-     * @param y
-     * @param x_unc
-     * @param y_unc
-     * @return Star result
-     */
+    /** Returns completely estimated star including uncertainties */
     public Star estimate(double x, double y, double x_unc, double y_unc, boolean includeError, boolean includeDeviation) {
         return estimate_stats(x, y, x_unc, y_unc, includeError, includeDeviation).getResult();
     }
@@ -199,7 +192,7 @@ public class Data {
     /**
      * @return the groupedData
      */
-    public static Map<Double, ArrayList<Star>> getGroupedData() {
+    public Map<Double, ArrayList<Star>> getGroupedData() {
         return groupedData;
     }    
 }

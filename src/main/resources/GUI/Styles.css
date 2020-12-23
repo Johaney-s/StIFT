@@ -81,3 +81,11 @@
     -fx-font-family: Arial, Helvetica, sans-serif;
     -fx-ellipsis-string: "";
 }
+
+/** SVG icons by:
+http://svgicons.sparkk.fr/ */
+.icon {
+    -fx-fill: #242829;
+    -fx-stroke-width: 2;
+    -fx-opacity: 55%;
+}

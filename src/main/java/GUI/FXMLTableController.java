@@ -54,7 +54,6 @@ public class FXMLTableController implements Initializable {
     private final RangeSlider slider = new RangeSlider();
     private final Button removeButton = new Button("REMOVE FILTER");
     private final CheckBox checkbox = new CheckBox("Hide empty rows");
-    private final InputFileParser nip = new InputFileParser();
     private FXMLLoadingController loadingController;
 
     /**
@@ -208,7 +207,7 @@ public class FXMLTableController implements Initializable {
      */
     public void setResults(File file) throws IOException {
         tableView.getScene().getRoot().setDisable(true);
-        nip.extract(file, tableView.getScene().getRoot(), tableModel, loadingController, this);
+        InputFileParser.extract(file, tableView.getScene().getRoot(), tableModel, loadingController, this);
     }
 
     /**

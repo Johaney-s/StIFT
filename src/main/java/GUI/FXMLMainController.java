@@ -3,7 +3,6 @@ package GUI;
 import backend.GridFileParser;
 import backend.Star;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -52,12 +51,6 @@ public class FXMLMainController implements Initializable {
     private FXMLTableController tableViewController;
     @FXML
     private FXMLLoadingController loadingController;
-    @FXML
-    private Menu gridMenu;
-    @FXML
-    private Menu dataMenu;
-    @FXML
-    private Menu helpMenu;
     @FXML
     private CheckBox includeErrorBox;
     @FXML
@@ -116,12 +109,9 @@ public class FXMLMainController implements Initializable {
         
         File file = fileChooser.showOpenDialog(vBox.getScene().getWindow());
         if (file != null) {
-            try {
-                lineChartController.showGraph(file);
+            if (lineChartController.showGraph(file)) {
                 tableViewController.reset();
                 showAlert("Upload new grid", "New grid uploaded successfully.", AlertType.INFORMATION);
-            } catch (FileNotFoundException ex) {
-                showAlert("Data file not found", "Could not find data file, previous data remain valid.", AlertType.ERROR);
             }
         }
     }

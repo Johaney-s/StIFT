@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 /** Code adjusted from example available at:
  * https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm */
-public class InputFileParser {
+public abstract class InputFileParser {
 
     /**
      * Parse file with input data
@@ -27,7 +27,7 @@ public class InputFileParser {
      * @param fxmlTableController parent controller
      * @throws IOException File not found or couldn't be opened
      */
-    public Void extract(File file, Parent root, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) throws IOException {
+    public static Void extract(File file, Parent root, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) throws IOException {
         InputService service = new InputService();
         service.setFile(file);
 

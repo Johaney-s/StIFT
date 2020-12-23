@@ -65,8 +65,8 @@ public class FXMLLineChartController implements Initializable {
     @FXML
     public void graphClicked() {
         if (!lineChart.getData().isEmpty()) {
-            double x = getXMouseCoordinate();
-            double y = getYMouseCoordinate();
+            double x = Double.parseDouble(String.format("%.4f", getXMouseCoordinate())); //use showed values in tooltip
+            double y = Double.parseDouble(String.format("%.4f", getYMouseCoordinate()));
             mainController.manageInput(x, y, 0.0, 0.0);
         }
     }
@@ -85,22 +85,29 @@ public class FXMLLineChartController implements Initializable {
     
     /**
      * Takes input data file, extracts data and shows in graph
-     * @param inStream
+     * @return true if successfull, false otherwise
      */
-    public void showGraph(InputStream inStream) {
+    public boolean showGraph(InputStream inStream) {
         try {
             Data newData = GridFileParser.extract(inStream);
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData().entrySet().iterator());
         } catch (IOException ex) {
-            mainController.showAlert("Unable to read / close file",
-                    "If existing, previous data instance remains valid.", Alert.AlertType.ERROR);
+            mainController.showAlert("Error while parsing grid data", ex.getMessage(), Alert.AlertType.ERROR);
+            return false;
         }
+
+        return true;
     }
     
-    public void showGraph(File file) throws FileNotFoundException {
-        InputStream inStream = new FileInputStream(file);
-        showGraph(inStream);
+    public boolean showGraph(File file) {
+        try {
+            InputStream inStream = new FileInputStream(file);
+            return showGraph(inStream);
+        } catch (FileNotFoundException ex) {
+            mainController.showAlert("File not found", ex.getMessage(), Alert.AlertType.ERROR);
+            return false;
+        }
     }
     
     /**
