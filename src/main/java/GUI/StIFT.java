@@ -20,7 +20,7 @@ public class StIFT extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("FXMLMain.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
-        stage.setMinWidth(660);
+        stage.setMinWidth(690);
         stage.setMinHeight(580);
         stage.setScene(scene);
         stage.setTitle("StIFT");

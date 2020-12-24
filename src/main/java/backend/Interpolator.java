@@ -54,9 +54,6 @@ public class Interpolator {
     /**
      * Solves quadratic equation
      * Ax^2 + Bx + C = 0
-     * @param a
-     * @param b
-     * @param c
      * @return Array of root(s) of quadratic equation
      */
     public static double[] quadraticEquation(double a, double b, double c) {
@@ -143,6 +140,7 @@ public class Interpolator {
         //System.out.printf("Dx2*/dx: %f\t%f Dx2*/dy:\t%f\t%f\n", dx2_Idxplus, dx2_Idxminus, dx2_Idyplus, dx2_Idyminus);
 
         //CHANGING STATS !!!
+        //System.out.println(stats);
         makeStatsPositive(stats);
 
         double gamal_1 = (stats.getGamma() / stats.getAlpha()) - 1;

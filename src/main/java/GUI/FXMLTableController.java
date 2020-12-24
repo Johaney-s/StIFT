@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -53,7 +54,7 @@ public class FXMLTableController implements Initializable {
     private final VBox vBox = new VBox();
     private final RangeSlider slider = new RangeSlider();
     private final Button removeButton = new Button("REMOVE FILTER");
-    private final CheckBox checkbox = new CheckBox("Hide empty rows");
+    private final CheckBox checkbox = new CheckBox("Hide empty");
     private FXMLLoadingController loadingController;
 
     /**
@@ -79,8 +80,9 @@ public class FXMLTableController implements Initializable {
 
     private void constructTooltipGraphic() {
         ImageView image = new ImageView(new Image(getClass().getClassLoader().getResource("cancel.png").toString(),
-                8, 8, false, false));
+                11, 11, false, false));
         Label label = new Label("Phase filter:");
+        label.setStyle("-fx-font-size:11px");
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(0.3);
@@ -109,7 +111,7 @@ public class FXMLTableController implements Initializable {
         vBox.getChildren().add(firstRow);
         vBox.getChildren().add(slider);
         vBox.getChildren().add(removeButton);
-        vBox.setMargin(removeButton, new Insets(0, 0, 5, 0));
+        VBox.setMargin(removeButton, new Insets(0, 0, 5, 0));
         vBox.getChildren().add(checkbox);
     }
     
@@ -161,7 +163,7 @@ public class FXMLTableController implements Initializable {
     }
     
     private void showFilterIcon() {
-        Image phaseIcon = new Image("filter.png", 18, 18, true, true);
+        Image phaseIcon = new Image("filter.png", 17, 17, true, true);
         hiddenRowsCounter = new Label();
         hiddenRowsCounter.getStyleClass().add("hiddenRowsCounter");
         hiddenRowsCounter.setBackground(new Background(new BackgroundImage(
@@ -175,13 +177,13 @@ public class FXMLTableController implements Initializable {
         phaseCol.setGraphic(phaseColHeader);
         
         //prevents tooltip from showing by hovering over icon
-        hiddenRowsCounter.setOnMouseMoved(event -> event.consume());
+        hiddenRowsCounter.setOnMouseMoved(Event::consume);
         
         wrappingBox.setOnMouseClicked(event -> {
             if (tooltip.isShowing()) {
                 tooltip.hide();
             } else {
-                tooltip.show(tableView, event.getScreenX() - 110, event.getScreenY() - 135);
+                tooltip.show(tableView, event.getScreenX() - 60, event.getScreenY() - 125);
             }
         });
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
@@ -29,10 +30,13 @@
          <font>
             <Font name="Arial" size="12.0" />
          </font></Label>
-      <Hyperlink fx:id="gitLink" layoutX="58.0" layoutY="190.0" onMouseClicked="#openGit" text="https://github.com/Johaney-s/StIFT">
+      <Hyperlink fx:id="gitLink" layoutX="58.0" layoutY="191.0" onMouseClicked="#openGit" text="https://github.com/Johaney-s/StIFT">
          <font>
             <Font name="Arial" size="12.0" />
-         </font></Hyperlink>
+         </font>
+         <padding>
+            <Insets left="4.0" />
+         </padding></Hyperlink>
       <Button layoutX="18.0" layoutY="225.0" mnemonicParsing="false" onMouseClicked="#openReadme" text="Readme">
          <font>
             <Font name="Arial" size="12.0" />
