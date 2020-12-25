@@ -1,6 +1,9 @@
 
 package backend;
 
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+
 import static backend.State.*;
 
 /**
@@ -122,37 +125,68 @@ public class Star {
     }
 
     //Returns text representation for tableView
-    public String getTemColumnText() {
-        return (temperature == null || temperature.isNaN()) ? "-" : String.format("%.4f±%.4f", temperature, uncertainties[0]);
+    public TextFlow getTemColumnText() {
+        return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
+                : new TextFlow(new Text(String.format("%.4f±%.4f", temperature, uncertainties[0])));
     }
 
-    public String getLumColumnText() {
-        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format("%.4f±%.4f", luminosity, uncertainties[1]);
+    public TextFlow getLumColumnText() {
+        return (luminosity == null || luminosity.isNaN())? new TextFlow(new Text("-"))
+                : new TextFlow(new Text(String.format("%.4f±%.4f", luminosity, uncertainties[1])));
     }
 
-    public String getAgeColumnText() { return getTextRepresentation(age, 2); }
+    public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
 
-    public String getRadColumnText() { return getTextRepresentation(radius, 3); }
+    public TextFlow getRadColumnText() { return getTextRepresentation(radius, 3); }
 
-    public String getMasColumnText() { return getTextRepresentation(mass, 4); }
+    public TextFlow getMasColumnText() { return getTextRepresentation(mass, 4); }
 
-    public String getPhaColumnText() { return getTextRepresentation(phase, 5); }
+    public TextFlow getPhaColumnText() { return getTextRepresentation(phase, 5); }
 
     /**
-     * Returns string representation to fit in tableView
+     * Returns text representation to fit in tableView
      * @param attribute Mean value
      * @param index index of attribute (used as index in lists)
      * @return String representation of value and uncertainty according to valid attributes
      */
-    private String getTextRepresentation(Double attribute, int index) {
-        if (attribute == null || attribute.isNaN()) { return "-"; }
-        if (sd != VALID && error != VALID) { return String.format("%.4f \\SD\\Err", attribute); }
-        if (sd != VALID) { return String.format("%.4f±%.4f \\SD", attribute, errors[index]); }
-        if (error != VALID) { return String.format("%.4f±%.4f \\Err", attribute, deviations[index]); }
-        return String.format("%.4f±%.4f", attribute, uncertainties[index]);
+    private TextFlow getTextRepresentation(Double attribute, int index) {
+        if (attribute == null || attribute.isNaN()) { return new TextFlow(new Text("-")); }
+
+        if (sd != VALID && error != VALID) {
+            Text t1 = new Text(String.format("%.4f ", attribute));
+            Text t2 = new Text("SD");
+            t2.setStrikethrough(true);
+            Text t3 = new Text(" ");
+            Text t4 = new Text("Err");
+            t4.setStrikethrough(true);
+            return new TextFlow(t1, t2, t3, t4);
+        }
+
+        if (sd != VALID) {
+            Text t1 = new Text(String.format("%.4f±", attribute));
+            Text t2 = new Text(String.format("%.4f ", errors[index]));
+            if (errors[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
+            Text t3 = new Text("SD");
+            t3.setStrikethrough(true);
+            return new TextFlow(t1, t2, t3);
+        }
+
+        if (error != VALID) {
+            Text t1 = new Text(String.format("%.4f±", attribute));
+            Text t2 = new Text(String.format("%.4f ", deviations[index]));
+            if (deviations[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
+            Text t3 = new Text("Err");
+            t3.setStrikethrough(true);
+            return new TextFlow(t1, t2, t3);
+        }
+
+        Text t1 = new Text(String.format("%.4f±", attribute));
+        Text t2 = new Text(String.format("%.4f", uncertainties[index]));
+        if (uncertainties[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
+        return new TextFlow(t1, t2);
     }
 
-    //Returns string representation of rounded result
+    //Returns string representation of rounded result (for TextOnly purpose)
     public String getFormattedTemperature() {
         return (temperature == null || temperature.isNaN()) ? "-" : String.format("%.4f %.4f", temperature, deviations[0]);
     }

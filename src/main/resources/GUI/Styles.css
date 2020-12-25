@@ -89,3 +89,7 @@ http://svgicons.sparkk.fr/ */
     -fx-stroke-width: 2;
     -fx-opacity: 55%;
 }
+
+.table-row-cell {
+    -fx-pref-height: 20px;
+}
