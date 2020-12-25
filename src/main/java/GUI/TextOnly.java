@@ -45,6 +45,7 @@ public class TextOnly {
 
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
 
+            System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
             System.out.println("Neighbours:");
             stats.getStar11().printValues();
             stats.getStar12().printValues();
