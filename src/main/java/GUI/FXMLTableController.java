@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -52,6 +53,8 @@ public class FXMLTableController implements Initializable {
     private final TableModel tableModel = new TableModel();
     private final Tooltip tooltip = new Tooltip();
     private final VBox vBox = new VBox();
+    private final Label lowValue = new Label();
+    private final Label highValue = new Label();
     private final RangeSlider slider = new RangeSlider();
     private final Button removeButton = new Button("REMOVE FILTER");
     private final CheckBox checkbox = new CheckBox("Hide empty");
@@ -109,10 +112,22 @@ public class FXMLTableController implements Initializable {
         firstRow.setRight(image);
         firstRow.setLeft(label);
         vBox.getChildren().add(firstRow);
+        BorderPane sliderValues = new BorderPane();
+        sliderValues.leftProperty().setValue(lowValue);
+        sliderValues.rightProperty().setValue(highValue);
+        vBox.getChildren().add(sliderValues);
         vBox.getChildren().add(slider);
         vBox.getChildren().add(removeButton);
         VBox.setMargin(removeButton, new Insets(0, 0, 5, 0));
         vBox.getChildren().add(checkbox);
+
+        slider.lowValueProperty().addListener(
+                (observable, oldValue, newValue) -> lowValue.setText(String.format("%.4f", newValue.doubleValue()))
+        );
+
+        slider.highValueProperty().addListener(
+                (observable, oldValue, newValue) -> highValue.setText(String.format("%.4f", newValue.doubleValue()))
+        );
     }
     
     private void handleFilterChange() {
