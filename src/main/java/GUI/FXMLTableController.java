@@ -5,28 +5,22 @@ import backend.InputFileParser;
 import backend.Star;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import org.controlsfx.control.RangeSlider;
 
 /**
@@ -220,9 +214,8 @@ public class FXMLTableController implements Initializable {
      * Adds whole collection of results obtained from input data file,
      * updates filters
      * @param file Input data file
-     * @throws IOException File not found / could not be read
      */
-    public void setResults(File file) throws IOException {
+    public void setResults(File file) {
         tableView.getScene().getRoot().setDisable(true);
         InputFileParser.extract(file, tableView.getScene().getRoot(), tableModel, loadingController, this);
     }
@@ -246,5 +239,19 @@ public class FXMLTableController implements Initializable {
 
     public void setLoadingController(FXMLLoadingController loadingController) {
         this.loadingController = loadingController;
+    }
+
+    /**
+     * Shows alert when parsing input data file fails
+     */
+    public void inputFailed() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Upload input data file");
+        alert.setContentText("Error occurred, please refer to readme file (Help > About) to check formatting.");
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(this.getClass().getResource("/error.png").toString()));
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node
+                -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE)); //fix for broken linux dialogues
+        alert.showAndWait();
     }
 }

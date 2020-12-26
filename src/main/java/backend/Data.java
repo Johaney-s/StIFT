@@ -123,7 +123,7 @@ public class Data {
      */
     public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc, boolean includeError, boolean includeDeviation) {
         boolean validSD = true;
-        int NUMBER_OF_SIGMA_REGION_POINTS = 8;
+        int NUMBER_OF_SIGMA_REGION_POINTS = 8; //except for no sigma region, then 0 / 8 = still 0
         ComputationStats mean_value_stats = estimate_star(x, y);
         if (!includeError) { mean_value_stats.getResult().setHideError(); }
         if (!includeDeviation) { mean_value_stats.getResult().setHideSD(); }
@@ -134,16 +134,24 @@ public class Data {
         int index = 0;
 
         //Find data points
-        for (double current_x : xs) {
-            for (double current_y : ys) {
-                Star star = estimate_star(current_x, current_y).getResult();
-                if (star ==  null || star.getAge() == null) {
-                    validSD = false;
-                    mean_value_stats.getResult().setInvalidSD();
-                    break;
+        if (temp_unc == 0 && lum_unc == 0) {
+            if (mean_value_stats.getResult().getAge() == null) {
+                validSD = false;
+            } else {
+                stars = new Star[]{mean_value_stats.getResult()}; //no sigma region
+            }
+        } else {
+            for (double current_x : xs) {
+                for (double current_y : ys) {
+                    Star star = estimate_star(current_x, current_y).getResult();
+                    if (star == null || star.getAge() == null) {
+                        validSD = false;
+                        mean_value_stats.getResult().setInvalidSD();
+                        break;
+                    }
+                    stars[index] = star;
+                    index++;
                 }
-                stars[index] = star;
-                index++;
             }
         }
 

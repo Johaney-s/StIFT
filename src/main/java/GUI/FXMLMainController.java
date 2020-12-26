@@ -129,12 +129,7 @@ public class FXMLMainController implements Initializable {
         
         File file = fileChooser.showOpenDialog(vBox.getScene().getWindow());
         if (file != null) {
-            try {
-                tableViewController.setResults(file);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                showAlert("Upload input data file error", ex.getMessage(), AlertType.ERROR);
-            }
+            tableViewController.setResults(file);
         }
     }
     

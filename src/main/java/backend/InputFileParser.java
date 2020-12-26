@@ -27,7 +27,7 @@ public abstract class InputFileParser {
      * @param fxmlTableController parent controller
      * @throws IOException File not found or couldn't be opened
      */
-    public static Void extract(File file, Parent root, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) throws IOException {
+    public static Void extract(File file, Parent root, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) {
         InputService service = new InputService();
         service.setFile(file);
 
@@ -47,6 +47,7 @@ public abstract class InputFileParser {
             public void handle(WorkerStateEvent workerStateEvent) {
                 loadingController.hideLoadingPane();
                 root.getScene().getRoot().setDisable(false); //refactor
+                fxmlTableController.inputFailed();
             }
         });
 
