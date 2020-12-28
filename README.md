@@ -3,7 +3,7 @@
 ## Overview
 StIFT is a tool for estimating stellar characteristics. :sun_with_face:<br />
 Methods of estimation are discussed in
-> Sichevskij, S. G.: "Determining basic characteristics of stars from evolutionary computations ", Astronomy Reports (2017), vol. 61: 193. https://doi.org/10.1134/S1063772917030076
+> Sichevskij, S. G.: "Determining basic characteristics of stars from evolutionary computations", Astronomy Reports (2017), vol. 61: 193. https://doi.org/10.1134/S1063772917030076
 
 ## Features
 - Supported input: filling form, clicking graph or uploading input file
