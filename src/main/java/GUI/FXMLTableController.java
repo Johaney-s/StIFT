@@ -3,6 +3,7 @@ package GUI;
 
 import backend.InputFileParser;
 import backend.Star;
+import backend.TableModel;
 
 import java.io.File;
 import java.net.URL;
@@ -76,7 +77,7 @@ public class FXMLTableController implements Initializable {
     }
 
     private void constructTooltipGraphic() {
-        ImageView image = new ImageView(new Image(getClass().getClassLoader().getResource("cancel.png").toString(),
+        ImageView cancelIcon = new ImageView(new Image(getClass().getClassLoader().getResource("cancel.png").toString(),
                 11, 11, false, false));
         Label label = new Label("Phase filter:");
         label.setStyle("-fx-font-size:11px");
@@ -94,7 +95,7 @@ public class FXMLTableController implements Initializable {
                     updateHiddenRowsCounter();
                 });
 
-        image.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        cancelIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 tooltip.hide();
@@ -103,7 +104,7 @@ public class FXMLTableController implements Initializable {
 
         vBox.setMaxWidth(100);
         BorderPane firstRow = new BorderPane();
-        firstRow.setRight(image);
+        firstRow.setRight(cancelIcon);
         firstRow.setLeft(label);
         vBox.getChildren().add(firstRow);
         BorderPane sliderValues = new BorderPane();
@@ -182,8 +183,10 @@ public class FXMLTableController implements Initializable {
                 BackgroundPosition.CENTER,
                 BackgroundSize.DEFAULT)));
         HBox wrappingBox = new HBox(hiddenRowsCounter);
+        hiddenRowsCounter.setMinWidth(wrappingBox.getPrefWidth());
         Label phaseColHeader = new Label("Phase", wrappingBox);
         phaseCol.setGraphic(phaseColHeader);
+        Tooltip.install(wrappingBox, tooltip);
         
         //prevents tooltip from showing by hovering over icon
         hiddenRowsCounter.setOnMouseMoved(Event::consume);

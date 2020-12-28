@@ -2,7 +2,6 @@ package backend;
 
 import GUI.FXMLLoadingController;
 import GUI.FXMLTableController;
-import GUI.TableModel;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -25,7 +24,6 @@ public abstract class InputFileParser {
      * @param tableModel table storage
      * @param loadingController controller with loading spinner
      * @param fxmlTableController parent controller
-     * @throws IOException File not found or couldn't be opened
      */
     public static Void extract(File file, Parent root, TableModel tableModel, FXMLLoadingController loadingController, FXMLTableController fxmlTableController) {
         InputService service = new InputService();

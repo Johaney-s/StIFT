@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Class for linear interpolation
  */
-public class Interpolator {
+public abstract class Interpolator {
     
     /**
      * Processes four-angled figure into line of evolutionary status

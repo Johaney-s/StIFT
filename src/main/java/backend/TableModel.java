@@ -1,7 +1,6 @@
 
-package GUI;
+package backend;
 
-import backend.Star;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,7 +14,7 @@ import javafx.collections.transformation.FilteredList;
  */
 public class TableModel {
     private final ObservableList<Star> resultList = FXCollections.observableArrayList();
-    private final FilteredList<Star> filteredList = new FilteredList(resultList);
+    private final FilteredList<Star> filteredList = new FilteredList<>(resultList);
     private final Filter filter = new Filter(null, null);
     private boolean saved = true;
     private boolean hideEmptyRows = false;

@@ -1,5 +1,5 @@
 
-package GUI;
+package backend;
 
 /**
  * Class for filtering function
@@ -27,14 +27,15 @@ public class Filter {
     }
     
     public void setBounds(Double lowerBound, Double upperBound) {
-        if (lowerBound != this.lowerBound || upperBound != this.upperBound) {
+        if (lowerBound == null) {
+            isSet = false;
+            return;
+        }
+
+        if (!lowerBound.equals(this.lowerBound) || !upperBound.equals(this.upperBound)) {
             this.lowerBound = lowerBound;
             this.upperBound = upperBound;
             isSet = true;
-        }
-        
-        if (lowerBound == null) {
-            isSet = false;
         }
     }
 }
