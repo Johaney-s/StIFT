@@ -28,7 +28,7 @@ public class TableModel {
      * @param newResult Result to be added to the result list
      */
     public void addResult(Star newResult) {
-        resultList.add(0, newResult);
+        resultList.add(0, newResult); //how to optimize this (observable linked list needed)
         saved = false;
     }
 

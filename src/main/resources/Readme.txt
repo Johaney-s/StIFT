@@ -3,19 +3,25 @@ Stellar isochrone fitting tool
 Author: Johana Supíková
 Should you have any questions or recommendations,
 please contact me at xsupikov@fi.muni.cz.
+Any feedback is highly appreciated.
 ==============================
 
 StIFT finds 4 neighbours for input coordinates,
-interpolates to create a line points and interpolates
+interpolates to create line points and interpolates
 again to obtain result estimation.
 
+Uncertainty is computed as a combination of standard deviation
+and interpolation error. If any is invalid or set to be hidden,
+the SD or Err labels are crossed out in the result respectively.
+
 To upload custom grid, choose Grid > Upload new grid.
-StIFT groups stars of similar mass and shows only every 4th point
-in the line chart, but all points are taken into account when
-doing the computation. Accepted format is a .txt file without a header
-line with space delimiter between attributes. To obtain correct uncertainty
-results, please follow the results table's header for specification
-of values representation:
+Grid data need to be grouped by mass and sorted by evolutionary
+status (phase). StIFT shows only every 4th point in the line chart,
+but all points are taken into account when doing the computation.
+Accepted format is a .txt file WITHOUT A HEADER
+line with space or ',' delimiter between attributes. To obtain correct
+uncertainty results, please follow the results table's header
+for specification of values representation:
 Teff[lg] Lum[lg] Age[dex] Rad Mass Phase
 (example)
 3.66943 -0.72127 8.23306 10.66660 0.75000 5.0000000000

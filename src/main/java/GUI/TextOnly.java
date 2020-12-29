@@ -71,6 +71,7 @@ public class TextOnly {
             //System.out.println(stats);
             Star mean_result = stats.getResult();
 
+            //Show all error values
             System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getErrors()[2],
                     mean_result.getErrors()[3], mean_result.getErrors()[4], mean_result.getErrors()[5]);
 

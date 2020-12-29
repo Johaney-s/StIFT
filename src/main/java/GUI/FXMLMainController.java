@@ -189,14 +189,13 @@ public class FXMLMainController implements Initializable {
         luminosityField.getStyleClass().removeAll("invalid");
         lumUncertaintyField.getStyleClass().removeAll("invalid");
         
-        Double inputTemperatureValue = checkInput(temperatureField);
-        Double inputLuminosityValue = checkInput(luminosityField);
-        Double inputTempUncertainty = checkInput(tempUncertaintyField);
-        Double inputLumUncertainty = checkInput(lumUncertaintyField);
+        Double inputTemVal = checkInput(temperatureField);
+        Double inputLumVal = checkInput(luminosityField);
+        Double inputTemUnc= checkInput(tempUncertaintyField);
+        Double inputLumUnc = checkInput(lumUncertaintyField);
 
-        if (inputTemperatureValue != null && inputTempUncertainty != null &&
-                inputLuminosityValue != null && inputLumUncertainty != null) {
-            manageInput(inputTemperatureValue, inputLuminosityValue, inputTempUncertainty, inputLumUncertainty);
+        if (inputTemVal != null && inputTemUnc != null && inputLumVal != null && inputLumUnc != null) {
+            manageInput(inputTemVal, inputLumVal, inputTemUnc, inputLumUnc);
             temperatureField.clear();
             tempUncertaintyField.setText("0.0");
             luminosityField.clear();
