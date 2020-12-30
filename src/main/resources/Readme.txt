@@ -14,6 +14,8 @@ Uncertainty is computed as a combination of standard deviation
 and interpolation error. If any is invalid or set to be hidden,
 the SD or Err labels are crossed out in the result respectively.
 
+Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
+
 To upload custom grid, choose Grid > Upload new grid.
 Grid data need to be grouped by mass and sorted by evolutionary
 status (phase). StIFT shows only every 4th point in the line chart,

@@ -190,33 +190,33 @@ public class Star {
 
     //Returns string representation of rounded result (for TextOnly purpose)
     public String getFormattedTemperature() {
-        return (temperature == null || temperature.isNaN()) ? "-" : String.format("%.4f %.4f", temperature, deviations[0]);
+        return (temperature == null || temperature.isNaN()) ? "- - -" : String.format("%.4f %.4f", temperature, deviations[0]);
     }
 
     public String getFormattedLuminosity() {
-        return (luminosity == null || luminosity.isNaN()) ? "-" : String.format("%.4f %.4f", luminosity, deviations[1]);
+        return (luminosity == null || luminosity.isNaN()) ? "- - -" : String.format("%.4f %.4f", luminosity, deviations[1]);
     }
 
     public String getFormattedAge() {
-        return (age == null || age.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, age,
+        return (age == null || age.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, age,
                 (Math.abs(errors[2] / age) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[2]),
                 (sd != VALID) ? "-" : String.format("%.4f", deviations[2]));
     }
 
     public String getFormattedRadius() {
-        return (radius == null || radius.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, radius,
+        return (radius == null || radius.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, radius,
                 (Math.abs(errors[3] / radius) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[3]),
                 (sd != VALID) ? "-" : String.format("%.4f", deviations[3]));
     }
 
     public String getFormattedMass() {
-        return (mass == null || mass.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, mass,
+        return (mass == null || mass.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, mass,
                 (Math.abs(errors[4] / mass) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[4]),
                 (sd != VALID) ? "-" : String.format("%.4f", deviations[4]));
     }
 
     public String getFormattedPhase() {
-        return (phase == null || phase.isNaN()) ? "-" : String.format(ROUNDING_FORMAT, phase,
+        return (phase == null || phase.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, phase,
                 (Math.abs(errors[5] / phase) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f",errors[5]),
                 (sd != VALID) ? "-" : String.format("%.4f", deviations[5]));
     }
