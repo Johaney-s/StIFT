@@ -232,4 +232,8 @@ public class ComputationStats {
     public void setErrors(double[] errors) {
         result.setErrors(errors);
     }
+
+    public Star[] getNeighbours() {
+        return new Star[]{star11, star12, star21, star22};
+    }
 }

@@ -92,10 +92,10 @@ public abstract class Interpolator {
      * @param stats Computation stats representing current computation for [x,y] input
      */
     public static void interpolateAllCharacteristics(ComputationStats stats) {
-        double[] att11 = stats.getStar11().getAllAttributes();
-        double[] att12 = stats.getStar12().getAllAttributes();
-        double[] att21 = stats.getStar21().getAllAttributes();
-        double[] att22 = stats.getStar22().getAllAttributes();
+        Double[] att11 = stats.getStar11().getAllAttributes();
+        Double[] att12 = stats.getStar12().getAllAttributes();
+        Double[] att21 = stats.getStar21().getAllAttributes();
+        Double[] att22 = stats.getStar22().getAllAttributes();
         Double[] finalEstimation = new Double[att11.length];
         Double[] result1Estimation = new Double[att11.length];
         Double[] result2Estimation = new Double[att11.length];
@@ -186,6 +186,11 @@ public abstract class Interpolator {
         stats.setEpsilon(Math.abs(stats.getEpsilon()));
         stats.setPhi(Math.abs(stats.getPhi()));
         stats.setPsi(Math.abs(stats.getPsi()));
+    }
+
+    /** y = y0 + (x - x0) * ((y1 - y0) / (x1 - x0)) */
+    public static double interpolate(double x, double x0, double x1, double y0, double y1) {
+        return y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
     }
 
 }

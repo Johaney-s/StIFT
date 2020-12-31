@@ -68,8 +68,8 @@ public class Star {
      * Getter for all attributes as an array
      * @return Array of {temperature, luminosity, age, radius, mass, phase}
      */
-    public double[] getAllAttributes() {
-        return new double[]{getTemperature(), getLuminosity(), getAge(), getRadius(), getMass(), getPhase()};
+    public Double[] getAllAttributes() {
+        return new Double[]{getTemperature(), getLuminosity(), getAge(), getRadius(), getMass(), getPhase()};
     }
 
     /**
@@ -188,13 +188,13 @@ public class Star {
         return new TextFlow(t1, t2);
     }
 
-    //Returns string representation of rounded result (for TextOnly purpose)
+    //Returns string representation of rounded result (for export purpose)
     public String getFormattedTemperature() {
-        return (temperature == null || temperature.isNaN()) ? "- - -" : String.format("%.4f %.4f", temperature, deviations[0]);
+        return (String.format("%.4f %.4f", temperature, deviations[0]));
     }
 
     public String getFormattedLuminosity() {
-        return (luminosity == null || luminosity.isNaN()) ? "- - -" : String.format("%.4f %.4f", luminosity, deviations[1]);
+        return (String.format("%.4f %.4f", luminosity, deviations[1]));
     }
 
     public String getFormattedAge() {
@@ -266,4 +266,6 @@ public class Star {
     public boolean isValidSD() {
         return sd == VALID;
     }
+
+    public boolean errorIsSet() { return errors[0] != Double.MAX_VALUE; }
 }
