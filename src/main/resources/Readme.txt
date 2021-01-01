@@ -6,18 +6,23 @@ please contact me at xsupikov@fi.muni.cz.
 Any feedback is highly appreciated.
 ==============================
 
+Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
+PARSEC tracks (Bressan et al. (2012))
+and COLIBRI tracks (Marigo et al. (2013)).
+
 StIFT finds 4 neighbours for input coordinates,
 interpolates to create line points and interpolates
 again to obtain result estimation.
+
+The method is described by (Malkov et al. (2010))
+https://doi.org/10.1111/j.1365-2966.2009.15696.x
 
 Uncertainty is computed as a combination of standard deviation
 and interpolation error. If any is invalid or set to be hidden,
 the SD or Err labels are crossed out in the result respectively.
 
-Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
-
 To upload custom grid, choose Grid > Upload new grid.
-Grid data need to be grouped by mass and sorted by evolutionary
+Grid data need to be grouped by MASS and sorted by evolutionary
 status (phase). StIFT shows only every 4th point in the line chart,
 but all points are taken into account when doing the computation.
 Accepted format is a .txt file WITHOUT A HEADER

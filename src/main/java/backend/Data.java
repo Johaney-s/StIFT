@@ -12,6 +12,7 @@ import java.util.Map;
 public class Data {
     private Map<Double, ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
+    public static double TRACKS_DELIMITER = 0.01;
     
     public Data() {
        groupedData = new HashMap<>();
@@ -23,7 +24,8 @@ public class Data {
      * @param star New star
      */
     public void addStar(Star star){        
-        if (!currentGroup.isEmpty() && Math.abs(currentGroup.get(currentGroup.size() - 1).getMass() - star.getMass()) > 0.05) {
+        if (!currentGroup.isEmpty() && Math.abs(currentGroup.get(currentGroup.size() - 1).getMass() - star.getMass())
+                > TRACKS_DELIMITER) {
             addCurrentGroupToGroupedData();
             currentGroup = new ArrayList<>();
         }
@@ -65,6 +67,7 @@ public class Data {
         Star lowerLeft = null;
 
         for (ArrayList<Star> list : getGroupedData().values()) {
+            //if (list.get(0).getPhase() != 3) { continue;} restrain phase later here
             if (starsMatch(stats, list.get(0))){ return false; }///NO NEIGHBOURS returned, BUT MATCH
             if (list.size() > 1) {
                 int index = 0;
@@ -107,30 +110,6 @@ public class Data {
         return (upperLeft != null && lowerRight != null);
     }
 
-    /**
-     * Estimates characteristics for given input [x,y]
-     * @param x X coordinate of user input
-     * @param y Y coordinate of user input
-     * @return Stats with either result containing null values or computed stats parameters
-     */
-    public ComputationStats estimate_star(double x, double y) {
-        ComputationStats stats = new ComputationStats(x, y);
-        if (!findNearestStars(stats)) {
-            if (stats.getResult() != null) {return stats;} //match was found
-            stats.setResult(new Star(x, y, null, null, null, null));
-            if (sidesMatch(stats, x, y)) { return stats; } //give pairs a chance
-            return stats;
-        }
-
-        if (sidesMatch(stats, x, y)) {
-            return stats;
-        }
-
-        Interpolator.determineEvolutionaryStatus(stats);
-        Interpolator.interpolateAllCharacteristics(stats);
-        return stats;
-    }
-
     /** Check, if any side intersect the input */
     private boolean sidesMatch(ComputationStats stats, double x, double y) {
         Star[] neighbours = stats.getNeighbours();
@@ -169,6 +148,7 @@ public class Data {
 
         if (params[2] != null) {
             stats.setResult(new Star(params));
+
             //SET ERROR ALSO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             stats.setErrors(new double[]{0, 0, 0, 0}); //prevent nullpointer for now
             return true;
@@ -177,7 +157,7 @@ public class Data {
         return false;
     }
 
-    /** Return true, if input point is too close star from grid and set stats' error and mean values */
+    /** Return true, if input point is too close to a star from grid and set stats' error and mean values */
     private boolean starsMatch(ComputationStats stats, Star star) {
         double x_error = Math.abs(star.getTemperature() - stats.getX());
         double y_error = Math.abs(star.getLuminosity() - stats.getY());
@@ -194,6 +174,30 @@ public class Data {
             return true;
     }
         return false;
+    }
+
+    /**
+     * Estimates characteristics for given input [x,y]
+     * @param x X coordinate of user input
+     * @param y Y coordinate of user input
+     * @return Stats with either result containing null values or computed stats parameters
+     */
+    public ComputationStats estimate_star(double x, double y) {
+        ComputationStats stats = new ComputationStats(x, y);
+        if (!findNearestStars(stats)) {
+            if (stats.getResult() != null) {return stats;} //match was found
+            stats.setResult(new Star(x, y, null, null, null, null));
+            if (sidesMatch(stats, x, y)) { return stats; } //give pairs a chance
+            return stats;
+        }
+
+        if (sidesMatch(stats, x, y)) {
+            return stats;
+        }
+
+        Interpolator.determineEvolutionaryStatus(stats);
+        Interpolator.interpolateAllCharacteristics(stats);
+        return stats;
     }
 
     /**
@@ -269,6 +273,7 @@ public class Data {
         if (mean_value_stats.getResult().getAge() != null && !mean_value_stats.getResult().errorIsSet()) {
             Interpolator.determineError(mean_value_stats);
         }
+        mean_value_stats.countUncertainty();
         return mean_value_stats;
     }
 

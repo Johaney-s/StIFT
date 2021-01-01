@@ -234,12 +234,6 @@ public class Star {
     public void setErrors(double[] input_errors) {
         this.errors = new double[]{0, 0, (age / 100) * input_errors[0], (radius / 100) * input_errors[1],
                 (mass / 100) * input_errors[2], (phase / 100) * input_errors[3]};
-        this.uncertainties[0] = deviations[0];
-        this.uncertainties[1] = deviations[1];
-        this.uncertainties[2] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[2], 2) + Math.pow(errors[2], 2)) : errors[2];
-        this.uncertainties[3] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[3], 2) + Math.pow(errors[3], 2)) : errors[3];
-        this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
-        this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
     }
 
     public double[] getErrors() {
@@ -268,4 +262,15 @@ public class Star {
     }
 
     public boolean errorIsSet() { return errors[0] != Double.MAX_VALUE; }
+
+    /** Call when errors are set */
+    public void countUncertainty() {
+        this.uncertainties[0] = deviations[0];
+        this.uncertainties[1] = deviations[1];
+        this.uncertainties[2] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[2], 2) + Math.pow(errors[2], 2)) : errors[2];
+        this.uncertainties[3] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[3], 2) + Math.pow(errors[3], 2)) : errors[3];
+        this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
+        this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
+
+    }
 }

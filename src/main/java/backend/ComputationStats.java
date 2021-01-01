@@ -233,6 +233,10 @@ public class ComputationStats {
         result.setErrors(errors);
     }
 
+    public void countUncertainty() {
+        result.countUncertainty();
+    }
+
     public Star[] getNeighbours() {
         return new Star[]{star11, star12, star21, star22};
     }
