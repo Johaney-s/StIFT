@@ -20,6 +20,7 @@ https://doi.org/10.1111/j.1365-2966.2009.15696.x
 Uncertainty is computed as a combination of standard deviation
 and interpolation error. If any is invalid or set to be hidden,
 the SD or Err labels are crossed out in the result respectively.
+Enlarge the width of the window if you can't see them.
 
 To upload custom grid, choose Grid > Upload new grid.
 Grid data need to be grouped by MASS and sorted by evolutionary
@@ -52,3 +53,11 @@ TEMPERATURE LUMINOSITY TEMPuncertainty LUMuncertainty
 ...
 attributes separated by space. Missing uncertainties attributes
 will be set to 0.
+
+For filtering results, use phase filter in the phase column header.
+Results filtered out won't appear in the export file.
+
+For ignoring certain phases in the interpolation, restrict them
+using checkboxes. Keep in mind that the result can be estimated
+in the phase that is filtered out (for example if phase 3 is ignored
+but phases 2 and 4 are chosen as the nearest tracks).

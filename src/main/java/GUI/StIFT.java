@@ -21,7 +21,7 @@ public class StIFT extends Application {
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         stage.setMinWidth(690);
-        stage.setMinHeight(580);
+        stage.setMinHeight(600);
         stage.setScene(scene);
         stage.setTitle("StIFT");
         stage.getProperties().put("hostServices", this.getHostServices());

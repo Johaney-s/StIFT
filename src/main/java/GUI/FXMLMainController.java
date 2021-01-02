@@ -6,7 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
+
 import javafx.animation.FadeTransition;
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
@@ -17,6 +18,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -55,10 +58,11 @@ public class FXMLMainController implements Initializable {
     private CheckBox includeErrorBox;
     @FXML
     private CheckBox includeDeviationBox;
-    
-    private final FadeTransition fadeIn = new FadeTransition(
-        Duration.millis(1000)
-    );
+    @FXML
+    private GridPane phasePane;
+
+    ArrayList<CheckBox> allCheckBoxes = new ArrayList<>();
+    private final FadeTransition fadeIn = new FadeTransition(Duration.millis(1000));
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -66,6 +70,7 @@ public class FXMLMainController implements Initializable {
         lineChartController.setMainController(this);
         InputStream inStream = getClass().getResourceAsStream("/Data.txt");
         lineChartController.showGraph(inStream);
+        fillPhaseBoxes();
         tableViewController.getTableModel().reset();
         tableViewController.setLoadingController(loadingController);
         
@@ -111,6 +116,7 @@ public class FXMLMainController implements Initializable {
         if (file != null) {
             if (lineChartController.showGraph(file)) {
                 tableViewController.reset();
+                fillPhaseBoxes();
                 showAlert("Upload new grid", "New grid uploaded successfully.", AlertType.INFORMATION);
             }
         }
@@ -145,6 +151,7 @@ public class FXMLMainController implements Initializable {
             InputStream inStream = getClass().getResourceAsStream("/Data.txt");
             lineChartController.showGraph(inStream);
             tableViewController.reset();
+            fillPhaseBoxes();
             showAlert("Reset grid", "Grid successfully reset to default.", AlertType.INFORMATION);
         }
     }
@@ -180,7 +187,7 @@ public class FXMLMainController implements Initializable {
         }
     }
     
-    //-- INPUT GROUP -- Go button
+    //-- INPUT GROUP -- Go button, phase checkboxes
     @FXML
     public void goButtonAction() {
         informationLabel.setVisible(false);
@@ -200,6 +207,27 @@ public class FXMLMainController implements Initializable {
             tempUncertaintyField.setText("0.0");
             luminosityField.clear();
             lumUncertaintyField.setText("0.0");
+        }
+    }
+
+    /**
+     * Fill grid pane with checkboxes for phases
+     */
+    private void fillPhaseBoxes() {
+        phasePane.getChildren().clear();
+        allCheckBoxes.clear();
+        List<Short> phasesValues = new ArrayList<>(GridFileParser.getCurrentData().getCurrentPhases());
+        phasesValues.sort(Comparator.naturalOrder());
+        if (GridFileParser.getCurrentData().getCurrentPhases().size() > 12) {
+            phasePane.add(new Label("Not"), 0, 0);
+            phasePane.add(new Label("available"), 0, 1);
+        } else {
+            for (int i = 0; i < phasesValues.size(); i++) {
+                CheckBox checkBox = new CheckBox(phasesValues.get(i).toString());
+                allCheckBoxes.add(checkBox);
+                phasePane.add(checkBox, i % 3, i / 3);
+                checkBox.setSelected(true);
+            }
         }
     }
 
@@ -259,7 +287,11 @@ public class FXMLMainController implements Initializable {
     public void manageInput(double x, double y, double temp_unc, double lum_unc) {
         boolean includeError = includeErrorBox.isSelected();
         boolean includeDeviation = includeDeviationBox.isSelected();
-        Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation);
+        HashSet<Short> ignoredPhases = new HashSet<>();
+        for (CheckBox checkBox : allCheckBoxes) {
+            if (!checkBox.isSelected()) { ignoredPhases.add(Short.parseShort(checkBox.getText())); }
+        }
+        Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation, ignoredPhases);
         tableViewController.handleNewResult(result);
     }
     

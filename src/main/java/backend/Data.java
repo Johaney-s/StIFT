@@ -1,10 +1,7 @@
 
 package backend;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Data represented by a Map of stars (values) grouped by initial mass (key)
@@ -13,10 +10,12 @@ public class Data {
     private Map<Double, ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
     public static double TRACKS_DELIMITER = 0.01;
+    private final HashSet<Short> currentPhases;
     
     public Data() {
        groupedData = new HashMap<>();
        currentGroup = new ArrayList<>();
+       currentPhases =  new HashSet<>();
     }
    
     /**
@@ -31,6 +30,7 @@ public class Data {
         }
 
         currentGroup.add(star);
+        currentPhases.add(star.getPhase().shortValue());
     }
 
     public void addCurrentGroupToGroupedData() {
@@ -60,20 +60,22 @@ public class Data {
      * @param stats Computation stats including necessary [x,y] input coordinates
      * @return true if 4 neighbours found, false otherwise (including star match)
      */
-    public boolean findNearestStars(ComputationStats stats) {
+    public boolean findNearestStars(ComputationStats stats, HashSet<Short> ignoredPhases) {
+        if (ignoredPhases.size() == GridFileParser.getCurrentData().getCurrentPhases().size()) { return false; }
         Star upperLeft = null;
         Star upperRight = null;
         Star lowerRight = null;
         Star lowerLeft = null;
 
         for (ArrayList<Star> list : getGroupedData().values()) {
-            //if (list.get(0).getPhase() != 3) { continue;} restrain phase later here
-            if (starsMatch(stats, list.get(0))){ return false; }///NO NEIGHBOURS returned, BUT MATCH
+            if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))){
+                return false; ///NO NEIGHBOURS returned, BUT MATCH
+            }
             if (list.size() > 1) {
-                int index = 0;
-                while (index + 1 < list.size()) {
+                for(int index = 0; index + 1 < list.size(); index++) {
                     Star first = list.get(index);
                     Star second = list.get(index + 1);
+                    if (ignoredPhases.contains(first.getPhase().shortValue())) { continue; } //ignore ignored phase
                     if (starsMatch(stats, second)) { return false; }///NO NEIGHBOURS returned, BUT MATCH
 
                     if ((first.getTemperature() <= stats.getX() && second.getTemperature() > stats.getX()) ||
@@ -98,7 +100,6 @@ public class Data {
                             }
                         }
                     }
-                    index++;
                 }
             }
         }
@@ -182,9 +183,9 @@ public class Data {
      * @param y Y coordinate of user input
      * @return Stats with either result containing null values or computed stats parameters
      */
-    public ComputationStats estimate_star(double x, double y) {
+    public ComputationStats estimate_star(double x, double y, HashSet<Short> ignoredPhases) {
         ComputationStats stats = new ComputationStats(x, y);
-        if (!findNearestStars(stats)) {
+        if (!findNearestStars(stats, ignoredPhases)) {
             if (stats.getResult() != null) {return stats;} //match was found
             stats.setResult(new Star(x, y, null, null, null, null));
             if (sidesMatch(stats, x, y)) { return stats; } //give pairs a chance
@@ -200,6 +201,10 @@ public class Data {
         return stats;
     }
 
+    public ComputationStats estimate_star(double x, double y) {
+        return estimate_star(x, y, new HashSet<Short>());
+    }
+
     /**
      * Estimate characteristics and uncertainties for given input and uncertainties, save results to stats
      * Call this method directly if stats are further used
@@ -209,10 +214,11 @@ public class Data {
      * @param lum_unc Luminosity uncertainty
      * @return stats with uncertainties_estimations filled out
      */
-    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc, boolean includeError, boolean includeDeviation) {
+    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc, boolean includeError,
+                                           boolean includeDeviation, HashSet<Short> ignoredPhases) {
         boolean validSD = true;
         int NUMBER_OF_SIGMA_REGION_POINTS = 8; //except for no sigma region, then 0 / 8 = still 0
-        ComputationStats mean_value_stats = estimate_star(x, y);
+        ComputationStats mean_value_stats = estimate_star(x, y, ignoredPhases);
         if (!includeError) { mean_value_stats.getResult().setHideError(); }
         if (!includeDeviation) { mean_value_stats.getResult().setHideSD(); }
         mean_value_stats.getResult().setInputUncertainties(temp_unc, lum_unc);
@@ -277,13 +283,18 @@ public class Data {
         return mean_value_stats;
     }
 
+    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc) {
+        return estimate_stats(x, y, temp_unc, lum_unc, true, true, new HashSet<>());
+    }
+
     /** Returns completely estimated star including uncertainties */
-    public Star estimate(double x, double y, double x_unc, double y_unc, boolean includeError, boolean includeDeviation) {
-        return estimate_stats(x, y, x_unc, y_unc, includeError, includeDeviation).getResult();
+    public Star estimate(double x, double y, double x_unc, double y_unc, boolean includeError,
+                         boolean includeDeviation, HashSet<Short> ignoredPhases) {
+        return estimate_stats(x, y, x_unc, y_unc, includeError, includeDeviation, ignoredPhases).getResult();
     }
 
     public Star estimate(double x, double y, double x_unc, double y_unc) {
-        return estimate(x, y, x_unc, y_unc, true, true);
+        return estimate(x, y, x_unc, y_unc, true, true, new HashSet<>());
     }
 
     /**
@@ -291,5 +302,9 @@ public class Data {
      */
     public Map<Double, ArrayList<Star>> getGroupedData() {
         return groupedData;
-    }    
+    }
+
+    public HashSet<Short> getCurrentPhases() {
+        return currentPhases;
+    }
 }

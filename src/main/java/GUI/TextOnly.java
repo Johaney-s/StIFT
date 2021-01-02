@@ -41,21 +41,23 @@ public class TextOnly {
             data = GridFileParser.extract(is);
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
-            ComputationStats stats = data.estimate_stats(x, y, x_unc, y_unc, true, true);
-
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
-
+            ComputationStats stats = data.estimate_stats(x, y, x_unc, y_unc);
             System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
-            if (stats.getStar11() == null || stats.getStar22() == null) {
-                if (stats.getResult() != null) {
-                    System.out.println("Star match");
-                }
-            } else {
-                System.out.println("Neighbours:");
+
+            System.out.println("Neighbours:");
+            if (stats.getStar11() != null) {
                 stats.getStar11().printValues();
                 stats.getStar12().printValues();
+            }
+
+            if (stats.getStar22() != null) {
                 stats.getStar21().printValues();
                 stats.getStar22().printValues();
+            }
+
+            if (stats.getResult() != null && stats.getStar11() == null && stats.getStar21() == null) {
+                    System.out.println("Star match");
             }
 
             if (stats.getResult1_() != null) {
