@@ -80,25 +80,19 @@ public class Data {
 
                     if ((first.getTemperature() <= stats.getX() && second.getTemperature() > stats.getX()) ||
                             (first.getTemperature() > stats.getX() && second.getTemperature() <= stats.getX())) {
-                        if (Math.abs(intersection(first, second, stats.getX(), stats.getY())[1] - stats.getY()) < 0.0001) {
-                            lowerLeft = first;
-                            lowerRight = second;
-                            upperLeft = first;
-                            upperRight = second;
-                        }
-                        else if (intersection(first, second, stats.getX(), stats.getY())[1] < stats.getY()) {
+                       if (intersection(first, second, stats.getX(), stats.getY())[1] < stats.getY()) {
                             if (lowerRight == null || intersection(lowerLeft, lowerRight, stats.getX(), stats.getY())[1]
                                     < intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 lowerLeft = first;
                                 lowerRight = second;
                             }
-                        } else {
+                       } else {
                             if (upperRight == null || intersection(upperLeft, upperRight, stats.getX(), stats.getY())[1]
-                                    > intersection(first, second, stats.getX(), stats.getY())[1]) {
+                                    >= intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 upperLeft = first;
                                 upperRight = second;
                             }
-                        }
+                       }
                     }
                 }
             }
@@ -109,53 +103,6 @@ public class Data {
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
         return (upperLeft != null && lowerRight != null);
-    }
-
-    /** Check, if any side intersect the input */
-    private boolean sidesMatch(ComputationStats stats, double x, double y) {
-        Star[] neighbours = stats.getNeighbours();
-        Double[] params = new Double[]{x, y, null, null, null, null};
-
-        //check horizontal
-        if (neighbours[0] != null && Math.abs(intersection(neighbours[0], neighbours[1], x, y)[1] - y) < 0.0001) {
-            for (int i = 2; i < 6; i++) {
-                params[i] = Interpolator.interpolate(x, neighbours[0].getTemperature(), neighbours[1].getTemperature(),
-                        neighbours[0].getAllAttributes()[i], neighbours[1].getAllAttributes()[i]);
-            }
-        } else if (neighbours[2] != null && Math.abs(intersection(neighbours[2], neighbours[3], x, y)[1] - y) < 0.0001) {
-                for (int i = 2; i < 6; i++) {
-                    params[i] = Interpolator.interpolate(x, neighbours[2].getTemperature(), neighbours[3].getTemperature(),
-                            neighbours[2].getAllAttributes()[i], neighbours[3].getAllAttributes()[i]);
-                }
-        } else if (neighbours[2] != null && neighbours[0] != null) { //check vertical
-            Star l_lo = (neighbours[0].getTemperature() < neighbours[1].getTemperature()) ? neighbours[0] : neighbours[1];
-            Star r_lo = (neighbours[0].getTemperature() < neighbours[1].getTemperature()) ? neighbours[1] : neighbours[0];
-            Star l_up = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[2] : neighbours[3];
-            Star r_up = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[3] : neighbours[2];
-            double left_insct = intersection(l_lo, l_up, x, y)[0];
-            double right_insct = intersection(r_up, r_lo, x, y)[0];
-            if (Math.abs(left_insct - x) < 0.0001) {
-                for (int i = 2; i < 6; i++) {
-                    params[i] = Interpolator.interpolate(y, l_lo.getLuminosity(), l_up.getLuminosity(),
-                            l_lo.getAllAttributes()[i], l_up.getAllAttributes()[i]);
-                }
-            } else if (Math.abs(right_insct - x) < 0.0001){
-                for (int i = 2; i < 6; i++) {
-                    params[i] = Interpolator.interpolate(y, r_lo.getLuminosity(), r_up.getLuminosity(),
-                            r_lo.getAllAttributes()[i], r_up.getAllAttributes()[i]);
-                }
-            }
-        }
-
-        if (params[2] != null) {
-            stats.setResult(new Star(params));
-
-            //SET ERROR ALSO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            stats.setErrors(new double[]{0, 0, 0, 0}); //prevent nullpointer for now
-            return true;
-        }
-
-        return false;
     }
 
     /** Return true, if input point is too close to a star from grid and set stats' error and mean values */
@@ -188,11 +135,7 @@ public class Data {
         if (!findNearestStars(stats, ignoredPhases)) {
             if (stats.getResult() != null) {return stats;} //match was found
             stats.setResult(new Star(x, y, null, null, null, null));
-            if (sidesMatch(stats, x, y)) { return stats; } //give pairs a chance
-            return stats;
-        }
-
-        if (sidesMatch(stats, x, y)) {
+            //if (sidesMatch(stats, x, y)) { return stats; } //give pairs a chance
             return stats;
         }
 
