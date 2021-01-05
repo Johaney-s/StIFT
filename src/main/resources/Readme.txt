@@ -7,8 +7,7 @@ Any feedback is highly appreciated.
 ==============================
 
 Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
-PARSEC tracks (Bressan et al. (2012))
-and COLIBRI tracks (Marigo et al. (2013)).
+PARSEC and COLIBRI tracks (Marigo et al. (2017)).
 
 StIFT finds 4 neighbours for input coordinates,
 interpolates to create line points and interpolates

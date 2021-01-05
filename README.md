@@ -30,7 +30,7 @@ This app is the topic of my bachelor's thesis at FI MUNI. It should be useful to
 > MALKOV, O. Yu.; SICHEVSKIJ, S. G.; KOVALEVA, D. A.: "Parametrization of single and binary stars", Monthly Notices of the Royal Astronomical Society. (2009), vol. 401, no. 1: 695.  https://doi.org/10.1111/j.1365-2966.2009.15696.x
 
 The grid data is grouped by mass and sorted by evolutionary status (phase). The default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd containing
-PARSEC tracks (Bressan et al. (2012)) and COLIBRI tracks (Marigo et al. (2013)).
+PARSEC and COLIBRI tracks (Marigo et al. (2017)).
 After the input is entered, four neighbours are found in the grid data and interpolated for line points estimation. Line points are then interpolated for final result estimation. Error is computed from the partial derivation of the interpolation formulas, and the standard deviation is estimated from estimations of points created by taking into account input uncertainties. Final uncertainty is the combination of both.
 
 ## Text mode
