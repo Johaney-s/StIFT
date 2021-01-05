@@ -29,12 +29,12 @@ Accepted format is a .txt file WITHOUT A HEADER
 line with space or ',' delimiter between attributes. To obtain correct
 uncertainty results, please follow the results table's header
 for specification of values representation:
-Teff[lg] Lum[lg] Age[dex] Rad Mass Phase
+Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase
 (example)
-3.66943 -0.72127 8.23306 10.66660 0.75000 5.0000000000
-3.66932 -0.72112 8.26683 10.66690 0.75000 5.0005302886
-3.66922 -0.72095 8.30172 10.66718 0.75000 5.0011231535
-3.66912 -0.72077 8.33767 10.66747 0.75000 5.0017859950
+3.66943 -0.72127 8.23306 10.66660 0.75000 5.00000
+3.66932 -0.72112 8.26683 10.66690 0.75000 5.00053
+3.66922 -0.72095 8.30172 10.66718 0.75000 5.00112
+3.66912 -0.72077 8.33767 10.66747 0.75000 5.00179
 ...
 
 To upload input data, choose Data > Upload input data file.
