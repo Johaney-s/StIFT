@@ -153,7 +153,7 @@ public class Star {
     private TextFlow getTextRepresentation(Double attribute, int index) {
         if (attribute == null || attribute.isNaN()) { return new TextFlow(new Text("-")); }
 
-        if (sd != VALID && (error != VALID || Math.abs(errors[index] / attribute) > BIG_ERROR_RATIO)) {
+        if ((sd != VALID || deviations[index].isNaN()) && (error != VALID || Math.abs(errors[index] / attribute) > BIG_ERROR_RATIO)) {
             Text t1 = new Text(String.format("%.4f ", attribute));
             Text t2 = new Text("SD");
             t2.setStrikethrough(true);
@@ -173,7 +173,7 @@ public class Star {
         }
 
 
-        if (sd != VALID) {
+        if ((sd != VALID || deviations[index].isNaN())) {
             Text t1 = new Text(String.format("%.4f", attribute));
             Text t2 = new Text(String.format("±%.4f ", errors[index]));
             if (errors[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
@@ -200,25 +200,25 @@ public class Star {
     public String getFormattedAge() {
         return (age == null || age.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, age,
                 (Math.abs(errors[2] / age) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[2]),
-                (sd != VALID) ? "-" : String.format("%.4f", deviations[2]));
+                (sd != VALID || deviations[2].isNaN()) ? "-" : String.format("%.4f", deviations[2]));
     }
 
     public String getFormattedRadius() {
         return (radius == null || radius.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, radius,
                 (Math.abs(errors[3] / radius) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[3]),
-                (sd != VALID) ? "-" : String.format("%.4f", deviations[3]));
+                (sd != VALID || deviations[3].isNaN()) ? "-" : String.format("%.4f", deviations[3]));
     }
 
     public String getFormattedMass() {
         return (mass == null || mass.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, mass,
                 (Math.abs(errors[4] / mass) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[4]),
-                (sd != VALID) ? "-" : String.format("%.4f", deviations[4]));
+                (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[4]));
     }
 
     public String getFormattedPhase() {
         return (phase == null || phase.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, phase,
                 (Math.abs(errors[5] / phase) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f",errors[5]),
-                (sd != VALID) ? "-" : String.format("%.4f", deviations[5]));
+                (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[5]));
     }
 
     public void printAllUncertainties() {
@@ -271,6 +271,5 @@ public class Star {
         this.uncertainties[3] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[3], 2) + Math.pow(errors[3], 2)) : errors[3];
         this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
         this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
-
     }
 }
