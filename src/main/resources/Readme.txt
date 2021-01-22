@@ -9,9 +9,6 @@ Any feedback is highly appreciated.
 Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
 PARSEC and COLIBRI tracks (Marigo et al. (2017)).
 
-Default grid phase values coding (http://stev.oapd.inaf.it/cmd_3.4/faq.html):
-0 = PMS, 1 = MS, 2 = SGB, 3 = RGB, 4-6 = CHEB, 7 = EAGB, 8 = TPAGB, 9 = post-AGB
-
 StIFT finds 4 neighbours for input coordinates,
 interpolates to create line points and interpolates
 again to obtain result estimation.
@@ -28,12 +25,11 @@ To upload custom grid, choose Grid > Upload new grid.
 Grid data need to be grouped by MASS and sorted by evolutionary
 status (phase). StIFT shows only every 4th point in the line chart,
 but all points are taken into account when doing the computation.
-Accepted format is a .txt file WITHOUT A HEADER
-line with space or ',' delimiter between attributes. To obtain correct
+Accepted format is a .txt file, any header needs to start with # symbol.
+Use space or ',' delimiter between attributes. To obtain correct
 uncertainty results, please follow the results table's header
 for specification of values representation:
-Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase
-(example)
+#Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase
 3.66943 -0.72127 8.23306 10.66660 0.75000 5.00000
 3.66932 -0.72112 8.26683 10.66690 0.75000 5.00053
 3.66922 -0.72095 8.30172 10.66718 0.75000 5.00112
@@ -42,14 +38,12 @@ Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase
 
 To upload input data, choose Data > Upload input data file.
 Provide a .txt file without header with lines containing either
-TEMPERATURE LUMINOSITY
-(example)
+#TEMPERATURE LUMINOSITY
 3.944 1.508
 4.053 2.383
 ...
 or
-TEMPERATURE LUMINOSITY TEMPuncertainty LUMuncertainty
-(example)
+#TEMPERATURE LUMINOSITY TEMPuncertainty LUMuncertainty
 3.944 1.508 0.014 0.023
 4.053 2.383 0.008 0.027
 ...

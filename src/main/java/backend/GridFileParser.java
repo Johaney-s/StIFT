@@ -25,14 +25,21 @@ public abstract class GridFileParser {
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
         Data data = new Data();
-        String row;
+        String row = reader.readLine();
         int recordCounter = 1;
 
-        while ((row = reader.readLine()) != null) {
+        while (row != null && row.length() > 0 && row.charAt(0) == '#') { //skip comments in file's header
+            recordCounter++;
+            row = reader.readLine();
+        }
+
+        while (row != null) {
             try {
                 String[] record = row.split(",|\\s"); //delimiters
 
                 if (record.length != 6) { //validate number of attributes
+                    reader.close();
+                    inStream.close();
                     throw new IOException("Invalid number of attributes on line " + recordCounter);
                 }
 
@@ -45,7 +52,10 @@ public abstract class GridFileParser {
                 Star star = new Star(temperature, luminosity, age, radius, mass, phase);
                 data.addStar(star);
                 recordCounter++;
+                row = reader.readLine();
             } catch (NumberFormatException e){
+                reader.close();
+                inStream.close();
                 throw new IOException("Invalid argument on line " + recordCounter);
             }
         }

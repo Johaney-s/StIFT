@@ -79,12 +79,17 @@ public abstract class InputFileParser {
                 protected Void call() throws Exception {
                     ArrayList<Star> newResults = getResults();
                     BufferedReader reader = new BufferedReader(new FileReader(file));
-                    String row;
+                    String row = reader.readLine();
 
-                    while ((row = reader.readLine()) != null) {
+                    while (row != null && row.length() > 0 && row.charAt(0) == '#') { //skip header in file
+                        row = reader.readLine();
+                    }
+
+                    while (row  != null) {
                         String[] record = row.split(",|\\s"); //delimiters
 
                         if (record.length != 2 && record.length != 4) {
+                            reader.close();
                             throw new IOException("Invalid number of parameters");
                         }
 
@@ -99,6 +104,7 @@ public abstract class InputFileParser {
                         }
 
                         newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
+                        row = reader.readLine();
                     }
 
                     reader.close();
