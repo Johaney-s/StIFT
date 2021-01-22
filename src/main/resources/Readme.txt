@@ -9,6 +9,9 @@ Any feedback is highly appreciated.
 Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
 PARSEC and COLIBRI tracks (Marigo et al. (2017)).
 
+Default grid phase values coding (http://stev.oapd.inaf.it/cmd_3.4/faq.html):
+0 = PMS, 1 = MS, 2 = SGB, 3 = RGB, 4-6 = CHEB, 7 = EAGB, 8 = TPAGB, 9 = post-AGB
+
 StIFT finds 4 neighbours for input coordinates,
 interpolates to create line points and interpolates
 again to obtain result estimation.
