@@ -143,6 +143,15 @@ public class FXMLLineChartController implements Initializable {
             th.setDaemon(true);
             th.start();
         }
+
+        //ZAMS
+        XYChart.Series series = new XYChart.Series();
+        series.setName("ZAMS_track");
+        ArrayList<Star> track = GridFileParser.getCurrentData().getZAMS().getTrack();
+        for (int i = 0; i < track.size(); i++) {
+            series.getData().add(new XYChart.Data(track.get(i).getTemperature(), track.get(i).getLuminosity()));
+        }
+        lineChart.getData().add(series);
     }
     
     /**

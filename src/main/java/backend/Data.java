@@ -7,10 +7,11 @@ import java.util.*;
  * Data represented by a Map of stars (values) grouped by initial mass (key)
  */
 public class Data {
-    private Map<Double, ArrayList<Star>> groupedData;
+    private final Map<Double, ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
     public static double TRACKS_DELIMITER = 0.01;
     private final HashSet<Short> currentPhases;
+    private final ZAMS zams = new ZAMS();
     
     public Data() {
        groupedData = new HashMap<>();
@@ -33,8 +34,18 @@ public class Data {
         currentPhases.add(star.getPhase().shortValue());
     }
 
+    /**
+     * Close current isochrones group and add to data if larger than 1
+     */
     public void addCurrentGroupToGroupedData() {
         if (currentGroup.size() > 1) {
+            if (groupedData.isEmpty()) {
+                System.out.println(zams.get_phase());
+                zams.set_phase(currentGroup.get(0).getPhase());
+            }
+            if (currentGroup.get(0).getPhase() == zams.get_phase()) {
+                zams.add(currentGroup.get(0));
+            }
             groupedData.put(currentGroup.get(0).getMass(), currentGroup);
         }
     }
@@ -240,14 +251,15 @@ public class Data {
         return estimate(x, y, x_unc, y_unc, true, true, new HashSet<>());
     }
 
-    /**
-     * @return the groupedData
-     */
     public Map<Double, ArrayList<Star>> getGroupedData() {
         return groupedData;
     }
 
     public HashSet<Short> getCurrentPhases() {
         return currentPhases;
+    }
+
+    public ZAMS getZAMS() {
+        return zams;
     }
 }

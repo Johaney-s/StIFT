@@ -57,7 +57,7 @@ public class TextOnly {
             }
 
             if (stats.getResult() != null && stats.getStar11() == null && stats.getStar21() == null) {
-                    System.out.println("Star match");
+                System.out.println("Star match");
             }
 
             if (stats.getResult1_() != null) {
@@ -82,13 +82,19 @@ public class TextOnly {
             Star mean_result = stats.getResult();
 
             //Show all error values
-            System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getErrors()[2],
-                    mean_result.getErrors()[3], mean_result.getErrors()[4], mean_result.getErrors()[5]);
+            if (mean_result.errorIsSet()) {
+                System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getErrors()[2],
+                        mean_result.getErrors()[3], mean_result.getErrors()[4], mean_result.getErrors()[5]);
+            } else {
+                System.out.println("Interpolation error: N/A");
+            }
 
-            System.out.printf("Uncertainties: <-------------------"
-                            + "%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getUncertainties()[0],
-                    mean_result.getUncertainties()[1], mean_result.getUncertainties()[2], mean_result.getUncertainties()[3],
-                    mean_result.getUncertainties()[4], mean_result.getUncertainties()[5]);
+            if (mean_result.getUncertainties()[5] != Double.MAX_VALUE) {
+                System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",
+                        mean_result.getUncertainties()[0], mean_result.getUncertainties()[1],
+                        mean_result.getUncertainties()[2], mean_result.getUncertainties()[3],
+                        mean_result.getUncertainties()[4], mean_result.getUncertainties()[5]);
+            }
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
         } catch (Exception ex) {
