@@ -40,7 +40,6 @@ public class Data {
     public void addCurrentGroupToGroupedData() {
         if (currentGroup.size() > 1) {
             if (groupedData.isEmpty()) {
-                System.out.println(zams.get_phase());
                 zams.set_phase(currentGroup.get(0).getPhase());
             }
             if (currentGroup.get(0).getPhase() == zams.get_phase()) {
