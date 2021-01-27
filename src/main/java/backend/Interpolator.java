@@ -13,12 +13,13 @@ public abstract class Interpolator {
      * naming follows steps in "Parametrization of single and binary stars"
      * Adds x1_, x2_, y1_, y2_ attributes to stats
      * @param stats Computation stats of current input
+     * @return successfully fitted
      * Coordinates (index):
      * ****11***[x1_, y1_]***12**
      * ***********[x, y]**********
      * ****21***[x2_, y2_]***22**
      */
-    public static void determineEvolutionaryStatus(ComputationStats stats) {
+    public static boolean determineEvolutionaryStatus(ComputationStats stats) {
         stats.setAlpha(stats.getStar22().getTemperature() - stats.getStar21().getTemperature()); //x22-x21
         stats.setBeta(stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity()); //y12-y11
         stats.setGamma(stats.getStar12().getTemperature() - stats.getStar11().getTemperature()); //x12-x11
@@ -39,7 +40,9 @@ public abstract class Interpolator {
 
         double[] roots = quadraticEquation(stats.getA(), stats.getB(), stats.getC());
 
-        stats.setX2_(verifyRoots(stats, roots));
+        Double valid_root = verifyRoots(stats, roots);
+        if (valid_root == null) { return false; }
+        stats.setX2_(valid_root);
         stats.setY1_(stats.getStar12().getLuminosity() + ((stats.getStar12().getLuminosity()
                 - stats.getStar11().getLuminosity()) / (stats.getStar22().getTemperature()
                 - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
@@ -49,6 +52,7 @@ public abstract class Interpolator {
         stats.setY2_(stats.getStar22().getLuminosity() + ((stats.getStar22().getLuminosity()
                 - stats.getStar21().getLuminosity()) / (stats.getStar22().getTemperature()
                 - stats.getStar21().getTemperature())) * (stats.getX2_() - stats.getStar22().getTemperature()));
+        return true;
     }
     
     /**
@@ -69,20 +73,21 @@ public abstract class Interpolator {
     }
 
     /**
-     * Returns root within the interval or corrects precision errors smaller than 0.0001
+     * Returns root within the lower neighbours or corrects precision errors smaller than 0.0001
      * @param stats Computation stats
      * @param roots Two roots from quadratic equation
-     * @return root to be used
+     * @return root to be used or null
      */
-    public static double verifyRoots(ComputationStats stats, double[] roots) {
-        double[] neighbours = {stats.getStar11().getTemperature(), stats.getStar12().getTemperature(),
-            stats.getStar21().getTemperature(), stats.getStar22().getTemperature()};
+    public static Double verifyRoots(ComputationStats stats, double[] roots) {
+        double[] neighbours = {stats.getStar21().getTemperature(), stats.getStar22().getTemperature()};
         Arrays.sort(roots);
         Arrays.sort(neighbours);
 
         if (roots[0] - neighbours[0] < 0.0001 && roots[0] - neighbours[0] > 0) { return neighbours[0]; } //correct precision
-        if (neighbours[3] - roots[1] < 0.0001 && neighbours[3] - roots[1] > 0) { return neighbours[3]; } //correct precision
-        return (roots[0] <= neighbours[3] && roots[0] >= neighbours[0]) ? roots[0] : roots[1];
+        if (neighbours[1] - roots[1] < 0.0001 && neighbours[1] - roots[1] > 0) { return neighbours[1]; } //correct precision
+        if (roots[0] <= neighbours[1] && roots[0] >= neighbours[0]) { return roots[0]; } //first root sufficient
+        if (roots[1] <= neighbours[1] && roots[1] >= neighbours[0]) { return roots[1]; } //second root sufficient
+        return null;
     }
     
     /**
