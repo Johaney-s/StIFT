@@ -83,8 +83,10 @@ public abstract class Interpolator {
         Arrays.sort(roots);
         Arrays.sort(neighbours);
 
-        if (neighbours[0] - roots[0] < 0.0001 && neighbours[0] - roots[0] > 0) { return neighbours[0]; } //correct precision
-        if (roots[1] - neighbours[1] < 0.0001 && roots[1] - neighbours[1] > 0) { return neighbours[1]; } //correct precision
+        if (neighbours[0] - roots[0] < 0.0001 && neighbours[0] - roots[0] > 0) { return neighbours[0]; } //correct precisions
+        if (neighbours[0] - roots[1] < 0.0001 && neighbours[0] - roots[1] > 0) { return neighbours[0]; } //could also happen
+        if (roots[1] - neighbours[1] < 0.0001 && roots[1] - neighbours[1] > 0) { return neighbours[1]; }
+        if (roots[0] - neighbours[1] < 0.0001 && roots[0] - neighbours[1] > 0) { return neighbours[1]; }
         if (roots[0] <= neighbours[1] && roots[0] >= neighbours[0]) { return roots[0]; } //first root sufficient
         if (roots[1] <= neighbours[1] && roots[1] >= neighbours[0]) { return roots[1]; } //second root sufficient
         return null;
