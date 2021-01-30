@@ -28,10 +28,10 @@ public class TextOnly {
                 x_unc = Double.parseDouble(args[3]);
                 y_unc = Double.parseDouble(args[4]);
             }
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
             System.out.println("Invalid arguments - please provide valid input parameters.");
             System.out.println("Use command 'java -jar file_name.jar text TEMP LUM TEMPunc LUMunc'.");
-            System.out.println("Missing uncertainties will be treated as 0.0 values.");
+            System.out.println("Missing pair of uncertainties will be treated as 0.0 values.");
             System.out.println("===================================");
             return;
         }

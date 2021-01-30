@@ -81,6 +81,7 @@ public class Data {
             if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))){
                 return false; ///NO NEIGHBOURS returned, BUT MATCH
             }
+
             if (list.size() > 1) {
                 for(int index = 0; index + 1 < list.size(); index++) {
                     Star first = list.get(index);
@@ -271,17 +272,18 @@ public class Data {
 
     /** Check, if any side intersects the input */
     private boolean sidesMatch(ComputationStats stats, double x, double y) {
+        double MAX_ERROR = 0.0001;
         Star[] neighbours = stats.getNeighbours();
-        Double[] params = new Double[]{x, y, null, null, null, null};
+        Double[] params = new Double[]{null, null, null, null, null, null};
 
         //check horizontal
-        if (neighbours[0] != null && Math.abs(intersection(neighbours[0], neighbours[1], x, y)[1] - y) < 0.0001) {
-            for (int i = 2; i < 6; i++) {
+        if (neighbours[0] != null && Math.abs(intersection(neighbours[0], neighbours[1], x, y)[1] - y) < MAX_ERROR) {
+            for (int i = 0; i < 6; i++) {
                 params[i] = Interpolator.interpolate(x, neighbours[0].getTemperature(), neighbours[1].getTemperature(),
                         neighbours[0].getAllAttributes()[i], neighbours[1].getAllAttributes()[i]);
             }
-        } else if (neighbours[2] != null && Math.abs(intersection(neighbours[2], neighbours[3], x, y)[1] - y) < 0.0001) {
-            for (int i = 2; i < 6; i++) {
+        } else if (neighbours[2] != null && Math.abs(intersection(neighbours[2], neighbours[3], x, y)[1] - y) < MAX_ERROR) {
+            for (int i = 0; i < 6; i++) {
                 params[i] = Interpolator.interpolate(x, neighbours[2].getTemperature(), neighbours[3].getTemperature(),
                         neighbours[2].getAllAttributes()[i], neighbours[3].getAllAttributes()[i]);
             }
@@ -292,22 +294,25 @@ public class Data {
             Star r_up = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[3] : neighbours[2];
             double left_insct = intersection(l_lo, l_up, x, y)[0];
             double right_insct = intersection(r_up, r_lo, x, y)[0];
-            if (Math.abs(left_insct - x) < 0.0001) {
-                for (int i = 2; i < 6; i++) {
+            if (Math.abs(left_insct - x) < MAX_ERROR) {
+                for (int i = 0; i < 6; i++) {
                     params[i] = Interpolator.interpolate(y, l_lo.getLuminosity(), l_up.getLuminosity(),
                             l_lo.getAllAttributes()[i], l_up.getAllAttributes()[i]);
                 }
-            } else if (Math.abs(right_insct - x) < 0.0001){
-                for (int i = 2; i < 6; i++) {
+            } else if (Math.abs(right_insct - x) < MAX_ERROR){
+                for (int i = 0; i < 6; i++) {
                     params[i] = Interpolator.interpolate(y, r_lo.getLuminosity(), r_up.getLuminosity(),
                             r_lo.getAllAttributes()[i], r_up.getAllAttributes()[i]);
                 }
             }
         }
 
-        if (params[2] != null) {
+        if (params[0] != null) {
+            double distance = Math.sqrt((params[0] - x) * (params[0] - x) + (params[1] - y) * (params[1] - y));
+            params[0] = x;
+            params[1] = y;
             stats.setResult(new Star(params));
-            stats.setErrors(new double[]{0, 0, 0, 0});
+            stats.setErrors(new double[]{params[2] * distance, params[3] * distance, params[4] * distance, params[5] * distance});
             return true;
         }
 
