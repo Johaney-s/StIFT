@@ -76,6 +76,7 @@ public class Data {
         Star upperRight = null;
         Star lowerRight = null;
         Star lowerLeft = null;
+        Star upperZAMS = null;
 
         for (ArrayList<Star> list : getGroupedData().values()) {
             if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))){
@@ -102,6 +103,7 @@ public class Data {
                                     >= intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 upperLeft = first;
                                 upperRight = second;
+                                upperZAMS = list.get(0);
                             }
                        }
                     }
@@ -113,7 +115,38 @@ public class Data {
         stats.setStar12(upperRight);
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
-        return (upperLeft != null && lowerRight != null);
+
+        if (upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.get_phase())) { //give ZAMS a chance
+            fillWithZAMS(stats, upperZAMS);
+        }
+
+        return (stats.getStar11() != null && stats.getStar21() != null);
+    }
+
+    /** Computes missing ZAMS, call if upper neighbours found, but lower neighbours unknown */
+    private void fillWithZAMS(ComputationStats stats, Star upper_zams) {
+        Star lower_zams = null;
+        double TOLERATED_DISTANCE = -0.0001; //below the intersection
+        for (Star zams_star : zams.getTrack()) {
+            if (zams_star.getLuminosity() < stats.getY() && zams_star != stats.getStar12()
+                    && zams_star.getTemperature() < stats.getX()) {
+                if (lower_zams == null || lower_zams.getLuminosity() < zams_star.getLuminosity()) {
+                    lower_zams = zams_star;
+                }
+            }
+        }
+
+        if (lower_zams != null) {
+            Star upperLeft = (stats.getStar11().getTemperature() < stats.getStar12().getTemperature()) ? stats.getStar11() : stats.getStar12();
+            double intersection_y = intersection(lower_zams, upper_zams, stats.getX(), stats.getY())[1];
+            if (stats.getY() - intersection_y > TOLERATED_DISTANCE) {
+                Star interstar = Interpolator.interpolateStars(lower_zams, upper_zams, stats.getX(), intersection_y);
+                stats.setStar21(lower_zams);
+                stats.setStar22(interstar);
+                stats.setStar11(upperLeft);
+                stats.setStar12(upper_zams);
+            }
+        }
     }
 
     /** Return true, if input point is too close to a star from grid and set stats' error and mean values */

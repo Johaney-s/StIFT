@@ -200,4 +200,22 @@ public abstract class Interpolator {
         return y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);
     }
 
+    /**
+     * Perform single linear interpolation on two stars and x, y coordinates
+     * @return result star
+     */
+    public static Star interpolateStars(Star star1, Star star2, double x, double y) {
+        Double[] att0 = star1.getAllAttributes();
+        Double[] att1 = star2.getAllAttributes();
+        Double[] finalEstimation = new Double[att1.length];
+        for (int index = 2; index < star1.getAllAttributes().length; index++) {
+            finalEstimation[index] = att0[index] + ((x - star1.getTemperature()) * (att1[index] - att0[index]))
+                    / (star2.getTemperature() - star1.getTemperature());
+        }
+
+        finalEstimation[0] = x; //to correspond with given input
+        finalEstimation[1] = y;
+        return new Star(finalEstimation);
+    }
+
 }
