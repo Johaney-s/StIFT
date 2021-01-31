@@ -221,7 +221,7 @@ public class Star {
                 (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[5]));
     }
 
-    public void printAllUncertainties() {
+    public void printAllDeviations() {
         System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", deviations[0], deviations[1], deviations[2],
                 deviations[3], deviations[4], deviations[5]);
     }

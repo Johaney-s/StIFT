@@ -82,7 +82,7 @@ public class TextOnly {
             if (stats.getResult().isValidSD()) {
                 for (Star star : stats.getSigmaRegion()) { star.printValues(); }
                 System.out.println("Standard deviation:");
-                stats.getResult().printAllUncertainties();
+                stats.getResult().printAllDeviations();
             } else {
                 System.out.println("No stars in sigma region <- no deviation results");
             }

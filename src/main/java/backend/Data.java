@@ -265,8 +265,11 @@ public class Data {
                 uncertainties[i] = Math.sqrt(uncertainties[i]);
             }
 
-            uncertainties[0] = (Math.abs(uncertainties[0]) < 1) ? 0 : Math.log10(uncertainties[0]); //back to dex
-            uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean_value_stats.getResult().getAge()) * Math.log(10));
+            if (Math.abs(uncertainties[0]) > 0) { //special handling for age [dex]
+                uncertainties[0] = Math.log10(uncertainties[0]); //back to dex
+                uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean_value_stats.getResult().getAge()) * Math.log(10));
+            }
+
             mean_value_stats.getResult().setDeviations(uncertainties);
         } else {
             mean_value_stats.getResult().setInvalidSD();
