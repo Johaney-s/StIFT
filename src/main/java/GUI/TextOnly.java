@@ -3,6 +3,8 @@ package GUI;
 
 import backend.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
@@ -30,14 +32,21 @@ public class TextOnly {
             }
         } catch (Exception ex) {
             System.out.println("Invalid arguments - please provide valid input parameters.");
-            System.out.println("Use command 'java -jar file_name.jar text TEMP LUM TEMPunc LUMunc'.");
+            System.out.println("Use command 'java -jar file_name.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]'.");
             System.out.println("Missing pair of uncertainties will be treated as 0.0 values.");
+            System.out.println("Missing grid file argument instructs StIFT to use default.");
             System.out.println("===================================");
             return;
         }
 
         try {
             InputStream is = TextOnly.class.getClassLoader().getResourceAsStream("Data.txt");
+            if (args.length == 6 || args.length == 4) {
+                is = new FileInputStream(args[args.length - 1]);
+                System.out.println("Grid file: " + args[args.length - 1]);
+            } else {
+                System.out.println("Grid file: default (PARSEC + COLIBRI)");
+            }
             data = GridFileParser.extract(is);
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
@@ -89,7 +98,7 @@ public class TextOnly {
                 System.out.println("Interpolation error: N/A");
             }
 
-            if (mean_result.getUncertainties()[5] != Double.MAX_VALUE) {
+            if (mean_result.isValidSD()) {
                 System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",
                         mean_result.getUncertainties()[0], mean_result.getUncertainties()[1],
                         mean_result.getUncertainties()[2], mean_result.getUncertainties()[3],
@@ -97,6 +106,8 @@ public class TextOnly {
             }
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
+        } catch (FileNotFoundException ex) {
+            System.out.println("Grid file not found.");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

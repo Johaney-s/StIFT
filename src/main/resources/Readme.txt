@@ -1,4 +1,5 @@
 Stellar isochrone fitting tool
+version: 1.1
 ==============================
 Author: Johana Supíková
 Should you have any questions or recommendations,
@@ -57,6 +58,9 @@ For ignoring certain phases in the interpolation, restrict them
 using checkboxes. Keep in mind that the result can be estimated
 in the phase that is filtered out (for example if phase 3 is ignored
 but phases 2 and 4 are chosen as the nearest tracks).
+
+Use text mode from command line to see the steps of computation:
+$ java -jar file_name.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]
 
 ==============================
 MIT License

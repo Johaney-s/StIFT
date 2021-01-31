@@ -36,4 +36,4 @@ After the input is entered, four neighbours are found in the grid data and inter
 ## Text mode
 Text mode is available for getting results of computation steps, which includes selected neighbours, line points, mean value, error estimation, estimations for points within the uncertainty area, standard deviation and final uncertainty. To run the text mode, use
 
-`java -jar FILENAME.jar text TEMPERATURE LUMINOSITY [TEMPuncertainty LUMuncertainty]`.
+`java -jar FILENAME.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]`.
