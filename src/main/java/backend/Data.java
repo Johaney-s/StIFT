@@ -255,8 +255,6 @@ public class Data {
                             - mean_value_stats.getResult().getAllAttributes()[inx], 2);
                 }
             }
-            mean_value_stats.setDeviations(deviation);
-
 
             //Divide by number of data points and find square root
             double[] uncertainties = new double[4];
@@ -312,16 +310,19 @@ public class Data {
     private boolean sidesMatch(ComputationStats stats, double x, double y) {
         double MAX_ERROR = 0.0001;
         Star[] neighbours = stats.getNeighbours();
-        Double[] params = new Double[]{null, null, null, null, null, null};
+        Double[] params = new Double[]{x, y, null, null, null, null};
+        Star[] usedNeighbours = new Star[]{};
 
         //check horizontal
         if (neighbours[0] != null && Math.abs(intersection(neighbours[0], neighbours[1], x, y)[1] - y) < MAX_ERROR) {
-            for (int i = 0; i < 6; i++) {
+            usedNeighbours = new Star[]{neighbours[0], neighbours[1]};
+            for (int i = 2; i < 6; i++) {
                 params[i] = Interpolator.interpolate(x, neighbours[0].getTemperature(), neighbours[1].getTemperature(),
                         neighbours[0].getAllAttributes()[i], neighbours[1].getAllAttributes()[i]);
             }
         } else if (neighbours[2] != null && Math.abs(intersection(neighbours[2], neighbours[3], x, y)[1] - y) < MAX_ERROR) {
-            for (int i = 0; i < 6; i++) {
+            usedNeighbours = new Star[]{neighbours[2], neighbours[3]};
+            for (int i = 2; i < 6; i++) {
                 params[i] = Interpolator.interpolate(x, neighbours[2].getTemperature(), neighbours[3].getTemperature(),
                         neighbours[2].getAllAttributes()[i], neighbours[3].getAllAttributes()[i]);
             }
@@ -333,24 +334,31 @@ public class Data {
             double left_insct = intersection(l_lo, l_up, x, y)[0];
             double right_insct = intersection(r_up, r_lo, x, y)[0];
             if (Math.abs(left_insct - x) < MAX_ERROR) {
-                for (int i = 0; i < 6; i++) {
+                usedNeighbours = new Star[]{l_lo, l_up};
+                for (int i = 2; i < 6; i++) {
                     params[i] = Interpolator.interpolate(y, l_lo.getLuminosity(), l_up.getLuminosity(),
                             l_lo.getAllAttributes()[i], l_up.getAllAttributes()[i]);
                 }
             } else if (Math.abs(right_insct - x) < MAX_ERROR){
-                for (int i = 0; i < 6; i++) {
+                usedNeighbours = new Star[]{r_lo, r_up};
+                for (int i = 2; i < 6; i++) {
                     params[i] = Interpolator.interpolate(y, r_lo.getLuminosity(), r_up.getLuminosity(),
                             r_lo.getAllAttributes()[i], r_up.getAllAttributes()[i]);
                 }
             }
         }
 
-        if (params[0] != null) {
-            double distance = Math.sqrt((params[0] - x) * (params[0] - x) + (params[1] - y) * (params[1] - y));
-            params[0] = x;
-            params[1] = y;
+        if (params[2] != null) {
+            double[] errors = new double[]{0, 0, 0, 0};
+            for (Star neighbour : usedNeighbours) {
+                Double[] neighbourAtt = neighbour.getAllAttributes();
+                for (int index = 2; index < neighbour.getAllAttributes().length - 1; index++) {
+                    errors[index - 2] = Math.max(errors[index - 2], Math.abs(params[index] - neighbourAtt[index]));
+                }
+            }
+
             stats.setResult(new Star(params));
-            stats.setErrors(new double[]{params[2] * distance, params[3] * distance, params[4] * distance, params[5] * distance});
+            stats.setErrors(errors);
             return true;
         }
 

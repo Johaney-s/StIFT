@@ -20,25 +20,23 @@ public abstract class Interpolator {
      * ****21***[x2_, y2_]***22**
      */
     public static boolean determineEvolutionaryStatus(ComputationStats stats) {
-        stats.setAlpha(stats.getStar22().getTemperature() - stats.getStar21().getTemperature()); //x22-x21
-        stats.setBeta(stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity()); //y12-y11
-        stats.setGamma(stats.getStar12().getTemperature() - stats.getStar11().getTemperature()); //x12-x11
-        stats.setDelta(stats.getStar22().getLuminosity() - stats.getStar21().getLuminosity()); //y22-y21
-        stats.setEpsilon(stats.getStar22().getTemperature() * stats.getStar21().getLuminosity()
-                - stats.getStar21().getTemperature() * stats.getStar22().getLuminosity()); //x22*y21-x21*y22
-        stats.setPhi(stats.getStar11().getTemperature() * stats.getStar22().getTemperature()
-                - stats.getStar12().getTemperature() * stats.getStar21().getTemperature()); //x11*x22-x12*x21
-        stats.setPsi(stats.getStar22().getTemperature() * stats.getStar11().getLuminosity()
-                - stats.getStar21().getTemperature() * stats.getStar12().getLuminosity()); //x22*y11-x21*y12
+        double alpha = stats.getStar22().getTemperature() - stats.getStar21().getTemperature(); //x22-x21
+        double beta = stats.getStar12().getLuminosity() - stats.getStar11().getLuminosity(); //y12-y11
+        double gamma = stats.getStar12().getTemperature() - stats.getStar11().getTemperature(); //x12-x11
+        double delta = stats.getStar22().getLuminosity() - stats.getStar21().getLuminosity(); //y22-y21
+        double epsilon = stats.getStar22().getTemperature() * stats.getStar21().getLuminosity()
+                - stats.getStar21().getTemperature() * stats.getStar22().getLuminosity(); //x22*y21-x21*y22
+        double phi = stats.getStar11().getTemperature() * stats.getStar22().getTemperature()
+                - stats.getStar12().getTemperature() * stats.getStar21().getTemperature(); //x11*x22-x12*x21
+        double psi = stats.getStar22().getTemperature() * stats.getStar11().getLuminosity()
+                - stats.getStar21().getTemperature() * stats.getStar12().getLuminosity(); //x22*y11-x21*y12
 
-        stats.setA(stats.getAlpha() * stats.getBeta() - stats.getGamma() * stats.getDelta());
-        stats.setB(stats.getAlpha() * (stats.getPsi() - (stats.getAlpha() - stats.getGamma()) * stats.getY()
-                - (stats.getBeta() - stats.getDelta()) * stats.getX()) - stats.getGamma() * stats.getEpsilon() - stats.getDelta()
-                * stats.getPhi());
-        stats.setC(stats.getAlpha() * (stats.getPhi() * stats.getY() + (stats.getEpsilon() - stats.getPsi())
-                * stats.getX()) - stats.getEpsilon() * stats.getPhi());
+        double A = alpha * beta - gamma * delta;
+        double B = alpha * (psi - (alpha - gamma) * stats.getY() - (beta - delta) * stats.getX()) - gamma * epsilon
+                - delta * phi;
+        double C = alpha * (phi * stats.getY() + (epsilon - psi) * stats.getX()) - epsilon * phi;
 
-        double[] roots = quadraticEquation(stats.getA(), stats.getB(), stats.getC());
+        double[] roots = quadraticEquation(A, B, C);
 
         Double valid_root = verifyRoots(stats, roots);
         if (valid_root == null) { return false; }
@@ -107,13 +105,13 @@ public abstract class Interpolator {
         Double[] result1Estimation = new Double[att11.length];
         Double[] result2Estimation = new Double[att11.length];
         for (int index = 0; index < stats.getStar11().getAllAttributes().length; index++) {
-            Double numerator = stats.getX2_() - att21[0]; //(x2_ - x21)
-            Double denominator = att22[0] - att21[0]; //(x22 - x21)
-            Double result1_ = att11[index] + ((att12[index] - att11[index]) / denominator) * numerator; //(13)
+            double numerator = stats.getX2_() - att21[0]; //(x2_ - x21)
+            double denominator = att22[0] - att21[0]; //(x22 - x21)
+            double result1_ = att11[index] + ((att12[index] - att11[index]) / denominator) * numerator; //(13)
             result1Estimation[index] = result1_;
-            Double result2_ = att21[index] + ((att22[index] - att21[index]) / denominator) * numerator; //(14)
+            double result2_ = att21[index] + ((att22[index] - att21[index]) / denominator) * numerator; //(14)
             result2Estimation[index] = result2_;
-            Double result = result1_ + ((result2_ - result1_) /
+            double result = result1_ + ((result2_ - result1_) /
                     (stats.getY2_() - stats.getY1_())) * (stats.getY() - stats.getY1_()); //(11) [X -> Y]
             finalEstimation[index] = result;
         }
@@ -127,72 +125,21 @@ public abstract class Interpolator {
     }
 
     /**
-     * Determine interpolation error - call AFTER deviation computation (changes stats!!!)
+     * Determine error of estimation - highest difference between result's and neighbours' parameters
      * @param stats computation stats
      */
     public static void determineError(ComputationStats stats) {
-        double ZERO_CONST = 0.0000009; //alpha, beta, gamma, delta are zero if smaller than this value
-        double ZERO_CONST2 = 0.0000000000001; //other stats symbols zero limit
-        double pt1 = (stats.getAlpha() * (stats.getBeta() - stats.getDelta())) / (2 * stats.getA());
-        double der_denominator = Math.sqrt(stats.getB() * stats.getB() - 4 * stats.getA() * stats.getC());
-        double pt2 = (stats.getB() + 2 * stats.getA() * ((stats.getEpsilon() - stats.getPsi())
-                / (stats.getBeta() - stats.getDelta()))) / der_denominator;
-        double dx2_Idxminus = (Math.abs(stats.getBeta() - stats.getDelta()) > ZERO_CONST) ? pt1 * (1 - pt2) : 0; // (21)
-        double dx2_Idxplus = (Math.abs(stats.getBeta() - stats.getDelta()) > ZERO_CONST) ? pt1 * (1 + pt2) : 0;
-
-        double pt3 = (stats.getAlpha() * (stats.getAlpha() - stats.getGamma())) / (2 * stats.getA());
-        double pt4 = (stats.getB() + 2 * stats.getA() * (stats.getPhi() / (stats.getAlpha() - stats.getGamma()))) / der_denominator;
-        double dx2_Idyminus = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST) ? pt3 * (1 - pt4) : 0; // (22)
-        double dx2_Idyplus = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST) ? pt3 * (1 + pt4) : 0;
-        //System.out.printf("Dx2*/dx: %f\t%f Dx2*/dy:\t%f\t%f\n", dx2_Idxplus, dx2_Idxminus, dx2_Idyplus, dx2_Idyminus);
-
-        //CHANGING STATS !!!
-        //System.out.println(stats);
-        makeStatsPositive(stats);
-
-        double gamal_1 = (stats.getGamma() / stats.getAlpha()) - 1;
-        double phial = stats.getPhi() / stats.getAlpha();
-        double repetative = stats.getX2_() * gamal_1 + phial;
-        double fml3 = stats.getX() * gamal_1 + phial;
-
-        double[] errors = new double[4];
-        for (int index = 2; index < stats.getResult().getAllAttributes().length; index++) {
-            double D = (stats.getStar22().getAllAttributes()[index] - stats.getStar21().getAllAttributes()[index]
-                    - stats.getStar12().getAllAttributes()[index] + stats.getStar11().getAllAttributes()[index])
-                    * (stats.getX2_() - stats.getX());
-            double fml1 = ((stats.getStar22().getAllAttributes()[index] - stats.getStar21().getAllAttributes()[index])
-                    * repetative + D) / (stats.getAlpha() * repetative);
-            double fml2 = (stats.getResult2_().getAllAttributes()[index] - stats.getResult1_().getAllAttributes()[index])
-                    /(repetative * repetative);
-            double derx1 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
-                    ? fml1 * dx2_Idxminus + fml2 * (fml3 * dx2_Idxminus - repetative) : 0;
-            double derx3 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
-                    ? fml1 * dx2_Idxplus  + fml2 * (fml3 * dx2_Idxplus - repetative) : 0;
-            //System.out.printf("Attribute %d : Dx (fml 23): %f\t%f\t", index, derx1, derx3);
-
-            double dery1 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
-                    ? fml1 * dx2_Idyminus + fml2 * fml3 * dx2_Idyminus : 0;
-            double dery3 = (Math.abs(stats.getAlpha() - stats.getGamma()) > ZERO_CONST && stats.getPhi() > ZERO_CONST2)
-                    ? fml1 * dx2_Idyplus + fml2 * fml3 * dx2_Idyplus : 0;
-            //System.out.printf("Dy (fml 24): %f\t%f\t\n", dery1, dery3);
-
-            double grad1 = Math.sqrt(Math.pow(derx1, 2) + Math.pow(dery1, 2));
-            double grad3 = Math.sqrt(Math.pow(derx3, 2) + Math.pow(dery3, 2));
-            //System.out.printf("√(dx^2 + dy^2) = %f\t%f\n", grad1, grad3);
-
-            errors[index - 2] = Math.min(grad1, grad3);
+        double[] errors = new double[]{0, 0, 0, 0};
+        Star[] neighbours = stats.getNeighbours();
+        Double[] resultAttributes = stats.getResult().getAllAttributes();
+        for (Star neighbour : neighbours) {
+            Double[] neighbourAttributes = neighbour.getAllAttributes();
+            for (int index = 2; index < stats.getResult().getAllAttributes().length; index++) {
+                double difference = Math.abs(resultAttributes[index] - neighbourAttributes[index]);
+                errors[index - 2] = Math.max(difference, errors[index - 2]);
+            }
         }
         stats.setErrors(errors);
-    }
-
-    private static void makeStatsPositive(ComputationStats stats) {
-        stats.setAlpha(Math.abs(stats.getAlpha()));
-        stats.setBeta(Math.abs(stats.getBeta()));
-        stats.setGamma(Math.abs(stats.getGamma()));
-        stats.setDelta(Math.abs(stats.getDelta()));
-        stats.setEpsilon(Math.abs(stats.getEpsilon()));
-        stats.setPhi(Math.abs(stats.getPhi()));
-        stats.setPsi(Math.abs(stats.getPsi()));
     }
 
     /** y = y0 + ((x - x0) * (y1 - y0)) / (x1 - x0) */

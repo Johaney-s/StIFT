@@ -14,7 +14,7 @@ Methods of estimation are discussed in
 - Filtering results based on phase
 - Filtering tracks based on phase
 - Standard deviation estimation
-- Interpolation error estimation
+- Error estimation
 - Total uncertainty estimation
 - Text mode
 
@@ -31,7 +31,7 @@ This app is the topic of my bachelor's thesis at FI MUNI. It should be useful to
 
 The grid data is grouped by mass and sorted by evolutionary status (phase). The default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd containing
 PARSEC and COLIBRI tracks (Marigo et al. (2017)).
-After the input is entered, four neighbours are found in the grid data and interpolated for line points estimation. Line points are then interpolated for final result estimation. Error is computed from the partial derivation of the interpolation formulas, and the standard deviation is estimated from estimations of points created by taking into account input uncertainties. Final uncertainty is the combination of both.
+After the input is entered, four neighbours are found in the grid data and interpolated for line points estimation. Line points are then interpolated for final result estimation. Error is computed from found neighbours and the standard deviation is estimated from estimations of points created by taking into account input uncertainties. Final uncertainty is the combination of both.
 
 ## Text mode
 Text mode is available for getting results of computation steps, which includes selected neighbours, line points, mean value, error estimation, estimations for points within the uncertainty area, standard deviation and final uncertainty. To run the text mode, use

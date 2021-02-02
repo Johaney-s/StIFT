@@ -17,10 +17,10 @@ again to obtain result estimation.
 The method is described by (Malkov et al. (2010))
 https://doi.org/10.1111/j.1365-2966.2009.15696.x
 
-Uncertainty is computed as a combination of standard deviation
-and interpolation error. If any is invalid or set to be hidden,
-the SD or Err labels are crossed out in the result respectively.
-Enlarge the width of the window if you can't see them.
+Uncertainty is computed as a combination of error (from neighbours)
+and standard deviation (from sigma region). If any is invalid or set
+to be hidden, the SD or Err labels are crossed out in the result
+respectively. Enlarge the width of the window if you can't see them.
 
 To upload custom grid, choose Grid > Upload new grid.
 Grid data need to be grouped by MASS and sorted by evolutionary

@@ -125,7 +125,7 @@ public class Star {
         return phase;
     }
 
-    //Returns text representation for tableView
+    //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
     public TextFlow getTemColumnText() {
         return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
                 : new TextFlow(new Text(String.format("%.4f±%.4f", temperature, uncertainties[0])));
@@ -227,13 +227,12 @@ public class Star {
     }
 
     /**
-     * Set and convert errors to absolute values, sum with SD error and save to uncertainties
-     * Omit SD if invalid
-     * @param input_errors [age, rad, mass, phase] in percent
+     * Set and convert errors to absolute values
+     * @param errors [age, rad, mass, phase] in percent
      */
-    public void setErrors(double[] input_errors) {
-        this.errors = new double[]{0, 0, (age / 100) * input_errors[0], (radius / 100) * input_errors[1],
-                (mass / 100) * input_errors[2], (phase / 100) * input_errors[3]};
+    public void setErrors(double[] errors) {
+        this.errors = new double[]{0, 0, (age / 100) * errors[0], (radius / 100) * errors[1],
+                (mass / 100) * errors[2], (phase / 100) * errors[3]};
     }
 
     public double[] getErrors() {
