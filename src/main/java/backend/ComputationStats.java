@@ -1,5 +1,7 @@
 package backend;
 
+import java.util.ArrayList;
+
 public class ComputationStats {
     private double x2_;
     private double y1_;
@@ -14,11 +16,12 @@ public class ComputationStats {
     private Star result1_;
     private Star result2_;
     private Star result;
-    private Star[] sigma_region = null; //estimations for stars in sigma region of input
+    private ArrayList<Star> sigma_region; //estimations for stars in sigma region of input
 
     public ComputationStats(double x, double y) {
         this.x = x;
         this.y = y;
+        sigma_region = new ArrayList<>();
     }
 
     public double getX() {
@@ -117,11 +120,11 @@ public class ComputationStats {
         this.result = result;
     }
 
-    public Star[] getSigmaRegion() {
+    public ArrayList<Star> getSigmaRegion() {
         return sigma_region;
     }
 
-    public void setSigmaRegion(Star[] uncertainty_estimations) {
+    public void setSigmaRegion(ArrayList<Star> uncertainty_estimations) {
         this.sigma_region = uncertainty_estimations;
     }
 

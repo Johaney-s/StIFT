@@ -124,24 +124,6 @@ public abstract class Interpolator {
         stats.setResult(new Star(finalEstimation));
     }
 
-    /**
-     * Determine error of estimation - highest difference between result's and neighbours' parameters
-     * @param stats computation stats
-     */
-    public static void determineError(ComputationStats stats) {
-        double[] errors = new double[]{0, 0, 0, 0};
-        Star[] neighbours = stats.getNeighbours();
-        Double[] resultAttributes = stats.getResult().getAllAttributes();
-        for (Star neighbour : neighbours) {
-            Double[] neighbourAttributes = neighbour.getAllAttributes();
-            for (int index = 2; index < stats.getResult().getAllAttributes().length; index++) {
-                double difference = Math.abs(resultAttributes[index] - neighbourAttributes[index]);
-                errors[index - 2] = Math.max(difference, errors[index - 2]);
-            }
-        }
-        stats.setErrors(errors);
-    }
-
     /** y = y0 + ((x - x0) * (y1 - y0)) / (x1 - x0) */
     public static double interpolate(double x, double x0, double x1, double y0, double y1) {
         return y0 + ((x - x0) * (y1 - y0)) / (x1 - x0);

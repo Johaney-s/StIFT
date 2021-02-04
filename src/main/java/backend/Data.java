@@ -210,72 +210,42 @@ public class Data {
      */
     public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc, boolean includeError,
                                            boolean includeDeviation, HashSet<Short> ignoredPhases) {
-        boolean validSD = true;
-        int NUMBER_OF_SIGMA_REGION_POINTS = 8; //except for no sigma region, then 0 / 8 = still 0
         ComputationStats mean_value_stats = estimate_star(x, y, ignoredPhases);
-        if (!includeError) { mean_value_stats.getResult().setHideError(); }
-        if (!includeDeviation) { mean_value_stats.getResult().setHideSD(); }
-        mean_value_stats.getResult().setInputUncertainties(temp_unc, lum_unc);
-        Star[] stars = new Star[9]; //sigma region
+        Star mean = mean_value_stats.getResult();
+        if (!includeError) { mean.setHideError(); }
+        if (!includeDeviation) { mean.setHideSD(); }
+        mean.setInputUncertainties(temp_unc, lum_unc);
+        ArrayList<Star> stars = new ArrayList<>(); //sigma region
         double[] xs = {x, x - temp_unc, x + temp_unc};
         double[] ys = {y, y - lum_unc, y + lum_unc};
-        int index = 0;
 
-        //Find data points
-        if (temp_unc == 0 && lum_unc == 0) {
-            if (mean_value_stats.getResult().getAge() == null) {
-                validSD = false;
-            } else {
-                stars = new Star[]{mean_value_stats.getResult()}; //no sigma region
-            }
-        } else {
+        if (mean.getAge() == null) {
+            return mean_value_stats;
+        }
+
+        if (temp_unc != 0 && lum_unc != 0) {
             for (double current_x : xs) {
                 for (double current_y : ys) {
+                    if (current_x == x && current_y == y) { continue; } //skip mean value
                     Star star = estimate_star(current_x, current_y).getResult();
-                    if (star == null || star.getAge() == null) {
-                        validSD = false;
-                        mean_value_stats.getResult().setInvalidSD();
-                        break;
+                    if (star != null && star.getAge() != null) {
+                        stars.add(star);
                     }
-                    stars[index] = star;
-                    index++;
-                }
-            }
-        }
-
-        //For each data point, find the square of its distance to the mean and sum the values
-        if (validSD) {
-            mean_value_stats.setSigmaRegion(stars);
-            double[] deviation = {0, 0, 0, 0};
-            for (Star star : stars) {
-                double age_diff = Math.pow(10, star.getAge()) - Math.pow(10, mean_value_stats.getResult().getAge());
-                deviation[0] += Math.pow(age_diff, 2);
-                for (int inx = 3; inx < 6; inx++) { //except input params and age all are linear
-                    deviation[inx - 2] += Math.pow(star.getAllAttributes()[inx]
-                            - mean_value_stats.getResult().getAllAttributes()[inx], 2);
                 }
             }
 
-            //Divide by number of data points and find square root
-            double[] uncertainties = new double[4];
-            for (int i = 0; i < 4; i++) {
-                uncertainties[i] = deviation[i] / NUMBER_OF_SIGMA_REGION_POINTS;
-                uncertainties[i] = Math.sqrt(uncertainties[i]);
+            if (stars.size() > 0) {
+                mean_value_stats.setSigmaRegion(stars);
+                mean.setDeviations(computeDeviation(mean, stars));
             }
-
-            if (Math.abs(uncertainties[0]) > 0) { //special handling for age [dex]
-                uncertainties[0] = Math.log10(uncertainties[0]); //back to dex
-                uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean_value_stats.getResult().getAge()) * Math.log(10));
-            }
-
-            mean_value_stats.getResult().setDeviations(uncertainties);
         } else {
-            mean_value_stats.getResult().setInvalidSD();
+            mean.setDeviations(new double[]{0, 0, 0, 0});
         }
 
-        if (mean_value_stats.getResult().getAge() != null && !mean_value_stats.getResult().errorIsSet()) {
-            Interpolator.determineError(mean_value_stats);
+        if (mean.getAge() != null && !mean.errorIsSet()) {
+            mean.setErrors(computeDeviation(mean, new ArrayList<>(Arrays.asList(mean_value_stats.getNeighbours()))));
         }
+
         mean_value_stats.countUncertainty();
         return mean_value_stats;
     }
@@ -304,6 +274,37 @@ public class Data {
 
     public ZAMS getZAMS() {
         return zams;
+    }
+
+    /**
+     * Computes standard deviation from region around mean value
+     * @param mean Mean value (Star)
+     * @param region Region of stars
+     * @return [ageSD, radSD, massSD, phaseSD]
+     */
+    public double[] computeDeviation(Star mean, ArrayList<Star> region) {
+        double[] deviation = {0, 0, 0, 0};
+        for (Star star : region) {
+            double age_diff = Math.pow(10, star.getAge()) - Math.pow(10, mean.getAge());
+            deviation[0] += Math.pow(age_diff, 2);
+            for (int inx = 3; inx < 6; inx++) { //except input params and age all are linear
+                deviation[inx - 2] += Math.pow(star.getAllAttributes()[inx] - mean.getAllAttributes()[inx], 2);
+            }
+        }
+
+        //Divide by number of data points and find square root
+        double[] uncertainties = new double[4];
+        for (int i = 0; i < 4; i++) {
+            uncertainties[i] = deviation[i] / region.size();
+            uncertainties[i] = Math.sqrt(uncertainties[i]);
+        }
+
+        if (Math.abs(uncertainties[0]) > 0) { //special handling for age [dex]
+            uncertainties[0] = Math.log10(uncertainties[0]);
+            uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean.getAge()) * Math.log(10));
+        }
+
+        return uncertainties;
     }
 
     /** Check, if any side intersects the input */
@@ -349,16 +350,8 @@ public class Data {
         }
 
         if (params[2] != null) {
-            double[] errors = new double[]{0, 0, 0, 0};
-            for (Star neighbour : usedNeighbours) {
-                Double[] neighbourAtt = neighbour.getAllAttributes();
-                for (int index = 2; index < neighbour.getAllAttributes().length - 1; index++) {
-                    errors[index - 2] = Math.max(errors[index - 2], Math.abs(params[index] - neighbourAtt[index]));
-                }
-            }
-
             stats.setResult(new Star(params));
-            stats.setErrors(errors);
+            stats.setErrors(computeDeviation(stats.getResult(), new ArrayList<>(Arrays.asList(usedNeighbours))));
             return true;
         }
 

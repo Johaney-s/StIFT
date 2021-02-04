@@ -22,7 +22,6 @@ public class Star {
     private final String ROUNDING_FORMAT = "%.4f %s %s";
     private State sd = VALID;
     private State error = VALID;
-    public static final double BIG_ERROR_RATIO = 0.2;
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         this.temperature = temperature;
@@ -151,9 +150,10 @@ public class Star {
      * @return String representation of value and uncertainty according to valid attributes
      */
     private TextFlow getTextRepresentation(Double attribute, int index) {
+        double SMALL_ERROR = 0.00005;
         if (attribute == null || attribute.isNaN()) { return new TextFlow(new Text("-")); }
 
-        if ((sd != VALID || deviations[index].isNaN()) && (error != VALID || Math.abs(errors[index] / attribute) > BIG_ERROR_RATIO)) {
+        if ((sd != VALID || deviations[index].isNaN()) && error != VALID) {
             Text t1 = new Text(String.format("%.4f ", attribute));
             Text t2 = new Text("SD");
             t2.setStrikethrough(true);
@@ -163,10 +163,10 @@ public class Star {
             return new TextFlow(t1, t2, t3, t4);
         }
 
-        if (error != VALID || Math.abs(errors[index] / attribute) > BIG_ERROR_RATIO) {
+        if (error != VALID) {
             Text t1 = new Text(String.format("%.4f", attribute));
             Text t2 = new Text(String.format("±%.4f ", deviations[index]));
-            if (deviations[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
+            if (deviations[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
             Text t3 = new Text("Err");
             t3.setStrikethrough(true);
             return new TextFlow(t1, t2, t3);
@@ -176,7 +176,7 @@ public class Star {
         if ((sd != VALID || deviations[index].isNaN())) {
             Text t1 = new Text(String.format("%.4f", attribute));
             Text t2 = new Text(String.format("±%.4f ", errors[index]));
-            if (errors[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
+            if (errors[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
             Text t3 = new Text("SD");
             t3.setStrikethrough(true);
             return new TextFlow(t1, t2, t3);
@@ -184,7 +184,7 @@ public class Star {
 
         Text t1 = new Text(String.format("%.4f±", attribute));
         Text t2 = new Text(String.format("%.4f", uncertainties[index]));
-        if (uncertainties[index] < 0.00005) { t2.setStyle("-fx-font-style: italic"); }
+        if (uncertainties[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
         return new TextFlow(t1, t2);
     }
 
@@ -199,25 +199,25 @@ public class Star {
 
     public String getFormattedAge() {
         return (age == null || age.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, age,
-                (Math.abs(errors[2] / age) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[2]),
+                String.format("%.4f", errors[2]),
                 (sd != VALID || deviations[2].isNaN()) ? "-" : String.format("%.4f", deviations[2]));
     }
 
     public String getFormattedRadius() {
         return (radius == null || radius.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, radius,
-                (Math.abs(errors[3] / radius) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[3]),
+                String.format("%.4f", errors[3]),
                 (sd != VALID || deviations[3].isNaN()) ? "-" : String.format("%.4f", deviations[3]));
     }
 
     public String getFormattedMass() {
         return (mass == null || mass.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, mass,
-                (Math.abs(errors[4] / mass) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f", errors[4]),
+                String.format("%.4f", errors[4]),
                 (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[4]));
     }
 
     public String getFormattedPhase() {
         return (phase == null || phase.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, phase,
-                (Math.abs(errors[5] / phase) > BIG_ERROR_RATIO) ? "-" : String.format("%.4f",errors[5]),
+                String.format("%.4f",errors[5]),
                 (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[5]));
     }
 
@@ -227,12 +227,11 @@ public class Star {
     }
 
     /**
-     * Set and convert errors to absolute values
-     * @param errors [age, rad, mass, phase] in percent
+     * Set errors (from neighbours, independent of input uncertainties)
+     * @param errors [age, rad, mass, phase]
      */
     public void setErrors(double[] errors) {
-        this.errors = new double[]{0, 0, (age / 100) * errors[0], (radius / 100) * errors[1],
-                (mass / 100) * errors[2], (phase / 100) * errors[3]};
+        this.errors = new double[]{0, 0, errors[0], errors[1], errors[2], errors[3]};
     }
 
     public double[] getErrors() {
