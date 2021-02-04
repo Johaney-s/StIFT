@@ -242,10 +242,6 @@ public class Star {
         error = HIDE;
     }
 
-    public void setInvalidSD() {
-        sd = INVALID;
-    }
-
     /** Hide SD in results, but don't overwrite INVALID state */
     public void setHideSD() {
         sd = (sd != INVALID) ? HIDE : sd;

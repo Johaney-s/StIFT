@@ -78,31 +78,33 @@ public class TextOnly {
             System.out.println("Mean value: <----------------------");
             stats.getResult().printValues();
 
-            System.out.println("Sigma region:");
-            if (stats.getResult().isValidSD()) {
-                for (Star star : stats.getSigmaRegion()) { star.printValues(); }
-                System.out.println("Standard deviation:");
-                stats.getResult().printAllDeviations();
-            } else {
-                System.out.println("No stars in sigma region <- no deviation results");
-            }
+            Star mean = stats.getResult();
+            if (mean.getAge() != null) {
+                System.out.println("Sigma region:");
+                if (stats.getResult().isValidSD() && stats.getSigmaRegion().size() > 0) {
+                    for (Star star : stats.getSigmaRegion()) {
+                        star.printValues();
+                    }
+                    System.out.println("Standard deviation:");
+                    stats.getResult().printAllDeviations();
+                } else {
+                    System.out.println("No stars in sigma region <- no deviation results");
+                }
 
-            //System.out.println(stats);
-            Star mean_result = stats.getResult();
+                //Show all error values
+                if (mean.errorIsSet()) {
+                    System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean.getErrors()[2],
+                            mean.getErrors()[3], mean.getErrors()[4], mean.getErrors()[5]);
+                } else {
+                    System.out.println("Interpolation error: N/A");
+                }
 
-            //Show all error values
-            if (mean_result.errorIsSet()) {
-                System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean_result.getErrors()[2],
-                        mean_result.getErrors()[3], mean_result.getErrors()[4], mean_result.getErrors()[5]);
-            } else {
-                System.out.println("Interpolation error: N/A");
-            }
-
-            if (mean_result.isValidSD()) {
-                System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",
-                        mean_result.getUncertainties()[0], mean_result.getUncertainties()[1],
-                        mean_result.getUncertainties()[2], mean_result.getUncertainties()[3],
-                        mean_result.getUncertainties()[4], mean_result.getUncertainties()[5]);
+                if (mean.isValidSD()) {
+                    System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",
+                            mean.getUncertainties()[0], mean.getUncertainties()[1],
+                            mean.getUncertainties()[2], mean.getUncertainties()[3],
+                            mean.getUncertainties()[4], mean.getUncertainties()[5]);
+                }
             }
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
