@@ -9,6 +9,8 @@ public class ComputationStats {
     private double y2_;
     private final double x;
     private final double y;
+    private final double x_unc;
+    private final double y_unc;
     private Star star11;
     private Star star12;
     private Star star21;
@@ -18,9 +20,11 @@ public class ComputationStats {
     private Star result;
     private ArrayList<Star> sigma_region; //estimations for stars in sigma region of input
 
-    public ComputationStats(double x, double y) {
+    public ComputationStats(double x, double y, double x_unc, double y_unc) {
         this.x = x;
         this.y = y;
+        this.x_unc = x_unc;
+        this.y_unc = y_unc;
         sigma_region = new ArrayList<>();
     }
 
@@ -138,5 +142,13 @@ public class ComputationStats {
 
     public Star[] getNeighbours() {
         return new Star[]{star11, star12, star21, star22};
+    }
+
+    public double getY_unc() {
+        return y_unc;
+    }
+
+    public double getX_unc() {
+        return x_unc;
     }
 }

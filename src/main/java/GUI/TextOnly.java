@@ -51,7 +51,7 @@ public class TextOnly {
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
-            ComputationStats stats = data.estimate_stats(x, y, x_unc, y_unc);
+            ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc);
             System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
 
             System.out.println("Neighbours:");

@@ -124,29 +124,37 @@ public class Data {
     }
 
     /** Computes missing ZAMS, call if upper neighbours found, but lower neighbours unknown */
-    private void fillWithZAMS(ComputationStats stats, Star upper_zams) {
-        Star lower_zams = null;
+    private void fillWithZAMS(ComputationStats stats, Star upperZAMS) {
+        Star lowerZAMS = findLowerZAMS(upperZAMS);
         double TOLERATED_DISTANCE = -0.0001; //below the intersection
+        if (lowerZAMS == null || !(lowerZAMS.getLuminosity() < stats.getY() && lowerZAMS != stats.getStar12()
+                && lowerZAMS.getTemperature() < stats.getX())) {
+            return; //candidate does not fulfill conditions to become lower right neighbour
+        }
+
+        Star upperLeft = (stats.getStar11().getTemperature() < stats.getStar12().getTemperature()) ? stats.getStar11() : stats.getStar12();
+        double intersection_y = intersection(lowerZAMS, upperZAMS, stats.getX(), stats.getY())[1];
+        if (stats.getY() - intersection_y > TOLERATED_DISTANCE) {
+            Star interstar = Interpolator.interpolateStars(lowerZAMS, upperZAMS, stats.getX(), intersection_y);
+            stats.setStar21(lowerZAMS);
+            stats.setStar22(interstar);
+            stats.setStar11(upperLeft);
+            stats.setStar12(upperZAMS);
+        }
+    }
+
+    /** Returns closest lower ZAMS star to current upper ZAMS */
+    private Star findLowerZAMS(Star upper_zams) {
+        Star lower_zams = null;
         for (Star zams_star : zams.getTrack()) {
-            if (zams_star.getLuminosity() < stats.getY() && zams_star != stats.getStar12()
-                    && zams_star.getTemperature() < stats.getX()) {
+            if (zams_star.getLuminosity() < upper_zams.getLuminosity()) {
                 if (lower_zams == null || lower_zams.getLuminosity() < zams_star.getLuminosity()) {
                     lower_zams = zams_star;
                 }
             }
         }
 
-        if (lower_zams != null) {
-            Star upperLeft = (stats.getStar11().getTemperature() < stats.getStar12().getTemperature()) ? stats.getStar11() : stats.getStar12();
-            double intersection_y = intersection(lower_zams, upper_zams, stats.getX(), stats.getY())[1];
-            if (stats.getY() - intersection_y > TOLERATED_DISTANCE) {
-                Star interstar = Interpolator.interpolateStars(lower_zams, upper_zams, stats.getX(), intersection_y);
-                stats.setStar21(lower_zams);
-                stats.setStar22(interstar);
-                stats.setStar11(upperLeft);
-                stats.setStar12(upper_zams);
-            }
-        }
+        return lower_zams;
     }
 
     /** Return true, if input point is too close to a star from grid and set stats' error and mean values */
@@ -174,10 +182,32 @@ public class Data {
      * @param y Y coordinate of user input
      * @return Stats with either result containing null values or computed stats parameters
      */
-    public ComputationStats estimate_star(double x, double y, HashSet<Short> ignoredPhases) {
-        ComputationStats stats = new ComputationStats(x, y);
+    public ComputationStats estimateStar(double x, double y, double x_unc, double y_unc, HashSet<Short> ignoredPhases) {
+        ComputationStats stats = new ComputationStats(x, y, x_unc, y_unc);
         if (!findNearestStars(stats, ignoredPhases)) {
             if (stats.getResult() != null) {return stats;} //match was found
+
+            if (x_unc > 0 || y_unc > 0) { //give ZAMS outsiders a chance
+                Star[] zams = findBothZAMS(stats);
+                if (zams != null) {
+                    double[] altCoordinates = new double[]{x - x_unc, y + y_unc};
+                    double[] inputCoords = new double[]{x, y};
+                    double[] lineIntersection = lineIntersection(zams[0], zams[1], altCoordinates, inputCoords);
+                    ComputationStats newStats = estimateStar(lineIntersection[0], lineIntersection[1], 0, 0, ignoredPhases);
+                    if (newStats.getResult() != null && newStats.getResult().getAge() != null) {
+                        stats.setStar11(newStats.getStar11());
+                        stats.setStar12(newStats.getStar12());
+                        stats.setStar21(newStats.getStar21());
+                        stats.setStar22(newStats.getStar22());
+                        stats.setResult1_(newStats.getResult1_());
+                        stats.setResult2_(newStats.getResult2_());
+                        stats.setResult(newStats.getResult());
+                        //SOMEHOW DEAL WITH ERROR LATER <-------------------------- TODO
+                        return stats;
+                    }
+                }
+            }
+
             stats.setResult(new Star(x, y, null, null, null, null));
             sidesMatch(stats, x, y); //give pairs a chance
             return stats;
@@ -195,8 +225,8 @@ public class Data {
         return stats;
     }
 
-    public ComputationStats estimate_star(double x, double y) {
-        return estimate_star(x, y, new HashSet<Short>());
+    public ComputationStats estimateStar(double x, double y, double temp_unc, double lum_unc) {
+        return estimateStar(x, y, temp_unc, lum_unc, new HashSet<Short>());
     }
 
     /**
@@ -208,10 +238,10 @@ public class Data {
      * @param lum_unc Luminosity uncertainty
      * @return stats with uncertainties_estimations filled out
      */
-    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc, boolean includeError,
-                                           boolean includeDeviation, HashSet<Short> ignoredPhases) {
-        ComputationStats mean_value_stats = estimate_star(x, y, ignoredPhases);
-        Star mean = mean_value_stats.getResult();
+    public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc, boolean includeError,
+                                          boolean includeDeviation, HashSet<Short> ignoredPhases) {
+        ComputationStats meanValueStats = estimateStar(x, y, temp_unc, lum_unc, ignoredPhases);
+        Star mean = meanValueStats.getResult();
         if (!includeError) { mean.setHideError(); }
         if (!includeDeviation) { mean.setHideSD(); }
         mean.setInputUncertainties(temp_unc, lum_unc);
@@ -220,14 +250,14 @@ public class Data {
         double[] ys = {y, y - lum_unc, y + lum_unc};
 
         if (mean.getAge() == null) {
-            return mean_value_stats;
+            return meanValueStats;
         }
 
         if (temp_unc != 0 && lum_unc != 0) {
             for (double current_x : xs) {
                 for (double current_y : ys) {
                     if (current_x == x && current_y == y) { continue; } //skip mean value
-                    Star star = estimate_star(current_x, current_y).getResult();
+                    Star star = estimateStar(current_x, current_y, temp_unc, lum_unc).getResult();
                     if (star != null && star.getAge() != null) {
                         stars.add(star);
                     }
@@ -235,7 +265,7 @@ public class Data {
             }
 
             if (stars.size() > 0) {
-                mean_value_stats.setSigmaRegion(stars);
+                meanValueStats.setSigmaRegion(stars);
                 mean.setDeviations(computeDeviation(mean, stars));
             }
         } else {
@@ -243,21 +273,21 @@ public class Data {
         }
 
         if (mean.getAge() != null && !mean.errorIsSet()) {
-            mean.setErrors(computeDeviation(mean, new ArrayList<>(Arrays.asList(mean_value_stats.getNeighbours()))));
+            mean.setErrors(computeDeviation(mean, new ArrayList<>(Arrays.asList(meanValueStats.getNeighbours()))));
         }
 
-        mean_value_stats.countUncertainty();
-        return mean_value_stats;
+        meanValueStats.countUncertainty();
+        return meanValueStats;
     }
 
-    public ComputationStats estimate_stats(double x, double y, double temp_unc, double lum_unc) {
-        return estimate_stats(x, y, temp_unc, lum_unc, true, true, new HashSet<>());
+    public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc) {
+        return estimateStats(x, y, temp_unc, lum_unc, true, true, new HashSet<>());
     }
 
     /** Returns completely estimated star including uncertainties */
     public Star estimate(double x, double y, double x_unc, double y_unc, boolean includeError,
                          boolean includeDeviation, HashSet<Short> ignoredPhases) {
-        return estimate_stats(x, y, x_unc, y_unc, includeError, includeDeviation, ignoredPhases).getResult();
+        return estimateStats(x, y, x_unc, y_unc, includeError, includeDeviation, ignoredPhases).getResult();
     }
 
     public Star estimate(double x, double y, double x_unc, double y_unc) {
@@ -358,4 +388,47 @@ public class Data {
         return false;
     }
 
+    /** Returns coordinates of intersection of lines A-B and C-D or null if none */
+    private double[] lineIntersection(Star A, Star B, double[] C, double[] D) {
+        double a1 = B.getLuminosity() - A.getLuminosity();
+        double b1 = A.getTemperature() - B.getTemperature();
+        double c1 = a1 * (A.getTemperature()) + b1 * (A.getLuminosity());
+
+        double a2 = D[1] - C[1];
+        double b2 = C[0] - D[0];
+        double c2 = a2 * (C[0]) + b2 * (C[1]);
+
+        double determinant = a1 * b2 - a2 * b1;
+
+        if (determinant == 0) {
+            return new double[]{Double.MAX_VALUE, Double.MAX_VALUE};
+        }
+
+        double x = (b2 * c1 - b1 * c2) / determinant;
+        double y = (a1 * c2 - a2 * c1) / determinant;
+        return new double[]{x, y};
+    }
+
+    /** Searches for upper and lower ZAMS points which intersection with INPUT-UPPER_LEFT is bounded
+     * by the points on y-axis and lies in the sigma region
+     * @returns either found ZAMS points suitable for interpolation or null
+     */
+    private Star[] findBothZAMS(ComputationStats stats) {
+        ArrayList<Star> track = zams.getTrack();
+        double[] altCoords = new double[]{stats.getX() - stats.getX_unc(), stats.getY() + stats.getY_unc()};
+        double[] inputCoords = new double[]{stats.getX(), stats.getY()};
+        for (int i = 0; i < track.size() - 1; i++) {
+            Star lower = track.get(i);
+            Star upper = track.get(i + 1);
+
+            double[] intersection = lineIntersection(lower, upper, altCoords, inputCoords);
+            if (intersection[1] >= lower.getLuminosity() && intersection[1] <= upper.getLuminosity()
+                && intersection[0] >= stats.getX() - stats.getX_unc() && intersection[0] <= stats.getX() + stats.getX_unc()
+                && intersection[1] >= stats.getY() - stats.getY_unc() && intersection[1] <= stats.getY() + stats.getY_unc()) {
+                return new Star[]{lower, upper};
+            }
+        }
+
+        return null;
+    }
 }
