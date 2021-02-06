@@ -55,8 +55,6 @@ public abstract class Interpolator {
     
     /**
      * Solves quadratic equation
-     * Following algorithm described at
-     * http://www.mathisfunforum.com/viewtopic.php?pid=173520#p173520
      * @return Array of root(s) of quadratic equation
      */
     public static double[] quadraticEquation(double a, double b, double c) {
@@ -65,21 +63,8 @@ public abstract class Interpolator {
         }
         double determinant = b * b - 4 * a * c;
         double square = Math.sqrt(determinant);
-        double root1;
-        double root2;
-
-        if (b < 0) {
-            root1 = (-b + square) / (2 * a);
-            root2 = (-b - square) / (2 * a);
-        } else {
-            root1 = (-b - square) / (2 * a);
-            root2 = (-b + square) / (2 * a);
-        }
-
-        if (root1 > c) {
-            root2 = (c / root1);
-        }
-
+        double root1 = (-b + square) / (2 * a);
+        double root2 = (-b - square) / (2 * a);
         return new double[]{root1, root2};
     }
 
