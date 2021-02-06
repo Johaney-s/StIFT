@@ -201,7 +201,8 @@ public class Data {
                         stats.setStar22(newStats.getStar22());
                         stats.setResult1_(newStats.getResult1_());
                         stats.setResult2_(newStats.getResult2_());
-                        stats.setResult(newStats.getResult());
+                        Double[] params = newStats.getResult().getAllAttributes();
+                        stats.setResult(new Star(x, y, params[2], params[3], params[4], params[5]));
                         //SOMEHOW DEAL WITH ERROR LATER <-------------------------- TODO
                         return stats;
                     }
@@ -329,7 +330,7 @@ public class Data {
             uncertainties[i] = Math.sqrt(uncertainties[i]);
         }
 
-        if (Math.abs(uncertainties[0]) > 0) { //special handling for age [dex]
+        if (uncertainties[0] > 0) { //special handling for age [dex]
             uncertainties[0] = Math.log10(uncertainties[0]);
             uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean.getAge()) * Math.log(10));
         }
@@ -411,7 +412,7 @@ public class Data {
 
     /** Searches for upper and lower ZAMS points which intersection with INPUT-UPPER_LEFT is bounded
      * by the points on y-axis and lies in the sigma region
-     * @returns either found ZAMS points suitable for interpolation or null
+     * @return either found ZAMS points suitable for interpolation or null
      */
     private Star[] findBothZAMS(ComputationStats stats) {
         ArrayList<Star> track = zams.getTrack();

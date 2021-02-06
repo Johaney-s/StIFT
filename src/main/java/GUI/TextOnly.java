@@ -81,7 +81,7 @@ public class TextOnly {
             Star mean = stats.getResult();
             if (mean.getAge() != null) {
                 System.out.println("Sigma region:");
-                if (stats.getResult().isValidSD() && stats.getSigmaRegion().size() > 0) {
+                if (stats.getSigmaRegion().size() > 0) {
                     for (Star star : stats.getSigmaRegion()) {
                         star.printValues();
                     }
