@@ -3,7 +3,7 @@ package GUI;
 
 import backend.Data;
 import backend.GridFileParser;
-import backend.Star;
+import backend.objects.Star;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;

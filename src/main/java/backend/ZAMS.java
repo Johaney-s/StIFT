@@ -1,5 +1,7 @@
 package backend;
 
+import backend.objects.Star;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 

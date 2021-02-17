@@ -1,6 +1,9 @@
 
 package backend;
 
+import backend.objects.ResultStar;
+import backend.objects.Star;
+
 import java.util.Arrays;
 
 /**
@@ -119,7 +122,7 @@ public abstract class Interpolator {
 
         stats.setResult1_(new Star(result1Estimation));
         stats.setResult2_(new Star(result2Estimation));
-        stats.setResult(new Star(finalEstimation));
+        stats.setResult(new ResultStar(finalEstimation));
     }
 
     /** y = y0 + ((x - x0) * (y1 - y0)) / (x1 - x0) */

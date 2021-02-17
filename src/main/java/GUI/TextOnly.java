@@ -2,6 +2,8 @@
 package GUI;
 
 import backend.*;
+import backend.objects.ResultStar;
+import backend.objects.Star;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,9 +28,12 @@ public class TextOnly {
         try {
             x = Double.parseDouble(args[1]);
             y = Double.parseDouble(args[2]);
-            if (args.length == 5) {
+            if (args.length >= 5) {
                 x_unc = Double.parseDouble(args[3]);
                 y_unc = Double.parseDouble(args[4]);
+            }
+            if (args.length > 6) {
+                throw new Exception();
             }
         } catch (Exception ex) {
             System.out.println("Invalid arguments - please provide valid input parameters.");
@@ -65,7 +70,7 @@ public class TextOnly {
                 stats.getStar22().printValues();
             }
 
-            if (stats.getResult() != null && stats.getStar11() == null && stats.getStar21() == null) {
+            if (stats.getResult() != null && stats.getResult().getAge() != null && stats.getStar11() == null && stats.getStar21() == null) {
                 System.out.println("Star match");
             }
 
@@ -78,25 +83,25 @@ public class TextOnly {
             System.out.println("Mean value: <----------------------");
             stats.getResult().printValues();
 
-            Star mean = stats.getResult();
+            ResultStar mean = stats.getResult();
             if (mean.getAge() != null) {
                 System.out.println("Sigma region:");
                 if (stats.getSigmaRegion().size() > 0) {
                     for (Star star : stats.getSigmaRegion()) {
                         star.printValues();
                     }
-                    System.out.println("Standard deviation:");
+                    System.out.println("Sigma region deviation:");
                     stats.getResult().printAllDeviations();
                 } else {
-                    System.out.println("No stars in sigma region <- no deviation results");
+                    System.out.println("No stars in sigma region.");
                 }
 
                 //Show all error values
                 if (mean.errorIsSet()) {
-                    System.out.printf("Interpolation error:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean.getErrors()[2],
+                    System.out.printf("Neighbours deviation:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean.getErrors()[2],
                             mean.getErrors()[3], mean.getErrors()[4], mean.getErrors()[5]);
                 } else {
-                    System.out.println("Interpolation error: N/A");
+                    System.out.println("Neighbours deviation: N/A");
                 }
 
                 if (mean.isValidSD()) {

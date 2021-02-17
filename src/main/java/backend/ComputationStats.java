@@ -1,5 +1,8 @@
 package backend;
 
+import backend.objects.ResultStar;
+import backend.objects.Star;
+
 import java.util.ArrayList;
 
 public class ComputationStats {
@@ -17,7 +20,7 @@ public class ComputationStats {
     private Star star22;
     private Star result1_;
     private Star result2_;
-    private Star result;
+    private ResultStar result;
     private ArrayList<Star> sigma_region; //estimations for stars in sigma region of input
 
     public ComputationStats(double x, double y, double x_unc, double y_unc) {
@@ -100,7 +103,7 @@ public class ComputationStats {
         return y2_;
     }
 
-    public Star getResult() {
+    public ResultStar getResult() {
         return result;
     }
 
@@ -120,7 +123,7 @@ public class ComputationStats {
         this.result2_ = result2_;
     }
 
-    public void setResult(Star result) {
+    public void setResult(ResultStar result) {
         this.result = result;
     }
 

@@ -1,7 +1,7 @@
 package GUI;
 
 import backend.GridFileParser;
-import backend.Star;
+import backend.objects.ResultStar;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +19,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -291,7 +290,7 @@ public class FXMLMainController implements Initializable {
         for (CheckBox checkBox : allCheckBoxes) {
             if (!checkBox.isSelected()) { ignoredPhases.add(Short.parseShort(checkBox.getText())); }
         }
-        Star result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation, ignoredPhases);
+        ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation, ignoredPhases);
         tableViewController.handleNewResult(result);
     }
     

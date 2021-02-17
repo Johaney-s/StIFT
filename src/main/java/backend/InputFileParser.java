@@ -2,6 +2,7 @@ package backend;
 
 import GUI.FXMLLoadingController;
 import GUI.FXMLTableController;
+import backend.objects.ResultStar;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -56,7 +57,7 @@ public abstract class InputFileParser {
 
     private static class InputService extends Service<Void> {
         private File file;
-        private final ArrayList<Star> newResults = new ArrayList<>();
+        private final ArrayList<ResultStar> newResults = new ArrayList<>();
 
         public void setFile(File file) {
             this.file = file;
@@ -66,7 +67,7 @@ public abstract class InputFileParser {
             return file;
         }
 
-        public ArrayList<Star> getResults() {
+        public ArrayList<ResultStar> getResults() {
             return newResults;
         }
 
@@ -77,7 +78,7 @@ public abstract class InputFileParser {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    ArrayList<Star> newResults = getResults();
+                    ArrayList<ResultStar> newResults = getResults();
                     BufferedReader reader = new BufferedReader(new FileReader(file));
                     String row = reader.readLine();
 

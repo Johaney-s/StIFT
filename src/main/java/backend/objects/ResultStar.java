@@ -1,21 +1,15 @@
+package backend.objects;
 
-package backend;
-
+import backend.State;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-
 import static backend.State.*;
 
 /**
- * Representation of a star
+ * Enhanced representation of a star
+ * Used for stars in results
  */
-public class Star {
-    private final Double temperature;
-    private final Double luminosity;
-    private final Double age;
-    private final Double radius;
-    private final Double mass;
-    private final Double phase;
+public class ResultStar extends Star {
     private final Double[] deviations = {0.0, 0.0, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private double[] errors = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final double[] uncertainties = {0, 0, 0, 0, 0, 0};
@@ -23,22 +17,12 @@ public class Star {
     private State sd = VALID;
     private State error = VALID;
 
-    public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
-        this.temperature = temperature;
-        this.luminosity = luminosity;
-        this.age = age;
-        this.radius = radius;
-        this.mass = mass;
-        this.phase = phase;
+    public ResultStar(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
+        super(temperature, luminosity, age, radius, mass, phase);
     }
 
-    public Star(Double[] data) {
-        this.temperature = data[0];
-        this.luminosity = data[1];
-        this.age = data[2];
-        this.radius = data[3];
-        this.mass = data[4];
-        this.phase = data[5];
+    public ResultStar(Double[] data) {
+        super(data);
     }
 
     /**
@@ -62,24 +46,13 @@ public class Star {
         this.deviations[0] = temp_unc;
         this.deviations[1] = lum_unc;
     }
-    
+
     /**
      * Getter for all attributes as an array
      * @return Array of {temperature, luminosity, age, radius, mass, phase}
      */
     public Double[] getAllAttributes() {
         return new Double[]{getTemperature(), getLuminosity(), getAge(), getRadius(), getMass(), getPhase()};
-    }
-
-    /**
-     * Prints all characteristics of current star
-     */
-    public void printValues() {
-        System.out.printf("%.4f\t%.4f\t%s\t%s\t%s\t%s\n", temperature, luminosity,
-                (age != null) ? String.format("%.4f",age) : "-",
-                (radius != null) ? String.format("%.4f", radius) : "-",
-                (mass != null) ? String.format("%.4f",mass) : "-",
-                (phase != null) ? String.format("%.4f",phase) : "-");
     }
 
     /**
@@ -109,14 +82,14 @@ public class Star {
     public Double getRadius() {
         return radius;
     }
-    
+
     /**
      * @return the mass
      */
     public Double getMass() {
         return mass;
     }
-    
+
     /**
      * @return the phase
      */
@@ -266,4 +239,5 @@ public class Star {
         this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
         this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
     }
+
 }

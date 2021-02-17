@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import backend.objects.ResultStar;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,8 +15,8 @@ import javafx.collections.transformation.FilteredList;
  * Model class for storing estimated results
  */
 public class TableModel {
-    private final ObservableList<Star> resultList = FXCollections.observableArrayList();
-    private final FilteredList<Star> filteredList = new FilteredList<>(resultList);
+    private final ObservableList<ResultStar> resultList = FXCollections.observableArrayList();
+    private final FilteredList<ResultStar> filteredList = new FilteredList<>(resultList);
     private final Filter filter = new Filter(null, null);
     private boolean saved = true;
     private boolean hideEmptyRows = false;
@@ -27,7 +29,7 @@ public class TableModel {
      * Adds result to the beginning of the resultList
      * @param newResult Result to be added to the result list
      */
-    public void addResult(Star newResult) {
+    public void addResult(ResultStar newResult) {
         resultList.add(0, newResult); //how to optimize this (observable linked list needed)
         saved = false;
     }
@@ -40,7 +42,7 @@ public class TableModel {
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write("#Teff[lgK] Teff_SD L[lgLsun] L_SD Age[dexYrs] Age_err Age_SD R[Rsun] R_err R_SD M[Msun] M_err M_SD Phase Phase_err Phase_SD" + System.getProperty("line.separator"));
-        for (Star result : filteredList) {
+        for (ResultStar result : filteredList) {
             fileWriter.write(String.format("%s %s %s %s %s %s" + System.getProperty("line.separator"), result.getFormattedTemperature(), result.getFormattedLuminosity(),
                     result.getFormattedAge(), result.getFormattedRadius(), result.getFormattedMass(), result.getFormattedPhase()));
         }
@@ -52,15 +54,15 @@ public class TableModel {
         return saved;
     }
     
-    public ObservableList<Star> getResults() {
+    public ObservableList<ResultStar> getResults() {
         return filteredList;
     }
     
-    public ObservableList<Star> getAllResults() {
+    public ObservableList<ResultStar> getAllResults() {
         return resultList;
     }
     
-    public void setResults(ArrayList<Star> newResults) {
+    public void setResults(ArrayList<ResultStar> newResults) {
         resultList.clear();
         resultList.addAll(newResults);
         removeFilter();

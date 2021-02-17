@@ -1,6 +1,9 @@
 
 package backend;
 
+import backend.objects.ResultStar;
+import backend.objects.Star;
+
 import java.util.*;
 
 /**
@@ -164,7 +167,7 @@ public class Data {
         if (x_error < 0.0001 && y_error < 0.0001) {
             Double[] attributes = star.getAllAttributes();
             double error_const = Math.sqrt(x_error * x_error + y_error * y_error);
-            stats.setResult(new Star(star.getAllAttributes()));
+            stats.setResult(new ResultStar(star.getAllAttributes()));
             stats.getResult().setErrors(new
                 double[]{
                     attributes[2] * error_const,
@@ -202,14 +205,14 @@ public class Data {
                         stats.setResult1_(newStats.getResult1_());
                         stats.setResult2_(newStats.getResult2_());
                         Double[] params = newStats.getResult().getAllAttributes();
-                        stats.setResult(new Star(x, y, params[2], params[3], params[4], params[5]));
+                        stats.setResult(new ResultStar(x, y, params[2], params[3], params[4], params[5]));
                         //SOMEHOW DEAL WITH ERROR LATER <-------------------------- TODO
                         return stats;
                     }
                 }
             }
 
-            stats.setResult(new Star(x, y, null, null, null, null));
+            stats.setResult(new ResultStar(x, y, null, null, null, null));
             sidesMatch(stats, x, y); //give pairs a chance
             return stats;
         }
@@ -219,7 +222,7 @@ public class Data {
         }
 
         if (!Interpolator.determineEvolutionaryStatus(stats)) {
-            stats.setResult(new Star(x, y, null, null, null, null));
+            stats.setResult(new ResultStar(x, y, null, null, null, null));
             return stats;
         }
         Interpolator.interpolateAllCharacteristics(stats);
@@ -242,7 +245,7 @@ public class Data {
     public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc, boolean includeError,
                                           boolean includeDeviation, HashSet<Short> ignoredPhases) {
         ComputationStats meanValueStats = estimateStar(x, y, temp_unc, lum_unc, ignoredPhases);
-        Star mean = meanValueStats.getResult();
+        ResultStar mean = meanValueStats.getResult();
         if (!includeError) { mean.setHideError(); }
         if (!includeDeviation) { mean.setHideSD(); }
         mean.setInputUncertainties(temp_unc, lum_unc);
@@ -286,12 +289,12 @@ public class Data {
     }
 
     /** Returns completely estimated star including uncertainties */
-    public Star estimate(double x, double y, double x_unc, double y_unc, boolean includeError,
+    public ResultStar estimate(double x, double y, double x_unc, double y_unc, boolean includeError,
                          boolean includeDeviation, HashSet<Short> ignoredPhases) {
         return estimateStats(x, y, x_unc, y_unc, includeError, includeDeviation, ignoredPhases).getResult();
     }
 
-    public Star estimate(double x, double y, double x_unc, double y_unc) {
+    public ResultStar estimate(double x, double y, double x_unc, double y_unc) {
         return estimate(x, y, x_unc, y_unc, true, true, new HashSet<>());
     }
 
@@ -381,7 +384,7 @@ public class Data {
         }
 
         if (params[2] != null) {
-            stats.setResult(new Star(params));
+            stats.setResult(new ResultStar(params));
             stats.setErrors(computeDeviation(stats.getResult(), new ArrayList<>(Arrays.asList(usedNeighbours))));
             return true;
         }

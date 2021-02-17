@@ -2,7 +2,8 @@
 package GUI;
 
 import backend.InputFileParser;
-import backend.Star;
+import backend.objects.ResultStar;
+import backend.objects.Star;
 import backend.TableModel;
 
 import java.io.File;
@@ -208,7 +209,7 @@ public class FXMLTableController implements Initializable {
      * Adds new single result to table model and changes filtering slider's values
      * @param result New result
      */
-    public void handleNewResult(Star result) {
+    public void handleNewResult(ResultStar result) {
         tableModel.addResult(result);
         updateFilter();
     }

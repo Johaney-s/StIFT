@@ -1,6 +1,8 @@
 
 package backend;
 
+import backend.objects.Star;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
