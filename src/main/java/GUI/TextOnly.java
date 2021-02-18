@@ -110,6 +110,8 @@ public class TextOnly {
                             mean.getUncertainties()[2], mean.getUncertainties()[3],
                             mean.getUncertainties()[4], mean.getUncertainties()[5]);
                 }
+
+                Statistics.computeUncertainty(stats);
             }
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");

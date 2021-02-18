@@ -40,6 +40,13 @@
             <artifactId>controlsfx</artifactId>
             <version>11.0.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.2</version>
+        </dependency>
+
         <!-- include OS-dependent libraries, see https://stackoverflow.com/questions/52653836/maven-shade-javafx-runtime-components-are-missing -->
         <dependency>
             <groupId>org.openjfx</groupId>

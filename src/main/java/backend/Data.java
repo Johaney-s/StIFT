@@ -386,6 +386,7 @@ public class Data {
         if (params[2] != null) {
             stats.setResult(new ResultStar(params));
             stats.setErrors(computeDeviation(stats.getResult(), new ArrayList<>(Arrays.asList(usedNeighbours))));
+            stats.setEvolutionaryLine(usedNeighbours[0], usedNeighbours[1]);
             return true;
         }
 

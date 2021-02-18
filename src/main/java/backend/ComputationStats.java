@@ -6,10 +6,10 @@ import backend.objects.Star;
 import java.util.ArrayList;
 
 public class ComputationStats {
-    private double x2_;
-    private double y1_;
-    private double x1_;
-    private double y2_;
+    private Double x2_ = null;
+    private Double y1_ = null;
+    private Double x1_ = null;
+    private Double y2_ = null;
     private final double x;
     private final double y;
     private final double x_unc;
@@ -87,19 +87,19 @@ public class ComputationStats {
         this.y2_ = y2_;
     }
 
-    public double getX2_() {
+    public Double getX2_() {
         return x2_;
     }
 
-    public double getY1_() {
+    public Double getY1_() {
         return y1_;
     }
 
-    public double getX1_() {
+    public Double getX1_() {
         return x1_;
     }
 
-    public double getY2_() {
+    public Double getY2_() {
         return y2_;
     }
 
@@ -153,5 +153,12 @@ public class ComputationStats {
 
     public double getX_unc() {
         return x_unc;
+    }
+
+    public void setEvolutionaryLine(Star star1, Star star2) {
+        x1_ = star1.getTemperature();
+        y1_ = star1.getLuminosity();
+        x2_ = star2.getTemperature();
+        y2_ = star2.getLuminosity();
     }
 }
