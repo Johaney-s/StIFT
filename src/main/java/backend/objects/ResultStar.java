@@ -1,5 +1,6 @@
 package backend.objects;
 
+import backend.ResultType;
 import backend.State;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -16,6 +17,7 @@ public class ResultStar extends Star {
     private final String ROUNDING_FORMAT = "%.4f %s %s";
     private State sd = VALID;
     private State error = VALID;
+    private ResultType resultType = ResultType.NONE;
 
     public ResultStar(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         super(temperature, luminosity, age, radius, mass, phase);
@@ -238,6 +240,15 @@ public class ResultStar extends Star {
         this.uncertainties[3] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[3], 2) + Math.pow(errors[3], 2)) : errors[3];
         this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
         this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
+    }
+
+    /** Changes result type if current is NONE */
+    public void changeResultType(ResultType newType) {
+        this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;
+    }
+
+    public ResultType getResultType() {
+        return this.resultType;
     }
 
 }

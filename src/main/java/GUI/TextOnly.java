@@ -3,7 +3,6 @@ package GUI;
 
 import backend.*;
 import backend.objects.ResultStar;
-import backend.objects.Star;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,6 +56,7 @@ public class TextOnly {
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
             ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc);
+            System.out.println("Estimation method: " + stats.getResult().getResultType());
             System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
 
             System.out.println("Neighbours:");
@@ -84,25 +84,7 @@ public class TextOnly {
             stats.getResult().printValues();
 
             ResultStar mean = stats.getResult();
-            if (mean.getAge() != null) {
-                System.out.println("Sigma region:");
-                if (stats.getSigmaRegion().size() > 0) {
-                    for (Star star : stats.getSigmaRegion()) {
-                        star.printValues();
-                    }
-                    System.out.println("Sigma region deviation:");
-                    stats.getResult().printAllDeviations();
-                } else {
-                    System.out.println("No stars in sigma region.");
-                }
-
-                //Show all error values
-                if (mean.errorIsSet()) {
-                    System.out.printf("Neighbours deviation:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean.getErrors()[2],
-                            mean.getErrors()[3], mean.getErrors()[4], mean.getErrors()[5]);
-                } else {
-                    System.out.println("Neighbours deviation: N/A");
-                }
+            if (mean.getResultType() != ResultType.NONE) {
 
                 if (mean.isValidSD()) {
                     System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",

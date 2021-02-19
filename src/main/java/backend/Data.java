@@ -143,6 +143,7 @@ public class Data {
             stats.setStar22(interstar);
             stats.setStar11(upperLeft);
             stats.setStar12(upperZAMS);
+            stats.getResult().changeResultType(ResultType.ZAMS_INSIDER);
         }
     }
 
@@ -174,6 +175,7 @@ public class Data {
                     attributes[3] * error_const,
                     attributes[4] * error_const,
                     attributes[5] * error_const});
+            stats.getResult().changeResultType(ResultType.STAR_MATCH);
             return true;
     }
         return false;
@@ -206,6 +208,7 @@ public class Data {
                         stats.setResult2_(newStats.getResult2_());
                         Double[] params = newStats.getResult().getAllAttributes();
                         stats.setResult(new ResultStar(x, y, params[2], params[3], params[4], params[5]));
+                        stats.getResult().changeResultType(ResultType.ZAMS_OUTSIDER);
                         //SOMEHOW DEAL WITH ERROR LATER <-------------------------- TODO
                         return stats;
                     }
@@ -226,6 +229,7 @@ public class Data {
             return stats;
         }
         Interpolator.interpolateAllCharacteristics(stats);
+        stats.getResult().changeResultType(ResultType.FULL_ESTIMATION);
         return stats;
     }
 
@@ -249,38 +253,13 @@ public class Data {
         if (!includeError) { mean.setHideError(); }
         if (!includeDeviation) { mean.setHideSD(); }
         mean.setInputUncertainties(temp_unc, lum_unc);
-        ArrayList<Star> stars = new ArrayList<>(); //sigma region
-        double[] xs = {x, x - temp_unc, x + temp_unc};
-        double[] ys = {y, y - lum_unc, y + lum_unc};
 
         if (mean.getAge() == null) {
             return meanValueStats;
         }
 
-        if (temp_unc != 0 && lum_unc != 0) {
-            for (double current_x : xs) {
-                for (double current_y : ys) {
-                    if (current_x == x && current_y == y) { continue; } //skip mean value
-                    Star star = estimateStar(current_x, current_y, temp_unc, lum_unc).getResult();
-                    if (star != null && star.getAge() != null) {
-                        stars.add(star);
-                    }
-                }
-            }
+        //todo DEVIATIONS COMPUTING TOOK PLACE HERE
 
-            if (stars.size() > 0) {
-                meanValueStats.setSigmaRegion(stars);
-                mean.setDeviations(computeDeviation(mean, stars));
-            }
-        } else {
-            mean.setDeviations(new double[]{0, 0, 0, 0});
-        }
-
-        if (mean.getAge() != null && !mean.errorIsSet()) {
-            mean.setErrors(computeDeviation(mean, new ArrayList<>(Arrays.asList(meanValueStats.getNeighbours()))));
-        }
-
-        meanValueStats.countUncertainty();
         return meanValueStats;
     }
 
@@ -387,6 +366,7 @@ public class Data {
             stats.setResult(new ResultStar(params));
             stats.setErrors(computeDeviation(stats.getResult(), new ArrayList<>(Arrays.asList(usedNeighbours))));
             stats.setEvolutionaryLine(usedNeighbours[0], usedNeighbours[1]);
+            stats.getResult().changeResultType(ResultType.SIDE_MATCH);
             return true;
         }
 

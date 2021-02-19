@@ -3,13 +3,11 @@ package backend;
 import backend.objects.ResultStar;
 import backend.objects.Star;
 
-import java.util.ArrayList;
-
 public class ComputationStats {
-    private Double x2_ = null;
-    private Double y1_ = null;
-    private Double x1_ = null;
-    private Double y2_ = null;
+    private Double x2_;
+    private Double y1_;
+    private Double x1_;
+    private Double y2_;
     private final double x;
     private final double y;
     private final double x_unc;
@@ -21,14 +19,12 @@ public class ComputationStats {
     private Star result1_;
     private Star result2_;
     private ResultStar result;
-    private ArrayList<Star> sigma_region; //estimations for stars in sigma region of input
 
     public ComputationStats(double x, double y, double x_unc, double y_unc) {
         this.x = x;
         this.y = y;
         this.x_unc = x_unc;
         this.y_unc = y_unc;
-        sigma_region = new ArrayList<>();
     }
 
     public double getX() {
@@ -127,20 +123,8 @@ public class ComputationStats {
         this.result = result;
     }
 
-    public ArrayList<Star> getSigmaRegion() {
-        return sigma_region;
-    }
-
-    public void setSigmaRegion(ArrayList<Star> uncertainty_estimations) {
-        this.sigma_region = uncertainty_estimations;
-    }
-
     public void setErrors(double[] errors) {
         result.setErrors(errors);
-    }
-
-    public void countUncertainty() {
-        result.countUncertainty();
     }
 
     public Star[] getNeighbours() {
@@ -160,5 +144,7 @@ public class ComputationStats {
         y1_ = star1.getLuminosity();
         x2_ = star2.getTemperature();
         y2_ = star2.getLuminosity();
+        result1_ = star1;
+        result2_ = star2;
     }
 }
