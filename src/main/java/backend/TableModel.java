@@ -42,10 +42,10 @@ public class TableModel {
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write("#Teff[lgK] Teff_SD L[lgLsun] L_SD Age[dexYrs] Age_err Age_SD R[Rsun] R_err R_SD M[Msun] M_err M_SD Phase Phase_err Phase_SD" + System.getProperty("line.separator"));
-        for (ResultStar result : filteredList) {
+        /*for (ResultStar result : filteredList) {
             fileWriter.write(String.format("%s %s %s %s %s %s" + System.getProperty("line.separator"), result.getFormattedTemperature(), result.getFormattedLuminosity(),
                     result.getFormattedAge(), result.getFormattedRadius(), result.getFormattedMass(), result.getFormattedPhase()));
-        }
+        }*/
         fileWriter.close();
         saved = true;
     }

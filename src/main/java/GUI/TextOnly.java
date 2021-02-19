@@ -70,30 +70,20 @@ public class TextOnly {
                 stats.getStar22().printValues();
             }
 
-            if (stats.getResult() != null && stats.getResult().getAge() != null && stats.getStar11() == null && stats.getStar21() == null) {
-                System.out.println("Star match");
-            }
-
             if (stats.getResult1_() != null) {
                 System.out.println("Evolutionary line:");
                 stats.getResult1_().printValues();
                 stats.getResult2_().printValues();
             }
 
-            System.out.println("Mean value: <----------------------");
-            stats.getResult().printValues();
-
             ResultStar mean = stats.getResult();
-            if (mean.getResultType() != ResultType.NONE) {
+            System.out.println("Mean value: <----------------------");
+            mean.printValues();
 
-                if (mean.isValidSD()) {
-                    System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",
-                            mean.getUncertainties()[0], mean.getUncertainties()[1],
-                            mean.getUncertainties()[2], mean.getUncertainties()[3],
-                            mean.getUncertainties()[4], mean.getUncertainties()[5]);
-                }
-
+            if (mean.getResultType() == ResultType.FULL_ESTIMATION) {
                 Statistics.computeUncertainty(stats);
+                System.out.println("Uncertainties:");
+                mean.printAllDeviations();
             }
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");

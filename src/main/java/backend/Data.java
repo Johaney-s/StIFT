@@ -169,12 +169,12 @@ public class Data {
             Double[] attributes = star.getAllAttributes();
             double error_const = Math.sqrt(x_error * x_error + y_error * y_error);
             stats.setResult(new ResultStar(star.getAllAttributes()));
-            stats.getResult().setErrors(new
+            /*stats.getResult().setErrors(new
                 double[]{
                     attributes[2] * error_const,
                     attributes[3] * error_const,
                     attributes[4] * error_const,
-                    attributes[5] * error_const});
+                    attributes[5] * error_const});*/
             stats.getResult().changeResultType(ResultType.STAR_MATCH);
             return true;
     }
@@ -250,7 +250,6 @@ public class Data {
                                           boolean includeDeviation, HashSet<Short> ignoredPhases) {
         ComputationStats meanValueStats = estimateStar(x, y, temp_unc, lum_unc, ignoredPhases);
         ResultStar mean = meanValueStats.getResult();
-        if (!includeError) { mean.setHideError(); }
         if (!includeDeviation) { mean.setHideSD(); }
         mean.setInputUncertainties(temp_unc, lum_unc);
 
@@ -364,7 +363,6 @@ public class Data {
 
         if (params[2] != null) {
             stats.setResult(new ResultStar(params));
-            stats.setErrors(computeDeviation(stats.getResult(), new ArrayList<>(Arrays.asList(usedNeighbours))));
             stats.setEvolutionaryLine(usedNeighbours[0], usedNeighbours[1]);
             stats.getResult().changeResultType(ResultType.SIDE_MATCH);
             return true;
