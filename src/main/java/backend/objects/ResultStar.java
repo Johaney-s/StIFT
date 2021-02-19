@@ -214,8 +214,8 @@ public class ResultStar extends Star {
         return sd == VALID;
     }
 
-    /** Changes result type if current is NONE */
-    public void changeResultType(ResultType newType) {
+    /** Set result type if current is NONE */
+    public void setResultType(ResultType newType) {
         this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;
     }
 

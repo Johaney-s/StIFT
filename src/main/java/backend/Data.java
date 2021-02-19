@@ -143,7 +143,7 @@ public class Data {
             stats.setStar22(interstar);
             stats.setStar11(upperLeft);
             stats.setStar12(upperZAMS);
-            stats.getResult().changeResultType(ResultType.ZAMS_INSIDER);
+            stats.changeResultType(ResultType.ZAMS_INSIDER);
         }
     }
 
@@ -167,15 +167,19 @@ public class Data {
         double y_error = Math.abs(star.getLuminosity() - stats.getY());
         if (x_error < 0.0001 && y_error < 0.0001) {
             Double[] attributes = star.getAllAttributes();
-            double error_const = Math.sqrt(x_error * x_error + y_error * y_error);
+            //double error_const = Math.sqrt(x_error * x_error + y_error * y_error);
             stats.setResult(new ResultStar(star.getAllAttributes()));
+            ResultStar result = stats.getResult();
             /*stats.getResult().setErrors(new
                 double[]{
                     attributes[2] * error_const,
                     attributes[3] * error_const,
                     attributes[4] * error_const,
                     attributes[5] * error_const});*/
-            stats.getResult().changeResultType(ResultType.STAR_MATCH);
+            for (int i = 2; i < 6; i++) {
+                result.setDeviation(i, 0, 0);
+            }
+            stats.changeResultType(ResultType.STAR_MATCH);
             return true;
     }
         return false;
@@ -190,7 +194,10 @@ public class Data {
     public ComputationStats estimateStar(double x, double y, double x_unc, double y_unc, HashSet<Short> ignoredPhases) {
         ComputationStats stats = new ComputationStats(x, y, x_unc, y_unc);
         if (!findNearestStars(stats, ignoredPhases)) {
-            if (stats.getResult() != null) {return stats;} //match was found
+            if (stats.getResult() != null) { //match was found
+                stats.getResult().setResultType(stats.getResultType());
+                return stats;
+            }
 
             if (x_unc > 0 || y_unc > 0) { //give ZAMS outsiders a chance
                 Star[] zams = findBothZAMS(stats);
@@ -208,8 +215,8 @@ public class Data {
                         stats.setResult2_(newStats.getResult2_());
                         Double[] params = newStats.getResult().getAllAttributes();
                         stats.setResult(new ResultStar(x, y, params[2], params[3], params[4], params[5]));
-                        stats.getResult().changeResultType(ResultType.ZAMS_OUTSIDER);
-                        //SOMEHOW DEAL WITH ERROR LATER <-------------------------- TODO
+                        stats.changeResultType(ResultType.ZAMS_OUTSIDER);
+                        stats.getResult().setResultType(stats.getResultType());
                         return stats;
                     }
                 }
@@ -217,20 +224,25 @@ public class Data {
 
             stats.setResult(new ResultStar(x, y, null, null, null, null));
             sidesMatch(stats, x, y); //give pairs a chance
+            stats.getResult().setResultType(stats.getResultType());
             return stats;
         }
 
         if (sidesMatch(stats, x, y)) {
+            stats.getResult().setResultType(stats.getResultType());
             return stats;
         }
 
         if (!Interpolator.determineEvolutionaryStatus(stats)) {
             stats.setResult(new ResultStar(x, y, null, null, null, null));
+            stats.getResult().setResultType(stats.getResultType());
             return stats;
         }
         Interpolator.interpolateAllCharacteristics(stats);
-        stats.getResult().changeResultType(ResultType.FULL_ESTIMATION);
+        stats.changeResultType(ResultType.FULL_ESTIMATION);
+        stats.getResult().setResultType(stats.getResultType());
         return stats;
+
     }
 
     public ComputationStats estimateStar(double x, double y, double temp_unc, double lum_unc) {
@@ -364,7 +376,7 @@ public class Data {
         if (params[2] != null) {
             stats.setResult(new ResultStar(params));
             stats.setEvolutionaryLine(usedNeighbours[0], usedNeighbours[1]);
-            stats.getResult().changeResultType(ResultType.SIDE_MATCH);
+            stats.changeResultType(ResultType.SIDE_MATCH);
             return true;
         }
 

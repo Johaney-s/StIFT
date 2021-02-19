@@ -19,6 +19,7 @@ public class ComputationStats {
     private Star result1_;
     private Star result2_;
     private ResultStar result;
+    private ResultType resultType = ResultType.NONE;
 
     public ComputationStats(double x, double y, double x_unc, double y_unc) {
         this.x = x;
@@ -142,5 +143,14 @@ public class ComputationStats {
         y2_ = star2.getLuminosity();
         result1_ = star1;
         result2_ = star2;
+    }
+
+    /** Changes result type if current is NONE */
+    public void changeResultType(ResultType newType) {
+        this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;
+    }
+
+    public ResultType getResultType() {
+        return this.resultType;
     }
 }
