@@ -158,11 +158,20 @@ public class ResultStar extends Star {
         if (uncertainties[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
         return new TextFlow(t1, t2);*/
 
-        Text t1 = new Text(String.format("%.4f +%s %s",
+        /*Text t1 = new Text(String.format("%.4f +%s %s",
                 attribute,
                 (upperDeviation[index] == Double.MAX_VALUE || upperDeviation[index].isNaN()) ? "N/A" : String.format("%.2f", upperDeviation[index]),
-                (lowerDeviation[index] == Double.MAX_VALUE || lowerDeviation[index].isNaN()) ? "-N/A" : String.format("%.2f", lowerDeviation[index])));
-        return new TextFlow(t1);
+                (lowerDeviation[index] == Double.MAX_VALUE || lowerDeviation[index].isNaN()) ? "-N/A" : String.format("%.2f", lowerDeviation[index])));*/
+        TextFlow container = new TextFlow();
+        Text normal = new Text(String.format("%.4f", attribute));
+        Text sup = new Text(String.format("%s", (upperDeviation[index] == Double.MAX_VALUE
+                        || upperDeviation[index].isNaN()) ? "N/A" : String.format("+%.2f", upperDeviation[index])));
+        Text sub = new Text(String.format("%s", (lowerDeviation[index] == Double.MAX_VALUE
+                || lowerDeviation[index].isNaN()) ? "-N/A" : String.format("%.2f", lowerDeviation[index])));
+        sup.setTranslateY(normal.getFont().getSize() * -0.3);
+        sub.setTranslateY(normal.getFont().getSize() * 0.3);
+        container.getChildren().addAll(normal, sup, sub);
+        return new TextFlow(container);
     }
 
     //Returns string representation of rounded result (for export purpose)

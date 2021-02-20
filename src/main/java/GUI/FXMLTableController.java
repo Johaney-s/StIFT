@@ -12,7 +12,6 @@ import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -20,7 +19,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.RangeSlider;
@@ -96,12 +94,9 @@ public class FXMLTableController implements Initializable {
                     updateHiddenRowsCounter();
                 });
 
-        cancelIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                tooltip.hide();
-            }
-        });
+        cancelIcon.setOnMouseClicked(mouseEvent -> tooltip.hide());
+        cancelIcon.setOnMousePressed(mouseEvent -> tooltip.hide());
+
 
         vBox.setMaxWidth(100);
         BorderPane firstRow = new BorderPane();

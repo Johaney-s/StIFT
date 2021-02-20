@@ -4,6 +4,10 @@ import backend.objects.ResultStar;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 /** Class responsible for uncertainty computation */
 public abstract class Statistics {
 
@@ -28,19 +32,32 @@ public abstract class Statistics {
         };
 
         Data model = GridFileParser.getCurrentData();
-        for (int i = 0; i < 1000; i++) {
-            double rand_x = xDistribution.sample();
-            double rand_y = yDistribution.sample();
-            Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0).getResult().getAllAttributes();
-            //System.out.println(Arrays.toString(attributes));
+        //double start = System.currentTimeMillis();
+        ExecutorService es = Executors.newCachedThreadPool();
 
-            if (attributes != null && attributes[2] != null) {
-                statistics[0].addValue(UnitsConverter.fromDex(attributes[2]));
-                statistics[1].addValue(attributes[3]);
-                statistics[2].addValue(attributes[4]);
-                statistics[3].addValue(attributes[5]);
-            }
+        for (int i = 0; i < 1000; i++) {
+            es.execute(() -> {
+                double rand_x = xDistribution.sample();
+                double rand_y = yDistribution.sample();
+                Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0).getResult().getAllAttributes();
+                //System.out.println(Arrays.toString(attributes));
+
+                if (attributes != null && attributes[2] != null){
+                    statistics[0].addValue(UnitsConverter.fromDex(attributes[2]));
+                    statistics[1].addValue(attributes[3]);
+                    statistics[2].addValue(attributes[4]);
+                    statistics[3].addValue(attributes[5]);
+                }
+            });
         }
+        es.shutdown();
+        try {
+            es.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //double end = System.currentTimeMillis();
+        //System.out.println("Execution time: " + (end - start));
 
         //System.out.println("N: " + statistics[0].getN());
         ResultStar result = stats.getResult();
