@@ -59,15 +59,16 @@ public class TextOnly {
             System.out.println("Estimation method: " + stats.getResult().getResultType());
             System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
 
-            System.out.println("Neighbours:");
-            if (stats.getStar11() != null) {
-                stats.getStar11().printValues();
-                stats.getStar12().printValues();
-            }
-
-            if (stats.getStar22() != null) {
-                stats.getStar21().printValues();
-                stats.getStar22().printValues();
+            if (stats.getStar11() != null || stats.getStar12() != null || stats.getStar21() != null || stats.getStar22() != null) {
+                System.out.println("Neighbours:");
+                if (stats.getStar11() != null)
+                    stats.getStar11().printValues();
+                if (stats.getStar12() != null)
+                    stats.getStar12().printValues();
+                if (stats.getStar21() != null)
+                    stats.getStar21().printValues();
+                if (stats.getStar22() != null)
+                    stats.getStar22().printValues();
             }
 
             if (stats.getResult1_() != null) {

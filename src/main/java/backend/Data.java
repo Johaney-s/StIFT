@@ -153,7 +153,7 @@ public class Data {
         double x_error = Math.abs(star.getTemperature() - stats.getX());
         double y_error = Math.abs(star.getLuminosity() - stats.getY());
         if (x_error < 0.0001 && y_error < 0.0001) {
-            Double[] attributes = star.getAllAttributes();
+            //Double[] attributes = star.getAllAttributes();
             //double error_const = Math.sqrt(x_error * x_error + y_error * y_error);
             stats.setResult(new ResultStar(star.getAllAttributes()));
             ResultStar result = stats.getResult();
@@ -310,10 +310,10 @@ public class Data {
                         neighbours[2].getAllAttributes()[i], neighbours[3].getAllAttributes()[i]);
             }
         } else if (neighbours[2] != null && neighbours[0] != null) { //check vertical
-            Star l_lo = (neighbours[0].getTemperature() < neighbours[1].getTemperature()) ? neighbours[0] : neighbours[1];
-            Star r_lo = (neighbours[0].getTemperature() < neighbours[1].getTemperature()) ? neighbours[1] : neighbours[0];
-            Star l_up = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[2] : neighbours[3];
-            Star r_up = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[3] : neighbours[2];
+            Star l_up = (neighbours[0].getTemperature() < neighbours[1].getTemperature()) ? neighbours[0] : neighbours[1];
+            Star r_up = (neighbours[0].getTemperature() < neighbours[1].getTemperature()) ? neighbours[1] : neighbours[0];
+            Star l_lo = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[2] : neighbours[3];
+            Star r_lo = (neighbours[2].getTemperature() < neighbours[3].getTemperature()) ? neighbours[3] : neighbours[2];
             double left_insct = intersection(l_lo, l_up, x, y)[0];
             double right_insct = intersection(r_up, r_lo, x, y)[0];
             if (Math.abs(left_insct - x) < MAX_ERROR) {

@@ -96,14 +96,14 @@ public class ResultStar extends Star {
     }
 
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
-    /*public TextFlow getTemColumnText() {
+    public TextFlow getTemColumnText() {
         return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%.4f±%.4f", temperature, uncertainties[0])));
+                : new TextFlow(new Text(String.format("%.4f±%.2f", temperature, upperDeviation[0])));
     }
 
     public TextFlow getLumColumnText() {
         return (luminosity == null || luminosity.isNaN())? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%.4f±%.4f", luminosity, uncertainties[1])));
+                : new TextFlow(new Text(String.format("%.4f±%.2f", luminosity, upperDeviation[1])));
     }
 
     public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
@@ -112,7 +112,7 @@ public class ResultStar extends Star {
 
     public TextFlow getMasColumnText() { return getTextRepresentation(mass, 4); }
 
-    public TextFlow getPhaColumnText() { return getTextRepresentation(phase, 5); }*/
+    public TextFlow getPhaColumnText() { return getTextRepresentation(phase, 5); }
 
     /**
      * Returns text representation to fit in tableView
@@ -120,10 +120,10 @@ public class ResultStar extends Star {
      * @param index index of attribute (used as index in lists)
      * @return String representation of value and uncertainty according to valid attributes
      */
-    /*private TextFlow getTextRepresentation(Double attribute, int index) {
-        double SMALL_ERROR = 0.00005;
+    private TextFlow getTextRepresentation(Double attribute, int index) {
         if (attribute == null || attribute.isNaN()) { return new TextFlow(new Text("-")); }
 
+        /*double SMALL_ERROR = 0.00005;
         if ((sd != VALID || deviations[index].isNaN()) && error != VALID) {
             Text t1 = new Text(String.format("%.4f ", attribute));
             Text t2 = new Text("SD");
@@ -156,41 +156,47 @@ public class ResultStar extends Star {
         Text t1 = new Text(String.format("%.4f±", attribute));
         Text t2 = new Text(String.format("%.4f", uncertainties[index]));
         if (uncertainties[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
-        return new TextFlow(t1, t2);
+        return new TextFlow(t1, t2);*/
+
+        Text t1 = new Text(String.format("%.4f +%s %s",
+                attribute,
+                (upperDeviation[index] == Double.MAX_VALUE || upperDeviation[index].isNaN()) ? "N/A" : String.format("%.2f", upperDeviation[index]),
+                (lowerDeviation[index] == Double.MAX_VALUE || lowerDeviation[index].isNaN()) ? "-N/A" : String.format("%.2f", lowerDeviation[index])));
+        return new TextFlow(t1);
     }
 
     //Returns string representation of rounded result (for export purpose)
     public String getFormattedTemperature() {
-        return (String.format("%.4f %.4f", temperature, deviations[0]));
+        return (String.format("%.4f %.4f", temperature, upperDeviation[0]));
     }
 
     public String getFormattedLuminosity() {
-        return (String.format("%.4f %.4f", luminosity, deviations[1]));
+        return (String.format("%.4f %.4f", luminosity, upperDeviation[1]));
     }
 
     public String getFormattedAge() {
         return (age == null || age.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, age,
-                String.format("%.4f", errors[2]),
-                (sd != VALID || deviations[2].isNaN()) ? "-" : String.format("%.4f", deviations[2]));
+                (lowerDeviation[2].isNaN() || lowerDeviation[2] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[2]),
+                (upperDeviation[2].isNaN() || upperDeviation[2] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[2]));
     }
 
     public String getFormattedRadius() {
         return (radius == null || radius.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, radius,
-                String.format("%.4f", errors[3]),
-                (sd != VALID || deviations[3].isNaN()) ? "-" : String.format("%.4f", deviations[3]));
+                (lowerDeviation[3].isNaN() || lowerDeviation[3] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[3]),
+                (upperDeviation[3].isNaN() || upperDeviation[3] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[3]));
     }
 
     public String getFormattedMass() {
         return (mass == null || mass.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, mass,
-                String.format("%.4f", errors[4]),
-                (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[4]));
+                (lowerDeviation[4].isNaN() || lowerDeviation[4] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[4]),
+                (upperDeviation[4].isNaN() || upperDeviation[4] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[4]));
     }
 
     public String getFormattedPhase() {
         return (phase == null || phase.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, phase,
-                String.format("%.4f",errors[5]),
-                (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[5]));
-    }*/
+                (lowerDeviation[5].isNaN() || lowerDeviation[5] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[5]),
+                (upperDeviation[5].isNaN() || upperDeviation[5] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[5]));
+    }
 
     public void printAllDeviations() {
         System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n+%.4f\t+%.4f\t+%.4f\t+%.4f\t+%.4f\t+%.4f\n",
