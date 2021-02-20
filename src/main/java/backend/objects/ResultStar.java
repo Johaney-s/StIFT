@@ -220,10 +220,6 @@ public class ResultStar extends Star {
         sd = (sd != INVALID) ? HIDE : sd;
     }
 
-    /*public boolean isValidSD() {
-        return sd == VALID;
-    } DELETE IF NOT NEEDED*/
-
     /** Set result type if current is NONE */
     public void setResultType(ResultType newType) {
         this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;

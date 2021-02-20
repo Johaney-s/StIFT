@@ -33,7 +33,7 @@ public abstract class Statistics {
 
         Data model = GridFileParser.getCurrentData();
         //double start = System.currentTimeMillis();
-        ExecutorService es = Executors.newCachedThreadPool();
+        ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         for (int i = 0; i < 1000; i++) {
             es.execute(() -> {
@@ -52,7 +52,10 @@ public abstract class Statistics {
         }
         es.shutdown();
         try {
-            es.awaitTermination(1, TimeUnit.SECONDS);
+            if (!es.awaitTermination(10, TimeUnit.SECONDS)) {
+                es.shutdownNow();
+                return;
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
