@@ -6,6 +6,9 @@ import backend.objects.Star;
 
 import java.util.*;
 
+import static backend.Geometry.intersection;
+import static backend.Geometry.lineIntersection;
+
 /**
  * Data represented by a Map of stars (values) grouped by initial mass (key)
  */
@@ -50,22 +53,6 @@ public class Data {
             }
             groupedData.put(currentGroup.get(0).getMass(), currentGroup);
         }
-    }
-    
-    /**
-     * Finds coordinates of intersection on a line connecting two stars
-     * @param first First star on the line
-     * @param second Second star on the line
-     * @param x Given point, x coordinate
-     * @param y Given point, y coordinate
-     * @return coordinates [x,y] of intersection on y and x axis
-     */
-    public double[] intersection(Star first, Star second, double x, double y) {
-        double x_ratio = (x - first.getTemperature()) / (second.getTemperature() - first.getTemperature());
-        double y_intersection = (second.getLuminosity() - first.getLuminosity()) * x_ratio + first.getLuminosity();
-        double y_ratio = (y - first.getLuminosity()) / (second.getLuminosity() - first.getLuminosity());
-        double x_intersection = (second.getTemperature() - first.getTemperature()) * y_ratio + first.getTemperature();
-        return new double[]{x_intersection, y_intersection};
     }
     
     /**
@@ -269,7 +256,9 @@ public class Data {
             return meanValueStats;
         }
 
-        //todo DEVIATIONS COMPUTING TOOK PLACE HERE
+        if (temp_unc != 0 && lum_unc != 0) {
+            Statistics.computeUncertainty(meanValueStats);
+        }
 
         return meanValueStats;
     }
@@ -298,37 +287,6 @@ public class Data {
 
     public ZAMS getZAMS() {
         return zams;
-    }
-
-    /**
-     * Computes standard deviation from region around mean value
-     * @param mean Mean value (Star)
-     * @param region Region of stars
-     * @return [ageSD, radSD, massSD, phaseSD]
-     */
-    public double[] computeDeviation(Star mean, ArrayList<Star> region) {
-        double[] deviation = {0, 0, 0, 0};
-        for (Star star : region) {
-            double age_diff = Math.pow(10, star.getAge()) - Math.pow(10, mean.getAge());
-            deviation[0] += Math.pow(age_diff, 2);
-            for (int inx = 3; inx < 6; inx++) { //except input params and age all are linear
-                deviation[inx - 2] += Math.pow(star.getAllAttributes()[inx] - mean.getAllAttributes()[inx], 2);
-            }
-        }
-
-        //Divide by number of data points and find square root
-        double[] uncertainties = new double[4];
-        for (int i = 0; i < 4; i++) {
-            uncertainties[i] = deviation[i] / region.size();
-            uncertainties[i] = Math.sqrt(uncertainties[i]);
-        }
-
-        if (uncertainties[0] > 0) { //special handling for age [dex]
-            uncertainties[0] = Math.log10(uncertainties[0]);
-            uncertainties[0] = Math.pow(10, uncertainties[0]) / (Math.pow(10, mean.getAge()) * Math.log(10));
-        }
-
-        return uncertainties;
     }
 
     /** Check, if any side intersects the input */
@@ -381,27 +339,6 @@ public class Data {
         }
 
         return false;
-    }
-
-    /** Returns coordinates of intersection of lines A-B and C-D or null if none */
-    private double[] lineIntersection(Star A, Star B, double[] C, double[] D) {
-        double a1 = B.getLuminosity() - A.getLuminosity();
-        double b1 = A.getTemperature() - B.getTemperature();
-        double c1 = a1 * (A.getTemperature()) + b1 * (A.getLuminosity());
-
-        double a2 = D[1] - C[1];
-        double b2 = C[0] - D[0];
-        double c2 = a2 * (C[0]) + b2 * (C[1]);
-
-        double determinant = a1 * b2 - a2 * b1;
-
-        if (determinant == 0) {
-            return new double[]{Double.MAX_VALUE, Double.MAX_VALUE};
-        }
-
-        double x = (b2 * c1 - b1 * c2) / determinant;
-        double y = (a1 * c2 - a2 * c1) / determinant;
-        return new double[]{x, y};
     }
 
     /** Searches for upper and lower ZAMS points which intersection with INPUT-UPPER_LEFT is bounded

@@ -13,7 +13,6 @@ import static backend.State.*;
 public class ResultStar extends Star {
     private final Double[] lowerDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final Double[] upperDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-    private final double[] uncertainties = {0, 0, 0, 0, 0, 0};
     private final String ROUNDING_FORMAT = "%.4f %s %s";
     private State sd = VALID;
     private ResultType resultType = ResultType.NONE;
@@ -97,7 +96,7 @@ public class ResultStar extends Star {
     }
 
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
-    public TextFlow getTemColumnText() {
+    /*public TextFlow getTemColumnText() {
         return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
                 : new TextFlow(new Text(String.format("%.4f±%.4f", temperature, uncertainties[0])));
     }
@@ -107,7 +106,7 @@ public class ResultStar extends Star {
                 : new TextFlow(new Text(String.format("%.4f±%.4f", luminosity, uncertainties[1])));
     }
 
-    /*public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
+    public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
 
     public TextFlow getRadColumnText() { return getTextRepresentation(radius, 3); }
 
@@ -206,13 +205,9 @@ public class ResultStar extends Star {
         sd = (sd != INVALID) ? HIDE : sd;
     }
 
-    public double[] getUncertainties() {
-        return this.uncertainties;
-    }
-
-    public boolean isValidSD() {
+    /*public boolean isValidSD() {
         return sd == VALID;
-    }
+    } DELETE IF NOT NEEDED*/
 
     /** Set result type if current is NONE */
     public void setResultType(ResultType newType) {

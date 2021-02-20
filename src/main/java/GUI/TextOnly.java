@@ -80,11 +80,8 @@ public class TextOnly {
             System.out.println("Mean value: <----------------------");
             mean.printValues();
 
-            if (mean.getResultType() == ResultType.FULL_ESTIMATION) {
-                Statistics.computeUncertainty(stats);
-                System.out.println("Uncertainties:");
-                mean.printAllDeviations();
-            }
+            System.out.println("Uncertainties:");
+            mean.printAllDeviations();
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
         } catch (FileNotFoundException ex) {
