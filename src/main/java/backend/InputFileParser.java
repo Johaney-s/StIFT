@@ -86,12 +86,14 @@ public abstract class InputFileParser {
                         row = reader.readLine();
                     }
 
+                    int counter = 0;
                     while (row  != null) {
+                        counter++;
                         String[] record = row.split(",|\\s"); //delimiters
 
                         if (record.length != 2 && record.length != 4) {
                             reader.close();
-                            throw new IOException("Invalid number of parameters");
+                            throw new IOException("Invalid number of parameters on line" + counter);
                         }
 
                         double temperature = Double.parseDouble(record[0]);
@@ -113,6 +115,50 @@ public abstract class InputFileParser {
                 }
             };
         }
+    }
+
+    /**
+     * Parse input file (so far fast mode usage)
+     * @param file Checked input file
+     * @param tableModel storage of results
+     */
+    public static Void extract(File file, TableModel tableModel) throws IOException {
+        ArrayList<ResultStar> newResults = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String row = reader.readLine();
+
+        while (row != null && row.length() > 0 && row.charAt(0) == '#') { //skip header in file
+            row = reader.readLine();
+        }
+
+        int counter = 0;
+        while (row  != null) {
+            counter++;
+            String[] record = row.split(",|\\s"); //delimiters
+
+            if (record.length != 2 && record.length != 4) {
+                reader.close();
+                throw new IOException("Invalid number of parameters on line" + counter);
+            }
+
+            double temperature = Double.parseDouble(record[0]);
+            double luminosity = Double.parseDouble(record[1]);
+            double temp_unc = 0.0;
+            double lum_unc = 0.0;
+
+            if (record.length == 4) {
+                temp_unc = Double.parseDouble(record[2]);
+                lum_unc = Double.parseDouble(record[3]);
+            }
+
+            newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
+            System.out.println("Processed " + counter + ". row.");
+            row = reader.readLine();
+        }
+
+        reader.close();
+        tableModel.setResults(newResults);
+        return null;
     }
 }
 
