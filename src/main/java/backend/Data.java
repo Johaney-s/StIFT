@@ -13,14 +13,14 @@ import static backend.Geometry.lineIntersection;
  * Data represented by a Map of stars (values) grouped by initial mass (key)
  */
 public class Data {
-    private final Map<Double, ArrayList<Star>> groupedData;
+    private final ArrayList<ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
     public static double TRACKS_DELIMITER = 0.01;
     private final HashSet<Short> currentPhases;
     private final ZAMS zams = new ZAMS();
     
     public Data() {
-       groupedData = new HashMap<>();
+       groupedData = new ArrayList<>();
        currentGroup = new ArrayList<>();
        currentPhases =  new HashSet<>();
     }
@@ -51,7 +51,7 @@ public class Data {
             if (currentGroup.get(0).getPhase() == zams.get_phase()) {
                 zams.add(currentGroup.get(0));
             }
-            groupedData.put(currentGroup.get(0).getMass(), currentGroup);
+            groupedData.add(currentGroup);
         }
     }
     
@@ -68,34 +68,38 @@ public class Data {
         Star lowerLeft = null;
         Star upperZAMS = null;
 
-        for (ArrayList<Star> list : getGroupedData().values()) {
-            if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))){
+        for (ArrayList<Star> list : groupedData) {
+            if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))) {
                 return false; ///NO NEIGHBOURS returned, BUT MATCH
             }
 
             if (list.size() > 1) {
-                for(int index = 0; index + 1 < list.size(); index++) {
+                for (int index = 0; index + 1 < list.size(); index++) {
                     Star first = list.get(index);
                     Star second = list.get(index + 1);
-                    if (ignoredPhases.contains(first.getPhase().shortValue())) { continue; } //ignore ignored phase
-                    if (starsMatch(stats, second)) { return false; }///NO NEIGHBOURS returned, BUT MATCH
+                    if (ignoredPhases.contains(first.getPhase().shortValue())) {
+                        continue;
+                    } //ignore ignored phase
+                    if (starsMatch(stats, second)) {
+                        return false;
+                    }///NO NEIGHBOURS returned, BUT MATCH
 
                     if ((first.getTemperature() <= stats.getX() && second.getTemperature() > stats.getX()) ||
                             (first.getTemperature() > stats.getX() && second.getTemperature() <= stats.getX())) {
-                       if (intersection(first, second, stats.getX(), stats.getY())[1] < stats.getY()) {
+                        if (intersection(first, second, stats.getX(), stats.getY())[1] < stats.getY()) {
                             if (lowerRight == null || intersection(lowerLeft, lowerRight, stats.getX(), stats.getY())[1]
                                     < intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 lowerLeft = first;
                                 lowerRight = second;
                             }
-                       } else {
+                        } else {
                             if (upperRight == null || intersection(upperLeft, upperRight, stats.getX(), stats.getY())[1]
                                     >= intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 upperLeft = first;
                                 upperRight = second;
                                 upperZAMS = list.get(0);
                             }
-                       }
+                        }
                     }
                 }
             }
@@ -277,7 +281,7 @@ public class Data {
         return estimate(x, y, x_unc, y_unc, true, true, new HashSet<>());
     }
 
-    public Map<Double, ArrayList<Star>> getGroupedData() {
+    public ArrayList<ArrayList<Star>> getGroupedData() {
         return groupedData;
     }
 

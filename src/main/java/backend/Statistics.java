@@ -60,7 +60,7 @@ public abstract class Statistics {
             e.printStackTrace();
         }
         //double end = System.currentTimeMillis();
-        //System.out.println("Execution time: " + (end - start));
+        //System.out.println("Execution time: " + (end - start) + " ms");
 
         //System.out.println("N: " + statistics[0].getN());
         ResultStar result = stats.getResult();

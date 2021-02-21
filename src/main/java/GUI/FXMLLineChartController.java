@@ -7,8 +7,6 @@ import backend.objects.Star;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -91,7 +89,7 @@ public class FXMLLineChartController implements Initializable {
         try {
             Data newData = GridFileParser.extract(inStream);
             lineChart.getData().clear();
-            addIsochronesToChart(newData.getGroupedData().entrySet().iterator());
+            addIsochronesToChart(newData.getGroupedData());
         } catch (IOException ex) {
             mainController.showAlert("Error while parsing grid data", ex.getMessage(), Alert.AlertType.ERROR);
             return false;
@@ -112,20 +110,18 @@ public class FXMLLineChartController implements Initializable {
     
     /**
      * Iterates over groups of stars and adds them into graph as isochrones
-     * @param iter Iterator of collection of groups of stars
      */
-    private void addIsochronesToChart(Iterator<Map.Entry<Double, ArrayList<Star>>> iter) {
-        while (iter.hasNext()) {
-            Map.Entry<Double, ArrayList<Star>> isochrone = iter.next();
+    private void addIsochronesToChart(ArrayList<ArrayList<Star>> list) {
+        for (ArrayList<Star> isochrone : list) {
 
             Task<Void> task = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
                     XYChart.Series series = new XYChart.Series();
                     int index = 0;
-                    for (Star s : isochrone.getValue()) {
+                    for (Star s : isochrone) {
                         if (index % 4 != 0) { index++; continue; } //faster rendering
-                        series.getData().add(new XYChart.Data(s.getTemperature(),s.getLuminosity()));
+                        series.getData().add(new XYChart.Data(s.getTemperature(), s.getLuminosity()));
                         index++;
                     }
 
