@@ -98,12 +98,12 @@ public class ResultStar extends Star {
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
     public TextFlow getTemColumnText() {
         return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%.4f±%.2f", temperature, upperDeviation[0])));
+                : new TextFlow(new Text(String.format("%.4f±%.4f", temperature, upperDeviation[0])));
     }
 
     public TextFlow getLumColumnText() {
         return (luminosity == null || luminosity.isNaN())? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%.4f±%.2f", luminosity, upperDeviation[1])));
+                : new TextFlow(new Text(String.format("%.4f±%.4f", luminosity, upperDeviation[1])));
     }
 
     public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
@@ -191,20 +191,20 @@ public class ResultStar extends Star {
 
     public String getFormattedRadius() {
         return (radius == null || radius.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, radius,
-                (lowerDeviation[3].isNaN() || lowerDeviation[3] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[3]),
-                (upperDeviation[3].isNaN() || upperDeviation[3] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[3]));
+                (lowerDeviation[3].isNaN() || lowerDeviation[3] == Double.MAX_VALUE) ? "-" : String.format("%.4f",lowerDeviation[3]),
+                (upperDeviation[3].isNaN() || upperDeviation[3] == Double.MAX_VALUE) ? "-" : String.format("%.4f",upperDeviation[3]));
     }
 
     public String getFormattedMass() {
         return (mass == null || mass.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, mass,
-                (lowerDeviation[4].isNaN() || lowerDeviation[4] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[4]),
-                (upperDeviation[4].isNaN() || upperDeviation[4] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[4]));
+                (lowerDeviation[4].isNaN() || lowerDeviation[4] == Double.MAX_VALUE) ? "-" : String.format("%.4f",lowerDeviation[4]),
+                (upperDeviation[4].isNaN() || upperDeviation[4] == Double.MAX_VALUE) ? "-" : String.format("%.4f",upperDeviation[4]));
     }
 
     public String getFormattedPhase() {
         return (phase == null || phase.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, phase,
-                (lowerDeviation[5].isNaN() || lowerDeviation[5] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[5]),
-                (upperDeviation[5].isNaN() || upperDeviation[5] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[5]));
+                (lowerDeviation[5].isNaN() || lowerDeviation[5] == Double.MAX_VALUE) ? "-" : String.format("%.4f",lowerDeviation[5]),
+                (upperDeviation[5].isNaN() || upperDeviation[5] == Double.MAX_VALUE) ? "-" : String.format("%.4f",upperDeviation[5]));
     }
 
     public void printAllDeviations() {

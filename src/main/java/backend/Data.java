@@ -10,7 +10,7 @@ import static backend.Geometry.intersection;
 import static backend.Geometry.lineIntersection;
 
 /**
- * Data represented by a Map of stars (values) grouped by initial mass (key)
+ * Data divided into lists of isochrones
  */
 public class Data {
     private final ArrayList<ArrayList<Star>> groupedData;

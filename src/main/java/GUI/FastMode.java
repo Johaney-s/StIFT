@@ -48,7 +48,7 @@ public class FastMode {
             tableModel.exportResults(exportFile);
             System.out.println("Computation finished, data exported to " + exportFile + ".");
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("ERROR MESSAGE: " + ex.getMessage());
         }
 
         System.out.println("===================================");

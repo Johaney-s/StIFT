@@ -93,7 +93,7 @@ public abstract class InputFileParser {
 
                         if (record.length != 2 && record.length != 4) {
                             reader.close();
-                            throw new IOException("Invalid number of parameters on line" + counter);
+                            throw new IOException("Invalid number of parameters on line " + counter);
                         }
 
                         double temperature = Double.parseDouble(record[0]);
@@ -122,7 +122,7 @@ public abstract class InputFileParser {
      * @param file Checked input file
      * @param tableModel storage of results
      */
-    public static Void extract(File file, TableModel tableModel) throws IOException {
+    public static void extract(File file, TableModel tableModel) throws IOException, NumberFormatException {
         ArrayList<ResultStar> newResults = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String row = reader.readLine();
@@ -138,27 +138,32 @@ public abstract class InputFileParser {
 
             if (record.length != 2 && record.length != 4) {
                 reader.close();
-                throw new IOException("Invalid number of parameters on line" + counter);
+                throw new IOException("Invalid number of parameters on line " + counter);
             }
 
-            double temperature = Double.parseDouble(record[0]);
-            double luminosity = Double.parseDouble(record[1]);
-            double temp_unc = 0.0;
-            double lum_unc = 0.0;
+            try {
+                double temperature = Double.parseDouble(record[0]);
+                double luminosity = Double.parseDouble(record[1]);
+                double temp_unc = 0.0;
+                double lum_unc = 0.0;
 
-            if (record.length == 4) {
-                temp_unc = Double.parseDouble(record[2]);
-                lum_unc = Double.parseDouble(record[3]);
+                if (record.length == 4) {
+                    temp_unc = Double.parseDouble(record[2]);
+                    lum_unc = Double.parseDouble(record[3]);
+
+                }
+
+                newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
+                System.out.println("Processed " + counter + ". row.");
+                row = reader.readLine();
+            } catch (NumberFormatException ex) {
+                reader.close();
+                throw new IOException("Invalid parameter on line " + counter + ".");
             }
-
-            newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
-            System.out.println("Processed " + counter + ". row.");
-            row = reader.readLine();
         }
 
         reader.close();
         tableModel.setResults(newResults);
-        return null;
     }
 }
 

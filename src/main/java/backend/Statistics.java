@@ -4,6 +4,7 @@ import backend.objects.ResultStar;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,12 +19,12 @@ public abstract class Statistics {
         double mean_y = stats.getY();
         double unc_x = stats.getX_unc();
         double unc_y = stats.getY_unc();
-        if (unc_x == 0 || unc_y == 0) { //no input uncertainty
+        if (unc_x == 0 && unc_y == 0) { //no input uncertainty
             return; //todo
         }
 
-        NormalDistribution xDistribution = new NormalDistribution(mean_x, unc_x);
-        NormalDistribution yDistribution = new NormalDistribution(mean_y, unc_y);
+        NormalDistribution xDistribution = new NormalDistribution(mean_x, unc_x * unc_x);
+        NormalDistribution yDistribution = new NormalDistribution(mean_y, unc_y * unc_y);
         SynchronizedDescriptiveStatistics[] statistics = new SynchronizedDescriptiveStatistics[]{
                 new SynchronizedDescriptiveStatistics(), //0 - age
                 new SynchronizedDescriptiveStatistics(), //1 - radius
@@ -69,8 +70,8 @@ public abstract class Statistics {
         //special handling for age in dex
         double lowerBound = statistics[0].getPercentile(25);
         double upperBound = statistics[0].getPercentile(75);
-        /*System.out.println("Param: " + 2 + ".\t" + UnitsConverter.toDex(statistics[0].getPercentile(25)) + "\t"
-                + UnitsConverter.toDex(statistics[0].getPercentile(75)));*/
+        //System.out.println("Param: " + 2 + ".\t" + UnitsConverter.toDex(statistics[0].getPercentile(25)) + "\t"
+        //        + UnitsConverter.toDex(statistics[0].getPercentile(75)));
         result.setDeviation(2, UnitsConverter.toDex(lowerBound) - attributes[2], UnitsConverter.toDex(upperBound) - attributes[2]);
         //System.out.println("Min: " + UnitsConverter.toDex(statistics[0].getMin()) + " max: " + UnitsConverter.toDex(statistics[0].getMax()));
 
