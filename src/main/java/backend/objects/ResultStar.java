@@ -45,56 +45,6 @@ public class ResultStar extends Star {
         setDeviation(1, -lum_unc, lum_unc);
     }
 
-    /**
-     * Getter for all attributes as an array
-     * @return Array of {temperature, luminosity, age, radius, mass, phase}
-     */
-    public Double[] getAllAttributes() {
-        return new Double[]{getTemperature(), getLuminosity(), getAge(), getRadius(), getMass(), getPhase()};
-    }
-
-    /**
-     * @return the temperature
-     */
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    /**
-     * @return the luminosity
-     */
-    public Double getLuminosity() {
-        return luminosity;
-    }
-
-    /**
-     * @return the age
-     */
-    public Double getAge() {
-        return age;
-    }
-
-    /**
-     * @return the radius
-     */
-    public Double getRadius() {
-        return radius;
-    }
-
-    /**
-     * @return the mass
-     */
-    public Double getMass() {
-        return mass;
-    }
-
-    /**
-     * @return the phase
-     */
-    public Double getPhase() {
-        return phase;
-    }
-
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
     public TextFlow getTemColumnText() {
         return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
@@ -185,8 +135,8 @@ public class ResultStar extends Star {
 
     public String getFormattedAge() {
         return (age == null || age.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, age,
-                (lowerDeviation[2].isNaN() || lowerDeviation[2] == Double.MAX_VALUE) ? "-" : String.format("%.2f",lowerDeviation[2]),
-                (upperDeviation[2].isNaN() || upperDeviation[2] == Double.MAX_VALUE) ? "-" : String.format("%.2f",upperDeviation[2]));
+                (lowerDeviation[2].isNaN() || lowerDeviation[2] == Double.MAX_VALUE) ? "-" : String.format("%.4f",lowerDeviation[2]),
+                (upperDeviation[2].isNaN() || upperDeviation[2] == Double.MAX_VALUE) ? "-" : String.format("%.4f",upperDeviation[2]));
     }
 
     public String getFormattedRadius() {

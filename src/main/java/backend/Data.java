@@ -156,17 +156,8 @@ public class Data {
     private boolean starsMatch(ComputationStats stats, Star star) {
         double x_error = Math.abs(star.getTemperature() - stats.getX());
         double y_error = Math.abs(star.getLuminosity() - stats.getY());
-        if (x_error < 0.0001 && y_error < 0.0001) {
-            //Double[] attributes = star.getAllAttributes();
-            //double error_const = Math.sqrt(x_error * x_error + y_error * y_error);
-            stats.setResult(new ResultStar(star.getAllAttributes()));
+        if (x_error < 0.0001 && y_error < 0.0001) {stats.setResult(new ResultStar(star.getAllAttributes()));
             ResultStar result = stats.getResult();
-            /*stats.getResult().setErrors(new
-                double[]{
-                    attributes[2] * error_const,
-                    attributes[3] * error_const,
-                    attributes[4] * error_const,
-                    attributes[5] * error_const});*/
             for (int i = 2; i < 6; i++) {
                 result.setDeviation(i, 0, 0);
             }
@@ -260,10 +251,7 @@ public class Data {
             return meanValueStats;
         }
 
-        if (temp_unc != 0 && lum_unc != 0) {
-            Statistics.computeUncertainty(meanValueStats);
-        }
-
+        Statistics.computeUncertainty(meanValueStats);
         return meanValueStats;
     }
 
