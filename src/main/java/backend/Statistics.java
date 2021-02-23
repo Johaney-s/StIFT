@@ -21,6 +21,7 @@ public abstract class Statistics {
         double unc_x = stats.getX_unc();
         double unc_y = stats.getY_unc();
         ResultStar result = stats.getResult();
+
         if ((unc_x == 0 && unc_y == 0) || stats.getResultType() == ResultType.NONE) { //no input uncertainty
             Star first;
             Star second;
@@ -60,7 +61,7 @@ public abstract class Statistics {
             es.execute(() -> {
                 double rand_x = xDistribution.sample();
                 double rand_y = yDistribution.sample();
-                Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0).getResult().getAllAttributes();
+                Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0, stats.getIgnoredPhases()).getResult().getAllAttributes();
                 //System.out.println(Arrays.toString(attributes));
 
                 if (attributes != null && attributes[2] != null){
@@ -83,7 +84,6 @@ public abstract class Statistics {
         }
         //double end = System.currentTimeMillis();
         //System.out.println("Execution time: " + (end - start) + " ms");
-
         //System.out.println("N: " + statistics[0].getN());
 
         if (statistics[0].getN() > (N / 3)) {

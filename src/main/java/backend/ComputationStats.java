@@ -3,6 +3,8 @@ package backend;
 import backend.objects.ResultStar;
 import backend.objects.Star;
 
+import java.util.HashSet;
+
 public class ComputationStats {
     private Double x2_;
     private Double y1_;
@@ -20,6 +22,7 @@ public class ComputationStats {
     private Star result2_;
     private ResultStar result;
     private ResultType resultType = ResultType.NONE;
+    private HashSet<Short> ignoredPhases;
 
     public ComputationStats(double x, double y, double x_unc, double y_unc) {
         this.x = x;
@@ -152,5 +155,13 @@ public class ComputationStats {
 
     public ResultType getResultType() {
         return this.resultType;
+    }
+
+    public void setIgnoredPhases(HashSet<Short> ignoredPhases) {
+        this.ignoredPhases = ignoredPhases;
+    }
+
+    public HashSet<Short> getIgnoredPhases() {
+        return ignoredPhases;
     }
 }

@@ -243,6 +243,7 @@ public class Data {
     public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc,
                                           boolean includeDeviation, HashSet<Short> ignoredPhases) {
         ComputationStats meanValueStats = estimateStar(x, y, temp_unc, lum_unc, ignoredPhases);
+        meanValueStats.setIgnoredPhases(ignoredPhases);
         ResultStar mean = meanValueStats.getResult();
         mean.setInputUncertainties(temp_unc, lum_unc);
 
