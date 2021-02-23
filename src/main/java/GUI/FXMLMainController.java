@@ -54,8 +54,6 @@ public class FXMLMainController implements Initializable {
     @FXML
     private FXMLLoadingController loadingController;
     @FXML
-    private CheckBox includeErrorBox;
-    @FXML
     private CheckBox includeDeviationBox;
     @FXML
     private GridPane phasePane;
@@ -284,13 +282,12 @@ public class FXMLMainController implements Initializable {
      * @param lum_unc temperature uncertainty
      */
     public void manageInput(double x, double y, double temp_unc, double lum_unc) {
-        boolean includeError = includeErrorBox.isSelected();
         boolean includeDeviation = includeDeviationBox.isSelected();
         HashSet<Short> ignoredPhases = new HashSet<>();
         for (CheckBox checkBox : allCheckBoxes) {
             if (!checkBox.isSelected()) { ignoredPhases.add(Short.parseShort(checkBox.getText())); }
         }
-        ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation, ignoredPhases);
+        ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, ignoredPhases);
         tableViewController.handleNewResult(result);
     }
     

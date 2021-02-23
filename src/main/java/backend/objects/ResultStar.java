@@ -1,10 +1,8 @@
 package backend.objects;
 
 import backend.ResultType;
-import backend.State;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import static backend.State.*;
 
 /**
  * Enhanced representation of a star
@@ -14,7 +12,6 @@ public class ResultStar extends Star {
     private final Double[] lowerDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final Double[] upperDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final String ROUNDING_FORMAT = "%.4f %s %s";
-    private State sd = VALID;
     private ResultType resultType = ResultType.NONE;
 
     public ResultStar(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
@@ -165,11 +162,6 @@ public class ResultStar extends Star {
                 upperDeviation[3], upperDeviation[4], upperDeviation[5]);
     }
 
-    /** Hide SD in results, but don't overwrite INVALID state */
-    public void setHideSD() {
-        sd = (sd != INVALID) ? HIDE : sd;
-    }
-
     /** Set result type if current is NONE */
     public void setResultType(ResultType newType) {
         this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;
@@ -178,5 +170,4 @@ public class ResultStar extends Star {
     public ResultType getResultType() {
         return this.resultType;
     }
-
 }

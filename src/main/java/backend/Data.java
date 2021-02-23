@@ -240,33 +240,35 @@ public class Data {
      * @param lum_unc Luminosity uncertainty
      * @return stats with uncertainties_estimations filled out
      */
-    public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc, boolean includeError,
+    public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc,
                                           boolean includeDeviation, HashSet<Short> ignoredPhases) {
         ComputationStats meanValueStats = estimateStar(x, y, temp_unc, lum_unc, ignoredPhases);
         ResultStar mean = meanValueStats.getResult();
-        if (!includeDeviation) { mean.setHideSD(); }
         mean.setInputUncertainties(temp_unc, lum_unc);
 
         if (mean.getAge() == null) {
             return meanValueStats;
         }
 
-        Statistics.computeUncertainty(meanValueStats);
+        if (includeDeviation) {
+            Statistics.computeUncertainty(meanValueStats);
+        }
+        
         return meanValueStats;
     }
 
     public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc) {
-        return estimateStats(x, y, temp_unc, lum_unc, true, true, new HashSet<>());
+        return estimateStats(x, y, temp_unc, lum_unc, true, new HashSet<>());
     }
 
     /** Returns completely estimated star including uncertainties */
-    public ResultStar estimate(double x, double y, double x_unc, double y_unc, boolean includeError,
+    public ResultStar estimate(double x, double y, double x_unc, double y_unc,
                          boolean includeDeviation, HashSet<Short> ignoredPhases) {
-        return estimateStats(x, y, x_unc, y_unc, includeError, includeDeviation, ignoredPhases).getResult();
+        return estimateStats(x, y, x_unc, y_unc, includeDeviation, ignoredPhases).getResult();
     }
 
     public ResultStar estimate(double x, double y, double x_unc, double y_unc) {
-        return estimate(x, y, x_unc, y_unc, true, true, new HashSet<>());
+        return estimate(x, y, x_unc, y_unc, true, new HashSet<>());
     }
 
     public ArrayList<ArrayList<Star>> getGroupedData() {
