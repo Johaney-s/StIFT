@@ -1,8 +1,9 @@
 package backend.objects;
 
 import backend.ResultType;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 /**
  * Enhanced representation of a star
@@ -11,7 +12,7 @@ import javafx.scene.text.TextFlow;
 public class ResultStar extends Star {
     private final Double[] lowerDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final Double[] upperDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-    private final String ROUNDING_FORMAT = "%.4f %s %s";
+    private final String ROUNDING_FORMAT = "%." + VALUES_PRECISION + "f %s %s";
     private ResultType resultType = ResultType.NONE;
     private static int VALUES_PRECISION = 4; //eventually switch from static if rounding is input-dependent
     private static int UNCERTAINTY_PRECISION = 3;
@@ -45,25 +46,29 @@ public class ResultStar extends Star {
     }
 
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
-    public TextFlow getTemColumnText() {
-        return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%." + VALUES_PRECISION + "f±%." + UNCERTAINTY_PRECISION + "f",
+    public HBox getTemColumnText() {
+        HBox hBox = (temperature == null || temperature.isNaN()) ? new HBox(new Text("-"))
+                : new HBox(new Text(String.format("%." + VALUES_PRECISION + "f±%." + UNCERTAINTY_PRECISION + "f",
                 temperature, upperDeviation[0])));
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        return hBox;
     }
 
-    public TextFlow getLumColumnText() {
-        return (luminosity == null || luminosity.isNaN())? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%." + VALUES_PRECISION + "f±%." + UNCERTAINTY_PRECISION + "f",
+    public HBox getLumColumnText() {
+        HBox hBox = (luminosity == null || luminosity.isNaN())? new HBox(new Text("-"))
+                : new HBox(new Text(String.format("%." + VALUES_PRECISION + "f±%." + UNCERTAINTY_PRECISION + "f",
                 luminosity, upperDeviation[1])));
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        return hBox;
     }
 
-    public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
+    public HBox getAgeColumnText() { return getTextRepresentation(age, 2); }
 
-    public TextFlow getRadColumnText() { return getTextRepresentation(radius, 3); }
+    public HBox getRadColumnText() { return getTextRepresentation(radius, 3); }
 
-    public TextFlow getMasColumnText() { return getTextRepresentation(mass, 4); }
+    public HBox getMasColumnText() { return getTextRepresentation(mass, 4); }
 
-    public TextFlow getPhaColumnText() { return getTextRepresentation(phase, 5); }
+    public HBox getPhaColumnText() { return getTextRepresentation(phase, 5); }
 
     /**
      * Returns text representation to fit in tableView
@@ -71,19 +76,19 @@ public class ResultStar extends Star {
      * @param index index of attribute (used as index in lists)
      * @return String representation of value and uncertainty according to valid attributes
      */
-    private TextFlow getTextRepresentation(Double attribute, int index) {
+    private HBox getTextRepresentation(Double attribute, int index) {
         if (attribute == null || attribute.isNaN()) {
-            return new TextFlow(new Text("-"));
+            return new HBox(new Text("-"));
         }
 
-        TextFlow container = new TextFlow();
+        HBox container = new HBox();
         Text normal = new Text(formatValue(attribute, VALUES_PRECISION));
-        Text sup = new Text(formatValue(upperDeviation[index], UNCERTAINTY_PRECISION));
-        Text sub = new Text(formatValue(lowerDeviation[index], UNCERTAINTY_PRECISION));
-        sup.setTranslateY(normal.getFont().getSize() * -0.3);
-        sub.setTranslateY(normal.getFont().getSize() * 0.3);
-        container.getChildren().addAll(normal, sup, sub);
-        return new TextFlow(container);
+        Text errors = new Text("+" + formatValue(upperDeviation[index], UNCERTAINTY_PRECISION)
+                + "\n" + " -" + formatValue(Math.abs(lowerDeviation[index]), UNCERTAINTY_PRECISION));
+        errors.setStyle("-fx-font-size: 0.8em");
+        container.getChildren().addAll(normal, errors);
+        container.setAlignment(Pos.CENTER_LEFT);
+        return container;
     }
 
     //Returns string representation of rounded result (for export purpose)
