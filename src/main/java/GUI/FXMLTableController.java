@@ -10,6 +10,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -133,9 +134,9 @@ public class FXMLTableController implements Initializable {
     public void updateHiddenRowsCounter() {
         int hiddenRows = tableModel.getHiddenCount();
         if (hiddenRows == 0) {
-            hiddenRowsCounter.setText("");
+            Platform.runLater(() -> hiddenRowsCounter.setText(""));
         } else {
-            hiddenRowsCounter.setText(Integer.toString(hiddenRows));
+            Platform.runLater(() -> hiddenRowsCounter.setText(Integer.toString(hiddenRows)));
         }
     }
     

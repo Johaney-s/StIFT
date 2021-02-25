@@ -113,10 +113,10 @@ public abstract class Statistics {
 
     /** Deviation of input's mean (x,y) values from two points */
     private static double[] getDeviation(ResultStar input, Star first, Star second) {
-        double teffUnc = (Math.abs(input.getTemperature() - first.getTemperature())
-                + Math.abs(input.getTemperature() - second.getTemperature())) / 2;
-        double lumUnc = (Math.abs(input.getLuminosity() - first.getLuminosity())
-                + Math.abs(input.getLuminosity() - second.getLuminosity())) / 2;
+        double teffUnc = Math.sqrt(Math.pow(Math.abs(input.getTemperature() - first.getTemperature()), 2)
+                + Math.pow(Math.abs(input.getTemperature() - second.getTemperature()), 2) / 2);
+        double lumUnc = Math.sqrt(Math.pow(Math.abs(input.getLuminosity() - first.getLuminosity()), 2)
+                + Math.pow(Math.abs(input.getLuminosity() - second.getLuminosity()), 2) / 2);
         return new double[]{teffUnc, lumUnc};
     }
 }

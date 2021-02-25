@@ -29,7 +29,7 @@ public class TableModel {
      * Adds result to the beginning of the resultList
      * @param newResult Result to be added to the result list
      */
-    public void addResult(ResultStar newResult) {
+    public synchronized void addResult(ResultStar newResult) {
         resultList.add(0, newResult); //how to optimize this (observable linked list needed)
         saved = false;
     }

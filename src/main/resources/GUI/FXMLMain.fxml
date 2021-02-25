@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.input.KeyCodeCombination?>
@@ -27,7 +28,7 @@
    <children>
       <VBox fx:id="vBox" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@Styles.css">
          <children>
-            <MenuBar fx:id="menuBar" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+            <MenuBar maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                <menus>
                   <Menu mnemonicParsing="false" text="Grid">
                      <graphic>
@@ -185,7 +186,8 @@
                   <fx:include fx:id="lineChart" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLineChart.fxml" />
                </center>
             </BorderPane>
-             <fx:include fx:id="tableView" minHeight="100.0" minWidth="-Infinity" source="FXMLTableView.fxml" VBox.vgrow="SOMETIMES" />
+               <fx:include fx:id="tableView" minHeight="100.0" minWidth="-Infinity" source="FXMLTableView.fxml" VBox.vgrow="SOMETIMES" />
+               <ProgressBar fx:id="estimationsBar" maxWidth="Infinity" prefHeight="9.0" progress="0.0" />
          </children>
       </VBox>
       <fx:include fx:id="loading" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" source="FXMLLoading.fxml" StackPane.alignment="CENTER" />
