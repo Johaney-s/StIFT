@@ -112,7 +112,15 @@ public class FXMLLineChartController implements Initializable {
      * Iterates over groups of stars and adds them into graph as isochrones
      */
     private void addIsochronesToChart(ArrayList<ArrayList<Star>> list) {
+        int isoCounter = 0;
+        int MAX_ISOCHRONES = 400;
+        int SKIPPING_COUNT = list.size() / MAX_ISOCHRONES + 1;
         for (ArrayList<Star> isochrone : list) {
+            isoCounter++;
+
+            if (isoCounter % SKIPPING_COUNT != 0) {
+                continue;
+            }
 
             Task<Void> task = new Task<Void>() {
                 @Override
