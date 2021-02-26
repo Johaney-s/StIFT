@@ -94,9 +94,7 @@ http://svgicons.sparkk.fr/ */
     -fx-pref-height: 2.2em;
 }
 
-.progress-indicator:indeterminate {
+.progress-bar > .track {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-    -fx-background-insets: 0;
-    -fx-background-radius: 0;
 }
