@@ -41,22 +41,4 @@ public abstract class Geometry {
         double y = (a1 * c2 - a2 * c1) / determinant;
         return new double[]{x, y};
     }
-
-    /**
-     * Approximately checks, if X fits in figure
-     * @param UL Upper left neighbour
-     * @param UR Upper right neighbour
-     * @param LL Lower left neighbour
-     * @param LR Lower right neighbour
-     * @return true if X lies in figure and detected as fitting, false if not fitting / not detected
-     */
-    public static boolean fitsIn(Star UL, Star UR, Star LL, Star LR, double x, double y) {
-        boolean upperFitX = (UL.getTemperature() <= x && UR.getTemperature() > x)
-                || (UL.getTemperature() > x && UR.getTemperature() <= x);
-        boolean lowerFitX = (LL.getTemperature() <= x && LR.getTemperature() > x)
-                || (LL.getTemperature() > x && LR.getTemperature() <= x);
-        boolean upperFitY = y < Math.min(UL.getLuminosity(), UR.getLuminosity());
-        boolean lowerFitY = y > Math.min(UL.getLuminosity(), UR.getLuminosity());
-        return upperFitX && lowerFitX && upperFitY && lowerFitY;
-    }
 }

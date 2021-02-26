@@ -5,7 +5,6 @@ import backend.objects.Star;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +29,7 @@ public abstract class Statistics {
                     return;
                 case STAR_MATCH: //set uncertainty to 0
                     for (int i = 2; i < 6; i++) {
-                        result.setDeviation(i, 0, 0);
+                        result.setUncertainty(i, 0, 0);
                     }
                     return;
                 case ZAMS_OUTSIDER:
@@ -44,8 +43,8 @@ public abstract class Statistics {
             unc_y = deviation[1];
         }
 
-        NormalDistribution xDistribution = new NormalDistribution(mean_x, unc_x * unc_x);
-        NormalDistribution yDistribution = new NormalDistribution(mean_y, unc_y * unc_y);
+        NormalDistribution xDistribution = (unc_x * unc_x > 0) ? new NormalDistribution(mean_x, unc_x * unc_x) : null;
+        NormalDistribution yDistribution = (unc_y * unc_y > 0) ? new NormalDistribution(mean_y, unc_y * unc_y) : null;
         SynchronizedDescriptiveStatistics[] statistics = new SynchronizedDescriptiveStatistics[]{
                 new SynchronizedDescriptiveStatistics(), //0 - age
                 new SynchronizedDescriptiveStatistics(), //1 - radius
@@ -59,8 +58,8 @@ public abstract class Statistics {
 
         for (int i = 0; i < N; i++) {
             es.execute(() -> {
-                double rand_x = xDistribution.sample();
-                double rand_y = yDistribution.sample();
+                double rand_x = (xDistribution == null) ? 0.0 : xDistribution.sample();
+                double rand_y = (yDistribution == null) ? 0.0 : yDistribution.sample();
                 Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0, stats.getIgnoredPhases()).getResult().getAllAttributes();
                 //System.out.println(Arrays.toString(attributes));
 
@@ -86,9 +85,21 @@ public abstract class Statistics {
         //System.out.println("Execution time: " + (end - start) + " ms");
         //System.out.println("N: " + statistics[0].getN());
 
-        if (statistics[0].getN() > (N / 3)) {
+        if (statistics[0].getN() > (N / 3)) { //more than 33% estimated points required
             fillStatistics(statistics, result);
+        } else {
+            return;
         }
+
+        if (statistics[0].getN() < (N * 0.95)) { //more than 5% points are not estimated
+            for (int i = 2; i < 6; i++) {
+                Double[] uncertainty = result.getUncertainty(i);
+                double maxUncertainty = Math.max(Math.abs(uncertainty[0]), Math.abs(uncertainty[1]));
+                result.setUncertainty(i, -maxUncertainty, maxUncertainty);
+            }
+        }
+
+        fixToZero(result);
     }
 
     private static void fillStatistics(SynchronizedDescriptiveStatistics[] statistics, ResultStar result) {
@@ -98,7 +109,7 @@ public abstract class Statistics {
         double upperBound = statistics[0].getPercentile(75);
         //System.out.println("Param: " + 2 + ".\t" + UnitsConverter.toDex(statistics[0].getPercentile(25)) + "\t"
         //        + UnitsConverter.toDex(statistics[0].getPercentile(75)));
-        result.setDeviation(2, UnitsConverter.toDex(lowerBound) - attributes[2], UnitsConverter.toDex(upperBound) - attributes[2]);
+        result.setUncertainty(2, UnitsConverter.toDex(lowerBound) - attributes[2], UnitsConverter.toDex(upperBound) - attributes[2]);
         //System.out.println("Min: " + UnitsConverter.toDex(statistics[0].getMin()) + " max: " + UnitsConverter.toDex(statistics[0].getMax()));
 
 
@@ -106,7 +117,7 @@ public abstract class Statistics {
             lowerBound = statistics[i - 2].getPercentile(25);
             upperBound = statistics[i - 2].getPercentile(75);
             //System.out.println("Param: " + i + ".\t" + statistics[i - 2].getPercentile(25) + "\t" + statistics[i - 2].getPercentile(75));
-            result.setDeviation(i, lowerBound - attributes[i], upperBound - attributes[i]);
+            result.setUncertainty(i, lowerBound - attributes[i], upperBound - attributes[i]);
             //System.out.println("Min: " + statistics[i - 2].getMin() + " max: " + statistics[i - 2].getMax());
         }
     }
@@ -118,5 +129,23 @@ public abstract class Statistics {
         double lumUnc = Math.sqrt(Math.pow(Math.abs(input.getLuminosity() - first.getLuminosity()), 2)
                 + Math.pow(Math.abs(input.getLuminosity() - second.getLuminosity()), 2) / 2);
         return new double[]{teffUnc, lumUnc};
+    }
+
+    /**
+     * Fix one-sided uncertainty results
+     * @param result Result to be checked for correction
+     */
+    private static void fixToZero(ResultStar result) {
+        for (int i = 2; i < 6; i++) {
+            Double[] uncertainty = result.getUncertainty(i);
+            if (uncertainty[0] > 0) {
+                uncertainty[0] = 0.0; //reset lower uncertainty
+            }
+
+            if (uncertainty[1] < 0) {
+                uncertainty[1] = 0.0; //reset upper uncertainty
+            }
+            result.setUncertainty(i, uncertainty[0], uncertainty[1]);
+        }
     }
 }

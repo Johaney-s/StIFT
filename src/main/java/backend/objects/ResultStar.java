@@ -27,12 +27,22 @@ public class ResultStar extends Star {
 
     /**
      * Set SD uncertainties to characteristics
-     * [age, radius, mass, phase] deviations, saved to low and high uncertainty attributes
+     * [age, radius, mass, phase] uncertainty, saved to low and high uncertainty attributes
      * @param index index of parameter (2=age, 3=rad, 4=mass, 5=phase)
      */
-    public void setDeviation(int index, double lowerDev, double upperDev) {
+    public void setUncertainty(int index, double lowerDev, double upperDev) {
         this.lowerDeviation[index] = lowerDev;
         this.upperDeviation[index] = upperDev;
+    }
+
+    /**
+     * Returns (upper, lower) uncertainties of attribute given by index
+     * (0 = teff, 1=lum, 2=age, 3=rad, 4=mass, 5=phase)
+     * @param index Index of attribute
+     * @return array [upper, lower] uncertainty
+     */
+    public Double[] getUncertainty(int index) {
+        return new Double[]{lowerDeviation[index], upperDeviation[index]};
     }
 
     /**
@@ -41,8 +51,8 @@ public class ResultStar extends Star {
      * @param lum_unc Luminosity uncertainty
      */
     public void setInputUncertainties(double temp_unc, double lum_unc) {
-        setDeviation(0, -temp_unc, temp_unc);
-        setDeviation(1, -lum_unc, lum_unc);
+        setUncertainty(0, -temp_unc, temp_unc);
+        setUncertainty(1, -lum_unc, lum_unc);
     }
 
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
