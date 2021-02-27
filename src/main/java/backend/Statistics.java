@@ -21,9 +21,7 @@ public abstract class Statistics {
         double unc_y = stats.getY_unc();
         ResultStar result = stats.getResult();
 
-        if ((unc_x == 0 && unc_y == 0) || stats.getResultType() == ResultType.NONE) { //no input uncertainty
-            Star first;
-            Star second;
+        if ((unc_x == 0 && unc_y == 0) || stats.getResultType() == ResultType.NONE) { //no input uncertainty / result
             switch(stats.getResultType()) {
                 case NONE:
                     return;
@@ -34,13 +32,15 @@ public abstract class Statistics {
                     return;
                 case ZAMS_OUTSIDER:
                     return;
-                default:
-                    first = stats.getResult1_();
-                    second = stats.getResult2_();
             }
+        }
+
+        Star first = stats.getResult1_();
+        Star second = stats.getResult2_();
+        if ((unc_x == 0 || unc_y == 0) && first != null && second != null) { //set missing uncertainty
             double[] deviation = getDeviation(result, first, second);
-            unc_x = deviation[0];
-            unc_y = deviation[1];
+            unc_x = (unc_x == 0) ? deviation[0] : unc_x;
+            unc_y = (unc_y == 0) ? deviation[1] : unc_y;
         }
 
         NormalDistribution xDistribution = (unc_x * unc_x > 0) ? new NormalDistribution(mean_x, unc_x * unc_x) : null;

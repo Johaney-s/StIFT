@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
  * Used for stars in results
  */
 public class ResultStar extends Star {
-    private final Double[] lowerDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
+    private final Double[] lowerDeviation = {-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE};
     private final Double[] upperDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final String ROUNDING_FORMAT = "%." + VALUES_PRECISION + "f %s %s";
     private ResultType resultType = ResultType.NONE;
@@ -131,10 +131,10 @@ public class ResultStar extends Star {
     }
 
     public void printAllDeviations() {
-        System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\n+%s\t+%s\t+%s\t+%s\t+%s\t+%s\n",
-                formatValue(lowerDeviation[0], UNCERTAINTY_PRECISION), formatValue(lowerDeviation[1], UNCERTAINTY_PRECISION),
-                formatValue(lowerDeviation[2], UNCERTAINTY_PRECISION), formatValue(lowerDeviation[3], UNCERTAINTY_PRECISION),
-                formatValue(lowerDeviation[4], UNCERTAINTY_PRECISION), formatValue(lowerDeviation[5], UNCERTAINTY_PRECISION),
+        System.out.printf("-%s\t-%s\t-%s\t-%s\t-%s\t-%s\n+%s\t+%s\t+%s\t+%s\t+%s\t+%s\n",
+                formatValue(Math.abs(lowerDeviation[0]), UNCERTAINTY_PRECISION), formatValue(Math.abs(lowerDeviation[1]), UNCERTAINTY_PRECISION),
+                formatValue(Math.abs(lowerDeviation[2]), UNCERTAINTY_PRECISION), formatValue(Math.abs(lowerDeviation[3]), UNCERTAINTY_PRECISION),
+                formatValue(Math.abs(lowerDeviation[4]), UNCERTAINTY_PRECISION), formatValue(Math.abs(lowerDeviation[5]), UNCERTAINTY_PRECISION),
                 formatValue(upperDeviation[0], UNCERTAINTY_PRECISION), formatValue(upperDeviation[1], UNCERTAINTY_PRECISION),
                 formatValue(upperDeviation[2], UNCERTAINTY_PRECISION), formatValue(upperDeviation[3], UNCERTAINTY_PRECISION),
                 formatValue(upperDeviation[4], UNCERTAINTY_PRECISION), formatValue(upperDeviation[5], UNCERTAINTY_PRECISION));
@@ -151,7 +151,7 @@ public class ResultStar extends Star {
 
     /** Representative form of values */
     private String formatValue(Double value, int precision) {
-        if (value.isNaN() || value == Double.MAX_VALUE) {
+        if (value.isNaN() || value == Double.MAX_VALUE || value == -Double.MAX_VALUE) {
             return "N/A";
         } else {
             return String.format("%." + precision + "f", value);

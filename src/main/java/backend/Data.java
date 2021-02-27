@@ -157,10 +157,6 @@ public class Data {
         double x_error = Math.abs(star.getTemperature() - stats.getX());
         double y_error = Math.abs(star.getLuminosity() - stats.getY());
         if (x_error < 0.0001 && y_error < 0.0001) {stats.setResult(new ResultStar(star.getAllAttributes()));
-            ResultStar result = stats.getResult();
-            for (int i = 2; i < 6; i++) {
-                result.setUncertainty(i, 0, 0);
-            }
             stats.changeResultType(ResultType.STAR_MATCH);
             return true;
     }
