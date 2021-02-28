@@ -65,7 +65,7 @@ public class FXMLLineChartController implements Initializable {
         if (!lineChart.getData().isEmpty()) {
             double x = Double.parseDouble(String.format("%.4f", getXMouseCoordinate())); //use showed values in tooltip
             double y = Double.parseDouble(String.format("%.4f", getYMouseCoordinate()));
-            mainController.manageInput(x, y, 0.0, 0.0);
+            mainController.manageInput(x, y, 0.0, 0.0, (short)2);
         }
     }
     

@@ -236,7 +236,9 @@ public class FXMLMainController implements Initializable {
         Double inputLumUnc = checkInput(lumUncertaintyField);
 
         if (inputTemVal != null && inputTemUnc != null && inputLumVal != null && inputLumUnc != null) {
-            manageInput(inputTemVal, inputLumVal, inputTemUnc, inputLumUnc);
+            String[] splittedUnc = tempUncertaintyField.getText().split("\\.");
+            short rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : 2;
+            manageInput(inputTemVal, inputLumVal, inputTemUnc, inputLumUnc, rounding);
             temperatureField.clear();
             tempUncertaintyField.setText("0.0");
             luminosityField.clear();
@@ -318,7 +320,7 @@ public class FXMLMainController implements Initializable {
      * @param temp_unc temperature uncertainty
      * @param lum_unc temperature uncertainty
      */
-    public void manageInput(double x, double y, double temp_unc, double lum_unc) {
+    public void manageInput(double x, double y, double temp_unc, double lum_unc, short rounding) {
         boolean includeDeviation = includeDeviationBox.isSelected();
         HashSet<Short> ignoredPhases = new HashSet<>();
         estimationsBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
@@ -328,7 +330,7 @@ public class FXMLMainController implements Initializable {
         }
 
         Runnable runnable = () -> {
-            ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, ignoredPhases);
+            ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, rounding, ignoredPhases);
             tableViewController.handleNewResult(result);
             if (executor.getQueue().size() > 0) {
                 Platform.runLater(() -> {

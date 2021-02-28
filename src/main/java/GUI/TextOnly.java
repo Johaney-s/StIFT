@@ -22,6 +22,7 @@ public class TextOnly {
         double y;
         double x_unc = 0.0;
         double y_unc = 0.0;
+        short rounding = 2;
         System.out.println("========= StIFT text mode =========");
 
         try {
@@ -30,6 +31,8 @@ public class TextOnly {
             if (args.length >= 5) {
                 x_unc = Double.parseDouble(args[3]);
                 y_unc = Double.parseDouble(args[4]);
+                String[] splittedUnc = args[3].split("\\.");
+                rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : rounding;
             }
             if (args.length > 6) {
                 throw new Exception();
@@ -55,7 +58,7 @@ public class TextOnly {
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
-            ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc);
+            ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc, rounding);
             System.out.println("Estimation method: " + stats.getResult().getResultType());
             System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
 

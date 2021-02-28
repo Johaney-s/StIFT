@@ -14,8 +14,8 @@ public class ResultStar extends Star {
     private final Double[] upperDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
     private final String ROUNDING_FORMAT = "%." + VALUES_PRECISION + "f %s %s";
     private ResultType resultType = ResultType.NONE;
-    private static int VALUES_PRECISION = 4; //eventually switch from static if rounding is input-dependent
-    private static int UNCERTAINTY_PRECISION = 3;
+    public static int VALUES_PRECISION = 4; //eventually switch from static if rounding is input-dependent
+    private int UNCERTAINTY_PRECISION = 3;
 
     public ResultStar(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         super(temperature, luminosity, age, radius, mass, phase);
@@ -156,5 +156,10 @@ public class ResultStar extends Star {
         } else {
             return String.format("%." + precision + "f", value);
         }
+    }
+
+    /** Set new rounding to be printed for uncertainty*/
+    public void changeUncertaintyPrecision(int i) {
+        this.UNCERTAINTY_PRECISION = i;
     }
 }

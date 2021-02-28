@@ -100,13 +100,16 @@ public abstract class InputFileParser {
                         double luminosity = Double.parseDouble(record[1]);
                         double temp_unc = 0.0;
                         double lum_unc = 0.0;
+                        short rounding = 2;
 
                         if (record.length == 4) {
                             temp_unc = Double.parseDouble(record[2]);
                             lum_unc = Double.parseDouble(record[3]);
+                            String[] splittedUnc = record[2].split("\\.");
+                            rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : rounding;
                         }
 
-                        newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
+                        newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc, rounding));
                         row = reader.readLine();
                     }
 
@@ -146,14 +149,16 @@ public abstract class InputFileParser {
                 double luminosity = Double.parseDouble(record[1]);
                 double temp_unc = 0.0;
                 double lum_unc = 0.0;
+                short rounding = 2;
 
                 if (record.length == 4) {
                     temp_unc = Double.parseDouble(record[2]);
                     lum_unc = Double.parseDouble(record[3]);
-
+                    String[] splittedUnc = record[2].split("\\.");
+                    rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : rounding;
                 }
 
-                newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc));
+                newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc, rounding));
                 System.out.println("Processed " + counter + ". row.");
                 row = reader.readLine();
             } catch (NumberFormatException ex) {

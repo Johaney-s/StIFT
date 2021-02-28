@@ -237,11 +237,12 @@ public class Data {
      * @return stats with uncertainties_estimations filled out
      */
     public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc,
-                                          boolean includeDeviation, HashSet<Short> ignoredPhases) {
+                                          boolean includeDeviation, short rounding, HashSet<Short> ignoredPhases) {
         ComputationStats meanValueStats = estimateStar(x, y, temp_unc, lum_unc, ignoredPhases);
         meanValueStats.setIgnoredPhases(ignoredPhases);
         ResultStar mean = meanValueStats.getResult();
         mean.setInputUncertainties(temp_unc, lum_unc);
+        mean.changeUncertaintyPrecision(rounding);
 
         if (mean.getAge() == null) {
             return meanValueStats;
@@ -254,18 +255,18 @@ public class Data {
         return meanValueStats;
     }
 
-    public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc) {
-        return estimateStats(x, y, temp_unc, lum_unc, true, new HashSet<>());
+    public ComputationStats estimateStats(double x, double y, double temp_unc, double lum_unc, short rounding) {
+        return estimateStats(x, y, temp_unc, lum_unc, true, rounding, new HashSet<>());
     }
 
     /** Returns completely estimated star including uncertainties */
     public ResultStar estimate(double x, double y, double x_unc, double y_unc,
-                         boolean includeDeviation, HashSet<Short> ignoredPhases) {
-        return estimateStats(x, y, x_unc, y_unc, includeDeviation, ignoredPhases).getResult();
+                         boolean includeDeviation, short rounding, HashSet<Short> ignoredPhases) {
+        return estimateStats(x, y, x_unc, y_unc, includeDeviation, rounding, ignoredPhases).getResult();
     }
 
-    public ResultStar estimate(double x, double y, double x_unc, double y_unc) {
-        return estimate(x, y, x_unc, y_unc, true, new HashSet<>());
+    public ResultStar estimate(double x, double y, double x_unc, double y_unc, short rounding) {
+        return estimate(x, y, x_unc, y_unc, true, rounding, new HashSet<>());
     }
 
     public ArrayList<ArrayList<Star>> getGroupedData() {
