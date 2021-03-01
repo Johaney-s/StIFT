@@ -73,17 +73,27 @@ but phases 5 and 7 are chosen as the nearest tracks).
 
 ### Exporting
 To export results that appear in the results table, use menu Data > Export data.
+In the export file, you will find estimated parameters together with their uncertainties and estimation method.
+
+There are different estimation methods that could have been applied to estimate mean values - NONE means no method could resolve the parameters, STAR MATCH means the input point is too close to some of the points in the grid and therefore it copies this grid point's values. SIDE MATCH only implies that the point lies too close to a side of the 4-angled figure and was interpolated using only 2 of the neighbours. FULL ESTIMATION suggests the standard process of estimating was followed - all 4 neighbours were repetitively interpolated. ZAMS INSIDER means additional point had to be estimated along the ZAMS track before continuing to the standard estimation method - simply because no lower right neighbour was found in the grid. ZAMS OUTSIDER means that the point lies outside of the graph, but the input values' uncertainties hit inside the graph.
 
 ## Text mode
-Text mode serves mainly as a debugging tool, but you can use it from the command line with `java -jar file_name.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]`
+Text mode serves mainly as a debugging tool as it prints intermediate results of the computation. This includes the neighbours used for estimation, evolutionary line, mean value and uncertainties. You can use it from the command line with command
+
+`java -jar file_name.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]`
+
 where TEMP and LUM are input values of effective temperature and luminosity and optional arguments TEMPunc, LUMunc their uncertainties. Missing uncertainties are treated as 0.
 Missing grid file argument instructs the application to use the default grid.
 
 ![](img/textMode.gif)
 
 ## Fast mode
-Fast mode can be used for limited, but fully run from command line, computation.
-The command to run fast mode is following: `java -jar file_name.jar fast INPUT_FILE [GRID_FILE] EXPORT_FILE_NAME` where grid file is optional argument and if missing,
+Fast mode can be used for limited, but fully run from command line, computation. This mode processes input file and directly exports result.
+The command to run fast mode is following:
+
+`java -jar file_name.jar fast INPUT_FILE [GRID_FILE] EXPORT_FILE_NAME`
+
+where grid file is optional argument and if missing,
 default grid is used.
 ![](img/fastMode.gif)
 
