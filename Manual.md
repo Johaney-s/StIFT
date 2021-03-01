@@ -27,7 +27,7 @@ To upload input data, provide a .txt file and comment out header lines with '#' 
 --- | --- 
 3.944 | 1.508
 4.053 | 2.383
-...
+... and more
 
 or
 
@@ -35,7 +35,7 @@ or
 --- | --- | --- | --- 
 3.944 | 1.508 | 0.014 | 0.023
 4.053 | 2.383 | 0.008 | 0.027
-...
+... and more
 
 attributes separated by space. Missing uncertainties attributes
 will be set to 0.
@@ -57,10 +57,22 @@ for specification of values representation:
 3.66932 | -0.72112 | 8.26683 | 10.66690 | 0.75000 | 5.00053
 3.66922 | -0.72095 | 8.30172 | 10.66718 | 0.75000 | 5.00112
 3.66912 | -0.72077 | 8.33767 | 10.66747 | 0.75000 | 5.00179
-...
+... and more
 
 Default grid data is extracted from [CMD web interface](http://stev.oapd.inaf.it/cgi-bin/cmd).
 Credit: PARSEC and COLIBRI tracks (Marigo et al. (2017)).
+
+The **phase labels** in the default grid file are described [here](https://people.sissa.it/~sbressan/CAF09_V1.2S_M36_LT/readme.txt), StIFT uses these:
+#Value | Phase | Description
+--- | --- | ---
+4 | NEAR_ZAM | This point is very near the ZAMS
+5 | MS_BEG | H burning fully active
+6 | POINT_B | Almost end of the H burning. Small contraction phase begins here for interm. & massive stars   
+7 | POINT_C | Small contraction ends here and star move toward RG
+8 | RG_BASE | RG base
+9 | RG_BMP1 | RGB bump in Low Mass Stars (marked also for other masses)
+10 | RG_BMP2 | RGB bump end in Low Mass Stars (marked also for other masses)
+11 | RG_TIP | Helium Flash or beginning of HELIUM Burning in intermediate and massive stars
 
 ### Filtering
 For filtering the results in the table, use phase filter in the phase column header.
