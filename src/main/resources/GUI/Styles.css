@@ -91,5 +91,10 @@ http://svgicons.sparkk.fr/ */
 }
 
 .table-row-cell {
-    -fx-pref-height: 20px;
+    -fx-pref-height: 2.2em;
+}
+
+.progress-bar > .track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }

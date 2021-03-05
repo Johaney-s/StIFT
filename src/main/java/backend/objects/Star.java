@@ -11,6 +11,7 @@ public class Star {
     protected final Double radius;
     protected final Double mass;
     protected final Double phase;
+    public static int PRECISION = 4;
 
     public Star(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         this.temperature = temperature;
@@ -42,11 +43,11 @@ public class Star {
      * Prints all characteristics of current star
      */
     public void printValues() {
-        System.out.printf("%.4f\t%.4f\t%s\t%s\t%s\t%s\n", temperature, luminosity,
-                (age != null) ? String.format("%.4f",age) : "-",
-                (radius != null) ? String.format("%.4f", radius) : "-",
-                (mass != null) ? String.format("%.4f",mass) : "-",
-                (phase != null) ? String.format("%.4f",phase) : "-");
+        System.out.printf("%." + PRECISION + "f\t%." + PRECISION + "f\t%s\t%s\t%s\t%s\n", temperature, luminosity,
+                (age != null) ? String.format("%." + PRECISION + "f",age) : "-",
+                (radius != null) ? String.format("%." + PRECISION + "f", radius) : "-",
+                (mass != null) ? String.format("%." + PRECISION + "f",mass) : "-",
+                (phase != null) ? String.format("%." + PRECISION + "f",phase) : "-");
     }
 
     /**

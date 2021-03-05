@@ -1,5 +1,6 @@
 # Stellar Isochrone Fitting Tool
-
+Regular user, head over to the [latest release](https://github.com/Johaney-s/StIFT/releases/latest) and download the .jar file.
+Explore, or read the [manual](/Manual.md).
 ## Overview
 StIFT is a tool for estimating stellar characteristics. :sun_with_face:<br />
 Methods of estimation are discussed in
@@ -13,27 +14,20 @@ Methods of estimation are discussed in
 - Exporting result data
 - Filtering results based on phase
 - Filtering tracks based on phase
-- Standard deviation estimation
-- Error estimation
-- Total uncertainty estimation
-- Text mode
+- Uncertainty estimation
+- Text mode, fast mode
 
 ## Requirements
 Running the application requires Java 11, consider updating JRE in case relevant error message pops up.
 
 ## Running the application
-Build with `mvn package`.<br />
+From the source code, build with `mvn package`.<br />
 In target folder run with `java -jar stift-1.0-SNAPSHOT.jar` or open the .jar file directly.
 
 ## Detailed description
 This app is the topic of my bachelor's thesis at FI MUNI. It should be useful to astrophysicists as some stellar characteristics cannot be directly observed and need to be estimated from known data. The process of estimation is called isochrone fitting and is step by step described in
 > MALKOV, O. Yu.; SICHEVSKIJ, S. G.; KOVALEVA, D. A.: "Parametrization of single and binary stars", Monthly Notices of the Royal Astronomical Society. (2009), vol. 401, no. 1: 695.  https://doi.org/10.1111/j.1365-2966.2009.15696.x
 
-The grid data is grouped by mass and sorted by evolutionary status (phase). The default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd containing
+The grid data is grouped by mass and sorted by evolutionary status (phase). The default grid data is extracted from [CMD web interface](http://stev.oapd.inaf.it/cgi-bin/cmd) containing
 PARSEC and COLIBRI tracks (Marigo et al. (2017)).
-After the input is entered, four neighbours are found in the grid data and interpolated for line points estimation. Line points are then interpolated for final result estimation. Error is computed from found neighbours and the standard deviation is estimated from estimations of points created by taking into account input uncertainties. Final uncertainty is the combination of both.
-
-## Text mode
-Text mode is available for getting results of computation steps, which includes selected neighbours, line points, mean value, error estimation, estimations for points within the uncertainty area, standard deviation and final uncertainty. To run the text mode, use
-
-`java -jar FILENAME.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]`.
+After the input is entered, four neighbours are found in the grid data and interpolated for line points estimation. Line points are then interpolated for final result estimation. The uncertainty is computed from the Monte Carlo simulation on a thousand of points with a normal distribution.

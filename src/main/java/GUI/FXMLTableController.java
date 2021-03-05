@@ -10,9 +10,9 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -20,7 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.RangeSlider;
@@ -96,12 +95,9 @@ public class FXMLTableController implements Initializable {
                     updateHiddenRowsCounter();
                 });
 
-        cancelIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                tooltip.hide();
-            }
-        });
+        cancelIcon.setOnMouseClicked(mouseEvent -> tooltip.hide());
+        cancelIcon.setOnMousePressed(mouseEvent -> tooltip.hide());
+
 
         vBox.setMaxWidth(100);
         BorderPane firstRow = new BorderPane();
@@ -138,9 +134,9 @@ public class FXMLTableController implements Initializable {
     public void updateHiddenRowsCounter() {
         int hiddenRows = tableModel.getHiddenCount();
         if (hiddenRows == 0) {
-            hiddenRowsCounter.setText("");
+            Platform.runLater(() -> hiddenRowsCounter.setText(""));
         } else {
-            hiddenRowsCounter.setText(Integer.toString(hiddenRows));
+            Platform.runLater(() -> hiddenRowsCounter.setText(Integer.toString(hiddenRows)));
         }
     }
     

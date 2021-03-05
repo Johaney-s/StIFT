@@ -1,21 +1,21 @@
 package backend.objects;
 
-import backend.State;
+import backend.ResultType;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import static backend.State.*;
 
 /**
  * Enhanced representation of a star
  * Used for stars in results
  */
 public class ResultStar extends Star {
-    private final Double[] deviations = {0.0, 0.0, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-    private double[] errors = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
-    private final double[] uncertainties = {0, 0, 0, 0, 0, 0};
-    private final String ROUNDING_FORMAT = "%.4f %s %s";
-    private State sd = VALID;
-    private State error = VALID;
+    private final Double[] lowerDeviation = {-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE};
+    private final Double[] upperDeviation = {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
+    private final String ROUNDING_FORMAT = "%." + VALUES_PRECISION + "f %s %s";
+    private ResultType resultType = ResultType.NONE;
+    public static int VALUES_PRECISION = 4; //eventually switch from static if rounding is input-dependent
+    private int UNCERTAINTY_PRECISION = 3;
 
     public ResultStar(Double temperature, Double luminosity, Double age, Double radius, Double mass, Double phase) {
         super(temperature, luminosity, age, radius, mass, phase);
@@ -27,14 +27,22 @@ public class ResultStar extends Star {
 
     /**
      * Set SD uncertainties to characteristics
-     * [age, radius, mass, phase] deviations, saved to low and high uncertainty attributes
-     * @param data Uncertainties excluding the temperature and luminosity (input) uncertainties
+     * [age, radius, mass, phase] uncertainty, saved to low and high uncertainty attributes
+     * @param index index of parameter (2=age, 3=rad, 4=mass, 5=phase)
      */
-    public void setDeviations(double[] data) {
-        this.deviations[2] = data[0];
-        this.deviations[3] = data[1];
-        this.deviations[4] = data[2];
-        this.deviations[5] = data[3];
+    public void setUncertainty(int index, double lowerDev, double upperDev) {
+        this.lowerDeviation[index] = lowerDev;
+        this.upperDeviation[index] = upperDev;
+    }
+
+    /**
+     * Returns (upper, lower) uncertainties of attribute given by index
+     * (0 = teff, 1=lum, 2=age, 3=rad, 4=mass, 5=phase)
+     * @param index Index of attribute
+     * @return array [upper, lower] uncertainty
+     */
+    public Double[] getUncertainty(int index) {
+        return new Double[]{lowerDeviation[index], upperDeviation[index]};
     }
 
     /**
@@ -43,78 +51,34 @@ public class ResultStar extends Star {
      * @param lum_unc Luminosity uncertainty
      */
     public void setInputUncertainties(double temp_unc, double lum_unc) {
-        this.deviations[0] = temp_unc;
-        this.deviations[1] = lum_unc;
-    }
-
-    /**
-     * Getter for all attributes as an array
-     * @return Array of {temperature, luminosity, age, radius, mass, phase}
-     */
-    public Double[] getAllAttributes() {
-        return new Double[]{getTemperature(), getLuminosity(), getAge(), getRadius(), getMass(), getPhase()};
-    }
-
-    /**
-     * @return the temperature
-     */
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    /**
-     * @return the luminosity
-     */
-    public Double getLuminosity() {
-        return luminosity;
-    }
-
-    /**
-     * @return the age
-     */
-    public Double getAge() {
-        return age;
-    }
-
-    /**
-     * @return the radius
-     */
-    public Double getRadius() {
-        return radius;
-    }
-
-    /**
-     * @return the mass
-     */
-    public Double getMass() {
-        return mass;
-    }
-
-    /**
-     * @return the phase
-     */
-    public Double getPhase() {
-        return phase;
+        setUncertainty(0, -temp_unc, temp_unc);
+        setUncertainty(1, -lum_unc, lum_unc);
     }
 
     //Returns text representation for tableView -- DO NOT DELETE -- valueFactory is using this -- DO NOT DELETE ----!!!
-    public TextFlow getTemColumnText() {
-        return (temperature == null || temperature.isNaN()) ? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%.4f±%.4f", temperature, uncertainties[0])));
+    public HBox getTemColumnText() {
+        HBox hBox = (temperature == null || temperature.isNaN()) ? new HBox(new Text("-"))
+                : new HBox(new Text(String.format("%." + VALUES_PRECISION + "f±%." + UNCERTAINTY_PRECISION + "f",
+                temperature, upperDeviation[0])));
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        return hBox;
     }
 
-    public TextFlow getLumColumnText() {
-        return (luminosity == null || luminosity.isNaN())? new TextFlow(new Text("-"))
-                : new TextFlow(new Text(String.format("%.4f±%.4f", luminosity, uncertainties[1])));
+    public HBox getLumColumnText() {
+        HBox hBox = (luminosity == null || luminosity.isNaN())? new HBox(new Text("-"))
+                : new HBox(new Text(String.format("%." + VALUES_PRECISION + "f±%." + UNCERTAINTY_PRECISION + "f",
+                luminosity, upperDeviation[1])));
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        return hBox;
     }
 
-    public TextFlow getAgeColumnText() { return getTextRepresentation(age, 2); }
+    public HBox getAgeColumnText() { return getTextRepresentation(age, 2); }
 
-    public TextFlow getRadColumnText() { return getTextRepresentation(radius, 3); }
+    public HBox getRadColumnText() { return getTextRepresentation(radius, 3); }
 
-    public TextFlow getMasColumnText() { return getTextRepresentation(mass, 4); }
+    public HBox getMasColumnText() { return getTextRepresentation(mass, 4); }
 
-    public TextFlow getPhaColumnText() { return getTextRepresentation(phase, 5); }
+    public HBox getPhaColumnText() { return getTextRepresentation(phase, 5); }
 
     /**
      * Returns text representation to fit in tableView
@@ -122,122 +86,80 @@ public class ResultStar extends Star {
      * @param index index of attribute (used as index in lists)
      * @return String representation of value and uncertainty according to valid attributes
      */
-    private TextFlow getTextRepresentation(Double attribute, int index) {
-        double SMALL_ERROR = 0.00005;
-        if (attribute == null || attribute.isNaN()) { return new TextFlow(new Text("-")); }
-
-        if ((sd != VALID || deviations[index].isNaN()) && error != VALID) {
-            Text t1 = new Text(String.format("%.4f ", attribute));
-            Text t2 = new Text("SD");
-            t2.setStrikethrough(true);
-            Text t3 = new Text(" ");
-            Text t4 = new Text("Err");
-            t4.setStrikethrough(true);
-            return new TextFlow(t1, t2, t3, t4);
+    private HBox getTextRepresentation(Double attribute, int index) {
+        if (attribute == null || attribute.isNaN()) {
+            return new HBox(new Text("-"));
         }
 
-        if (error != VALID) {
-            Text t1 = new Text(String.format("%.4f", attribute));
-            Text t2 = new Text(String.format("±%.4f ", deviations[index]));
-            if (deviations[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
-            Text t3 = new Text("Err");
-            t3.setStrikethrough(true);
-            return new TextFlow(t1, t2, t3);
-        }
-
-
-        if ((sd != VALID || deviations[index].isNaN())) {
-            Text t1 = new Text(String.format("%.4f", attribute));
-            Text t2 = new Text(String.format("±%.4f ", errors[index]));
-            if (errors[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
-            Text t3 = new Text("SD");
-            t3.setStrikethrough(true);
-            return new TextFlow(t1, t2, t3);
-        }
-
-        Text t1 = new Text(String.format("%.4f±", attribute));
-        Text t2 = new Text(String.format("%.4f", uncertainties[index]));
-        if (uncertainties[index] < SMALL_ERROR) { t2.setStyle("-fx-font-style: italic"); }
-        return new TextFlow(t1, t2);
+        HBox container = new HBox();
+        Text normal = new Text(formatValue(attribute, VALUES_PRECISION));
+        Text errors = new Text("+" + formatValue(upperDeviation[index], UNCERTAINTY_PRECISION)
+                + "\n" + " -" + formatValue(Math.abs(lowerDeviation[index]), UNCERTAINTY_PRECISION));
+        errors.setStyle("-fx-font-size: 0.8em");
+        container.getChildren().addAll(normal, errors);
+        container.setAlignment(Pos.CENTER_LEFT);
+        return container;
     }
 
     //Returns string representation of rounded result (for export purpose)
     public String getFormattedTemperature() {
-        return (String.format("%.4f %.4f", temperature, deviations[0]));
+        return (String.format("%." + VALUES_PRECISION + "f %." + UNCERTAINTY_PRECISION + "f", temperature, upperDeviation[0]));
     }
 
     public String getFormattedLuminosity() {
-        return (String.format("%.4f %.4f", luminosity, deviations[1]));
+        return (String.format("%." + VALUES_PRECISION + "f %." + UNCERTAINTY_PRECISION + "f", luminosity, upperDeviation[1]));
     }
 
     public String getFormattedAge() {
         return (age == null || age.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, age,
-                String.format("%.4f", errors[2]),
-                (sd != VALID || deviations[2].isNaN()) ? "-" : String.format("%.4f", deviations[2]));
+                formatValue(lowerDeviation[2], UNCERTAINTY_PRECISION), formatValue(upperDeviation[2], UNCERTAINTY_PRECISION));
     }
 
     public String getFormattedRadius() {
         return (radius == null || radius.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, radius,
-                String.format("%.4f", errors[3]),
-                (sd != VALID || deviations[3].isNaN()) ? "-" : String.format("%.4f", deviations[3]));
+                formatValue(lowerDeviation[3], UNCERTAINTY_PRECISION), formatValue(upperDeviation[3], UNCERTAINTY_PRECISION));
     }
 
     public String getFormattedMass() {
         return (mass == null || mass.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, mass,
-                String.format("%.4f", errors[4]),
-                (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[4]));
+                formatValue(lowerDeviation[4], UNCERTAINTY_PRECISION), formatValue(upperDeviation[4], UNCERTAINTY_PRECISION));
     }
 
     public String getFormattedPhase() {
         return (phase == null || phase.isNaN()) ? "- - -" : String.format(ROUNDING_FORMAT, phase,
-                String.format("%.4f",errors[5]),
-                (sd != VALID || deviations[4].isNaN()) ? "-" : String.format("%.4f", deviations[5]));
+                formatValue(lowerDeviation[5], UNCERTAINTY_PRECISION), formatValue(upperDeviation[5], UNCERTAINTY_PRECISION));
     }
 
     public void printAllDeviations() {
-        System.out.printf("%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\n", deviations[0], deviations[1], deviations[2],
-                deviations[3], deviations[4], deviations[5]);
+        System.out.printf("-%s\t-%s\t-%s\t-%s\t-%s\t-%s\n+%s\t+%s\t+%s\t+%s\t+%s\t+%s\n",
+                formatValue(Math.abs(lowerDeviation[0]), UNCERTAINTY_PRECISION), formatValue(Math.abs(lowerDeviation[1]), UNCERTAINTY_PRECISION),
+                formatValue(Math.abs(lowerDeviation[2]), UNCERTAINTY_PRECISION), formatValue(Math.abs(lowerDeviation[3]), UNCERTAINTY_PRECISION),
+                formatValue(Math.abs(lowerDeviation[4]), UNCERTAINTY_PRECISION), formatValue(Math.abs(lowerDeviation[5]), UNCERTAINTY_PRECISION),
+                formatValue(upperDeviation[0], UNCERTAINTY_PRECISION), formatValue(upperDeviation[1], UNCERTAINTY_PRECISION),
+                formatValue(upperDeviation[2], UNCERTAINTY_PRECISION), formatValue(upperDeviation[3], UNCERTAINTY_PRECISION),
+                formatValue(upperDeviation[4], UNCERTAINTY_PRECISION), formatValue(upperDeviation[5], UNCERTAINTY_PRECISION));
     }
 
-    /**
-     * Set errors (from neighbours, independent of input uncertainties)
-     * @param errors [age, rad, mass, phase]
-     */
-    public void setErrors(double[] errors) {
-        this.errors = new double[]{0, 0, errors[0], errors[1], errors[2], errors[3]};
+    /** Set result type if current is NONE */
+    public void setResultType(ResultType newType) {
+        this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;
     }
 
-    public double[] getErrors() {
-        return this.errors;
+    public ResultType getResultType() {
+        return this.resultType;
     }
 
-    public void setHideError() {
-        error = HIDE;
+    /** Representative form of values */
+    private String formatValue(Double value, int precision) {
+        if (value.isNaN() || value == Double.MAX_VALUE || value == -Double.MAX_VALUE) {
+            return "N/A";
+        } else {
+            return String.format("%." + precision + "f", value);
+        }
     }
 
-    /** Hide SD in results, but don't overwrite INVALID state */
-    public void setHideSD() {
-        sd = (sd != INVALID) ? HIDE : sd;
+    /** Set new rounding to be printed for uncertainty*/
+    public void changeUncertaintyPrecision(int i) {
+        this.UNCERTAINTY_PRECISION = i;
     }
-
-    public double[] getUncertainties() {
-        return this.uncertainties;
-    }
-
-    public boolean isValidSD() {
-        return sd == VALID;
-    }
-
-    public boolean errorIsSet() { return errors[0] != Double.MAX_VALUE; }
-
-    /** Call when errors are set */
-    public void countUncertainty() {
-        this.uncertainties[0] = deviations[0];
-        this.uncertainties[1] = deviations[1];
-        this.uncertainties[2] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[2], 2) + Math.pow(errors[2], 2)) : errors[2];
-        this.uncertainties[3] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[3], 2) + Math.pow(errors[3], 2)) : errors[3];
-        this.uncertainties[4] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[4], 2) + Math.pow(errors[4], 2)) : errors[4];
-        this.uncertainties[5] = (sd != INVALID) ? Math.sqrt(Math.pow(deviations[5], 2) + Math.pow(errors[5], 2)) : errors[5];
-    }
-
 }

@@ -29,7 +29,7 @@ public class TableModel {
      * Adds result to the beginning of the resultList
      * @param newResult Result to be added to the result list
      */
-    public void addResult(ResultStar newResult) {
+    public synchronized void addResult(ResultStar newResult) {
         resultList.add(0, newResult); //how to optimize this (observable linked list needed)
         saved = false;
     }
@@ -41,10 +41,12 @@ public class TableModel {
      */
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write("#Teff[lgK] Teff_SD L[lgLsun] L_SD Age[dexYrs] Age_err Age_SD R[Rsun] R_err R_SD M[Msun] M_err M_SD Phase Phase_err Phase_SD" + System.getProperty("line.separator"));
+        fileWriter.write("#Teff[lgK] e_lgTeff L[lgLsun] e_lgL Age[dexYrs] e_dexAge e_dexAge R[Rsun] e_R e_R M[Msun] e_M e_M Phase e_Phase e_Phase estType" + System.getProperty("line.separator"));
         for (ResultStar result : filteredList) {
-            fileWriter.write(String.format("%s %s %s %s %s %s" + System.getProperty("line.separator"), result.getFormattedTemperature(), result.getFormattedLuminosity(),
-                    result.getFormattedAge(), result.getFormattedRadius(), result.getFormattedMass(), result.getFormattedPhase()));
+            fileWriter.write(String.format("%s %s %s %s %s %s %s" + System.getProperty("line.separator"),
+                    result.getFormattedTemperature(), result.getFormattedLuminosity(), result.getFormattedAge(),
+                    result.getFormattedRadius(), result.getFormattedMass(), result.getFormattedPhase(),
+                    result.getResultType()));
         }
         fileWriter.close();
         saved = true;

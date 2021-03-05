@@ -3,13 +3,13 @@ package backend;
 import backend.objects.ResultStar;
 import backend.objects.Star;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ComputationStats {
-    private double x2_;
-    private double y1_;
-    private double x1_;
-    private double y2_;
+    private Double x2_;
+    private Double y1_;
+    private Double x1_;
+    private Double y2_;
     private final double x;
     private final double y;
     private final double x_unc;
@@ -21,14 +21,14 @@ public class ComputationStats {
     private Star result1_;
     private Star result2_;
     private ResultStar result;
-    private ArrayList<Star> sigma_region; //estimations for stars in sigma region of input
+    private ResultType resultType = ResultType.NONE;
+    private HashSet<Short> ignoredPhases;
 
     public ComputationStats(double x, double y, double x_unc, double y_unc) {
         this.x = x;
         this.y = y;
         this.x_unc = x_unc;
         this.y_unc = y_unc;
-        sigma_region = new ArrayList<>();
     }
 
     public double getX() {
@@ -87,19 +87,19 @@ public class ComputationStats {
         this.y2_ = y2_;
     }
 
-    public double getX2_() {
+    public Double getX2_() {
         return x2_;
     }
 
-    public double getY1_() {
+    public Double getY1_() {
         return y1_;
     }
 
-    public double getX1_() {
+    public Double getX1_() {
         return x1_;
     }
 
-    public double getY2_() {
+    public Double getY2_() {
         return y2_;
     }
 
@@ -127,22 +127,6 @@ public class ComputationStats {
         this.result = result;
     }
 
-    public ArrayList<Star> getSigmaRegion() {
-        return sigma_region;
-    }
-
-    public void setSigmaRegion(ArrayList<Star> uncertainty_estimations) {
-        this.sigma_region = uncertainty_estimations;
-    }
-
-    public void setErrors(double[] errors) {
-        result.setErrors(errors);
-    }
-
-    public void countUncertainty() {
-        result.countUncertainty();
-    }
-
     public Star[] getNeighbours() {
         return new Star[]{star11, star12, star21, star22};
     }
@@ -153,5 +137,31 @@ public class ComputationStats {
 
     public double getX_unc() {
         return x_unc;
+    }
+
+    public void setEvolutionaryLine(Star star1, Star star2) {
+        x1_ = star1.getTemperature();
+        y1_ = star1.getLuminosity();
+        x2_ = star2.getTemperature();
+        y2_ = star2.getLuminosity();
+        result1_ = star1;
+        result2_ = star2;
+    }
+
+    /** Changes result type if current is NONE */
+    public void changeResultType(ResultType newType) {
+        this.resultType = (this.resultType == ResultType.NONE) ? newType : this.resultType;
+    }
+
+    public ResultType getResultType() {
+        return this.resultType;
+    }
+
+    public void setIgnoredPhases(HashSet<Short> ignoredPhases) {
+        this.ignoredPhases = ignoredPhases;
+    }
+
+    public HashSet<Short> getIgnoredPhases() {
+        return ignoredPhases;
     }
 }

@@ -3,7 +3,6 @@ package GUI;
 
 import backend.*;
 import backend.objects.ResultStar;
-import backend.objects.Star;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,6 +22,7 @@ public class TextOnly {
         double y;
         double x_unc = 0.0;
         double y_unc = 0.0;
+        short rounding = 2;
         System.out.println("========= StIFT text mode =========");
 
         try {
@@ -31,6 +31,8 @@ public class TextOnly {
             if (args.length >= 5) {
                 x_unc = Double.parseDouble(args[3]);
                 y_unc = Double.parseDouble(args[4]);
+                String[] splittedUnc = args[3].split("\\.");
+                rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : rounding;
             }
             if (args.length > 6) {
                 throw new Exception();
@@ -56,22 +58,20 @@ public class TextOnly {
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
-            ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc);
+            ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc, rounding);
+            System.out.println("Estimation method: " + stats.getResult().getResultType());
             System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
 
-            System.out.println("Neighbours:");
-            if (stats.getStar11() != null) {
-                stats.getStar11().printValues();
-                stats.getStar12().printValues();
-            }
-
-            if (stats.getStar22() != null) {
-                stats.getStar21().printValues();
-                stats.getStar22().printValues();
-            }
-
-            if (stats.getResult() != null && stats.getResult().getAge() != null && stats.getStar11() == null && stats.getStar21() == null) {
-                System.out.println("Star match");
+            if (stats.getStar11() != null || stats.getStar12() != null || stats.getStar21() != null || stats.getStar22() != null) {
+                System.out.println("Neighbours:");
+                if (stats.getStar11() != null)
+                    stats.getStar11().printValues();
+                if (stats.getStar12() != null)
+                    stats.getStar12().printValues();
+                if (stats.getStar21() != null)
+                    stats.getStar21().printValues();
+                if (stats.getStar22() != null)
+                    stats.getStar22().printValues();
             }
 
             if (stats.getResult1_() != null) {
@@ -80,37 +80,12 @@ public class TextOnly {
                 stats.getResult2_().printValues();
             }
 
-            System.out.println("Mean value: <----------------------");
-            stats.getResult().printValues();
-
             ResultStar mean = stats.getResult();
-            if (mean.getAge() != null) {
-                System.out.println("Sigma region:");
-                if (stats.getSigmaRegion().size() > 0) {
-                    for (Star star : stats.getSigmaRegion()) {
-                        star.printValues();
-                    }
-                    System.out.println("Sigma region deviation:");
-                    stats.getResult().printAllDeviations();
-                } else {
-                    System.out.println("No stars in sigma region.");
-                }
+            System.out.println("Mean value: <----------------------");
+            mean.printValues();
 
-                //Show all error values
-                if (mean.errorIsSet()) {
-                    System.out.printf("Neighbours deviation:%n------\t------\t%.4f\t%.4f\t%.4f\t%.4f%n", mean.getErrors()[2],
-                            mean.getErrors()[3], mean.getErrors()[4], mean.getErrors()[5]);
-                } else {
-                    System.out.println("Neighbours deviation: N/A");
-                }
-
-                if (mean.isValidSD()) {
-                    System.out.printf("Uncertainties: <-------------------%n%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f%n",
-                            mean.getUncertainties()[0], mean.getUncertainties()[1],
-                            mean.getUncertainties()[2], mean.getUncertainties()[3],
-                            mean.getUncertainties()[4], mean.getUncertainties()[5]);
-                }
-            }
+            System.out.println("Uncertainties:");
+            mean.printAllDeviations();
         } catch (NullPointerException ex) {
             System.out.println("No more computable data found.");
         } catch (FileNotFoundException ex) {

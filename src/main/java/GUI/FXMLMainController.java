@@ -7,9 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javafx.animation.FadeTransition;
 import javafx.application.HostServices;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -54,15 +58,22 @@ public class FXMLMainController implements Initializable {
     @FXML
     private FXMLLoadingController loadingController;
     @FXML
-    private CheckBox includeErrorBox;
-    @FXML
     private CheckBox includeDeviationBox;
     @FXML
     private GridPane phasePane;
+    @FXML
+    private ProgressBar estimationsBar;
 
     ArrayList<CheckBox> allCheckBoxes = new ArrayList<>();
     private final FadeTransition fadeIn = new FadeTransition(Duration.millis(1000));
-    
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1, new ThreadFactory() {
+        public Thread newThread(Runnable r) {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
+        }
+    }); //terminate threads when exiting application
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -84,6 +95,11 @@ public class FXMLMainController implements Initializable {
     //-- MENU BAR -- File / Edit / Options
     @FXML
     public void exportDataItemAction() {
+        if (executor.getQueue().size() > 0) {
+            showAlert("Running tasks", "Some computations are still running, please wait.", AlertType.INFORMATION);
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export data");
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT file (*.txt)", "*.txt");
@@ -102,6 +118,11 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     public void uploadNewGridItemAction() {
+        if (executor.getQueue().size() > 0) {
+            showAlert("Running tasks", "Some computations are still running, please wait.", AlertType.INFORMATION);
+            return;
+        }
+
         if(!tableViewController.getTableModel().isSaved() && !unsavedChangesAlert()) {
             return;
         }
@@ -123,6 +144,11 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     public void uploadInputDataFileAction() {
+        if (executor.getQueue().size() > 0) {
+            showAlert("Running tasks", "Some computations are still running, please wait.", AlertType.INFORMATION);
+            return;
+        }
+
         if(!tableViewController.getTableModel().isSaved() && !unsavedChangesAlert()) {
             return;
         }
@@ -140,6 +166,11 @@ public class FXMLMainController implements Initializable {
     
     @FXML
     public void resetGridItemAction() {
+        if (executor.getQueue().size() > 0) {
+            showAlert("Running tasks", "Some computations are still running, please wait.", AlertType.INFORMATION);
+            return;
+        }
+
         if(!tableViewController.getTableModel().isSaved() && !unsavedChangesAlert()) {
             return;
         }
@@ -179,6 +210,10 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     public void resetResultsAction() {
+        if (executor.getQueue().size() > 0) {
+            showAlert("Running tasks", "Some computations are still running, please wait.", AlertType.INFORMATION);
+            return;
+        }
         Alert alert = showAlert("Reset results table", "Do you want to reset the results table?",
                 AlertType.CONFIRMATION);
         if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
@@ -201,7 +236,9 @@ public class FXMLMainController implements Initializable {
         Double inputLumUnc = checkInput(lumUncertaintyField);
 
         if (inputTemVal != null && inputTemUnc != null && inputLumVal != null && inputLumUnc != null) {
-            manageInput(inputTemVal, inputLumVal, inputTemUnc, inputLumUnc);
+            String[] splittedUnc = tempUncertaintyField.getText().split("\\.");
+            short rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : 2;
+            manageInput(inputTemVal, inputLumVal, inputTemUnc, inputLumUnc, rounding);
             temperatureField.clear();
             tempUncertaintyField.setText("0.0");
             luminosityField.clear();
@@ -283,15 +320,29 @@ public class FXMLMainController implements Initializable {
      * @param temp_unc temperature uncertainty
      * @param lum_unc temperature uncertainty
      */
-    public void manageInput(double x, double y, double temp_unc, double lum_unc) {
-        boolean includeError = includeErrorBox.isSelected();
+    public void manageInput(double x, double y, double temp_unc, double lum_unc, short rounding) {
         boolean includeDeviation = includeDeviationBox.isSelected();
         HashSet<Short> ignoredPhases = new HashSet<>();
+        estimationsBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+
         for (CheckBox checkBox : allCheckBoxes) {
             if (!checkBox.isSelected()) { ignoredPhases.add(Short.parseShort(checkBox.getText())); }
         }
-        ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeError, includeDeviation, ignoredPhases);
-        tableViewController.handleNewResult(result);
+
+        Runnable runnable = () -> {
+            ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, rounding, ignoredPhases);
+            tableViewController.handleNewResult(result);
+            if (executor.getQueue().size() > 0) {
+                Platform.runLater(() -> {
+                    estimationsBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    estimationsBar.setProgress(0);
+                });
+            }
+        };
+        executor.execute(runnable);
     }
     
     /**
