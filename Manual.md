@@ -53,10 +53,10 @@ for specification of values representation:
 
 #Teff[lg K] | Lum[lg Lsun] | Age[dex yrs] | Rad[Rsun] | Mass[Msun] | Phase
 --- | --- | --- | --- |--- |---
-3.66943 | -0.72127 | 8.23306 | 10.66660 | 0.75000 | 5.00000
-3.66932 | -0.72112 | 8.26683 | 10.66690 | 0.75000 | 5.00053
-3.66922 | -0.72095 | 8.30172 | 10.66718 | 0.75000 | 5.00112
-3.66912 | -0.72077 | 8.33767 | 10.66747 | 0.75000 | 5.00179
+3.66943 | -0.72127 | 8.23306 | 0.66695 | 0.75000 | 5.00000
+3.66932 | -0.72112 | 8.26683 | 0.66741 | 0.75000 | 5.00053
+3.66922 | -0.72095 | 8.30172 | 0.66784 | 0.75000 | 5.00112
+3.66912 | -0.72077 | 8.33767 | 0.66828 | 0.75000 | 5.00179
 ... and more
 
 Default grid data is extracted from [CMD web interface](http://stev.oapd.inaf.it/cgi-bin/cmd).
@@ -92,7 +92,7 @@ There are different estimation methods that could have been applied to estimate 
 ## Text mode
 Text mode serves mainly as a debugging tool as it prints intermediate results of the computation. This includes the neighbours used for estimation, evolutionary line, mean value and uncertainties. You can use it from the command line with command
 
-`java -jar file_name.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]`
+`java -jar stift.jar text TEMP LUM [TEMPunc LUMunc] [GRID_FILE]`
 
 where TEMP and LUM are input values of effective temperature and luminosity and optional arguments TEMPunc, LUMunc their uncertainties. Missing uncertainties are treated as 0.
 Missing grid file argument instructs the application to use the default grid.
@@ -103,7 +103,7 @@ Missing grid file argument instructs the application to use the default grid.
 Fast mode can be used for limited, but fully run from command line, computation. This mode processes input file and directly exports result.
 The command to run fast mode is following:
 
-`java -jar file_name.jar fast INPUT_FILE [GRID_FILE] EXPORT_FILE_NAME`
+`java -jar stift.jar fast INPUT_FILE [GRID_FILE] EXPORT_FILE_NAME`
 
 where grid file is optional argument and if missing,
 default grid is used.
