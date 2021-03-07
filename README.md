@@ -1,5 +1,5 @@
 # Stellar Isochrone Fitting Tool
-Regular user, head over to the [latest release](https://github.com/Johaney-s/StIFT/releases/latest) and download the .jar file.
+Regular user, head over to the [latest release](https://github.com/Johaney-s/StIFT/releases/latest) and download the stift.jar file.
 Explore, or read the [manual](/Manual.md).
 ## Overview
 StIFT is a tool for estimating stellar characteristics. :sun_with_face:<br />
@@ -21,7 +21,9 @@ Methods of estimation are discussed in
 Running the application requires Java 11, consider updating JRE in case relevant error message pops up.
 
 ## Running the application
-From the source code, build with `mvn package`.<br />
+Open downloaded app by either double-clicking the stift.jar file or using command `java -jar stift.jar`.
+
+If you want to work with the source code, build with `mvn package`.
 In target folder run with `java -jar stift-1.0-SNAPSHOT.jar` or open the .jar file directly.
 
 ## Detailed description
