@@ -207,7 +207,9 @@ public class FXMLTableController implements Initializable {
      */
     public void handleNewResult(ResultStar result) {
         tableModel.addResult(result);
-        updateFilter();
+        Platform.runLater(() -> {
+            updateFilter();
+        });
     }
     
     /**
