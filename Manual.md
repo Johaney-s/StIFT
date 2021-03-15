@@ -59,6 +59,19 @@ for specification of values representation:
 3.66912 | -0.72077 | 8.33767 | 0.66828 | 0.75000 | 5.00179
 ... and more
 
+if tracks' labels are missing, mass delimiter (0.01) is applied to separate tracks.
+If labels are provided:
+
+#Teff[lg K] | Lum[lg Lsun] | Age[dex yrs] | Rad[Rsun] | Mass[Msun] | Phase | Label
+--- | --- | --- | --- |--- |---
+3.66943 | -0.72127 | 8.23306 | 0.66695 | 0.75000 | 5.00000 | 1
+3.66932 | -0.72112 | 8.26683 | 0.66741 | 0.75000 | 5.00053 | 1
+3.66922 | -0.72095 | 8.30172 | 0.66784 | 0.75000 | 5.00112 | 1
+3.66912 | -0.72077 | 8.33767 | 0.66828 | 0.75000 | 5.00179 | 1
+... and more
+
+points with the same label (in a continuous block of data) create a track.
+
 Default grid data is extracted from [CMD web interface](http://stev.oapd.inaf.it/cgi-bin/cmd).
 Credit: PARSEC and COLIBRI tracks (Marigo et al. (2017)).
 

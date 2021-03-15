@@ -42,6 +42,15 @@ specification of values representation:
 3.66922 -0.72095 8.30172 10.66718 0.75000 5.00112
 3.66912 -0.72077 8.33767 10.66747 0.75000 5.00179
 ...
+or
+#Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase Label
+3.66943 -0.72127 8.23306 10.66660 0.75000 5.00000 1
+3.66932 -0.72112 8.26683 10.66690 0.75000 5.00053 1
+3.66922 -0.72095 8.30172 10.66718 0.75000 5.00112 1
+3.66912 -0.72077 8.33767 10.66747 0.75000 5.00179 1
+...
+to specify how points should be separated into tracks - if no label
+is provided to identify tracks, tracks are separated by mass delimiter (0.01).
 
 To upload input data, choose Data > Upload input data file.
 Provide a .txt file and comment out header lines with '#' symbol:

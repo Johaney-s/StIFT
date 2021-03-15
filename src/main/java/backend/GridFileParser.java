@@ -39,7 +39,7 @@ public abstract class GridFileParser {
             try {
                 String[] record = row.split(",|\\s"); //delimiters
 
-                if (record.length != 6) { //validate number of attributes
+                if (record.length != 6 && record.length != 7) { //validate number of attributes
                     reader.close();
                     inStream.close();
                     throw new IOException("Invalid number of attributes on line " + recordCounter);
@@ -52,7 +52,11 @@ public abstract class GridFileParser {
                 double mass = Double.parseDouble(record[4]);
                 double phase = Double.parseDouble(record[5]);
                 Star star = new Star(temperature, luminosity, age, radius, mass, phase);
-                data.addStar(star);
+                if (record.length == 6) {
+                    data.addStar(star);
+                } else {
+                    data.addStar(star, Integer.parseInt(record[6]));
+                }
                 recordCounter++;
                 row = reader.readLine();
             } catch (NumberFormatException e){

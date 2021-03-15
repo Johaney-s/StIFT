@@ -17,6 +17,7 @@ public class Data {
     private ArrayList<Star> currentGroup;
     public static double TRACKS_DELIMITER = 0.01;
     private final HashSet<Short> currentPhases;
+    private int currentLabel = 0;
     private final ZAMS zams = new ZAMS();
     
     public Data() {
@@ -38,6 +39,17 @@ public class Data {
 
         currentGroup.add(star);
         currentPhases.add(star.getPhase().shortValue());
+    }
+
+    public void addStar(Star star, int label) {
+        if (!currentGroup.isEmpty() && label != currentLabel) {
+            addCurrentGroupToGroupedData();
+            currentGroup = new ArrayList<>();
+        }
+
+        currentGroup.add(star);
+        currentPhases.add(star.getPhase().shortValue());
+        currentLabel = label;
     }
 
     /**
