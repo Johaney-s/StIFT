@@ -5,6 +5,7 @@ import backend.objects.Star;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -58,8 +59,8 @@ public abstract class Statistics {
 
         for (int i = 0; i < N; i++) {
             es.execute(() -> {
-                double rand_x = (xDistribution == null) ? 0.0 : xDistribution.sample();
-                double rand_y = (yDistribution == null) ? 0.0 : yDistribution.sample();
+                double rand_x = (xDistribution == null) ? mean_x : xDistribution.sample();
+                double rand_y = (yDistribution == null) ? mean_y : yDistribution.sample();
                 Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0, stats.getIgnoredPhases()).getResult().getAllAttributes();
                 //System.out.println(Arrays.toString(attributes));
 
