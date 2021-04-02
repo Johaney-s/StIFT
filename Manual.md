@@ -18,7 +18,7 @@ Use one of the following ways of inputting the data:
 - **Fill in the form** on the right.
 - Upload **data file** via menu Data > Upload input data file.
 
-The uncertainty is computed using 1000 estimations following the Monte Carlo simulations.
+The uncertainty is computed from the Monte Carlo simulation on a thousand of points with a normal distribution.
 To turn off computing the uncertainty and speed the estimation up, uncheck the Compute uncertainty option.
 Uncertainty that is equal to 0 is overwritten to uncertainty coming from points in evolutionary line.
 
@@ -43,15 +43,15 @@ will be set to 0.
 ### Grid (models)
 To upload custom grid, navigate to menu Grid > Upload new grid.
 Any header lines need to start with '#' sign to be parsed correctly.
-Grid data need to be grouped by initial mass and sorted by evolutionary
-phase. The GUI shows only a part of the grid data,
+Grid data need to be a) labeled (isochrones) or b) grouped by initial mass and
+sorted by evolutionary phase (evolutionary tracks). The GUI shows only a part of the grid data,
 but all points are taken into account when computing.
 Accepted format is a .txt file.
 Use space or ',' delimiter between attributes. To obtain correct
 uncertainty results, please follow the results table's header
 for specification of values representation:
 
-#Teff[lg K] | Lum[lg Lsun] | Age[dex yrs] | Rad[Rsun] | Mass[Msun] | Phase
+#lgTeff[K] | lgLum[Lsun] | lgAge[yrs] | Rad[Rsun] | Mass[Msun] | Phase
 --- | --- | --- | --- |--- |---
 3.66943 | -0.72127 | 8.23306 | 0.66695 | 0.75000 | 5.00000
 3.66932 | -0.72112 | 8.26683 | 0.66741 | 0.75000 | 5.00053
@@ -59,10 +59,11 @@ for specification of values representation:
 3.66912 | -0.72077 | 8.33767 | 0.66828 | 0.75000 | 5.00179
 ... and more
 
-if tracks' labels are missing, mass delimiter (0.01) is applied to separate tracks.
+if tracks' labels are missing, points are separated into tracks when the value of phase drops
+(as the data should be sorted by phase within tracks).
 If labels are provided:
 
-#Teff[lg K] | Lum[lg Lsun] | Age[dex yrs] | Rad[Rsun] | Mass[Msun] | Phase | Label
+#lgTeff[K] | lgLum[Lsun] | lgAge[yrs] | Rad[Rsun] | Mass[Msun] | Phase | Label
 --- | --- | --- | --- |--- |--- |---
 3.66943 | -0.72127 | 8.23306 | 0.66695 | 0.75000 | 5.00000 | 1
 3.66932 | -0.72112 | 8.26683 | 0.66741 | 0.75000 | 5.00053 | 1
@@ -70,17 +71,16 @@ If labels are provided:
 3.66912 | -0.72077 | 8.33767 | 0.66828 | 0.75000 | 5.00179 | 1
 ... and more
 
-points with the same label (in a continuous block of data) create a track.
+points with the same label (in a continuous block of data) create a track. This way isochrones can be loaded.
 
-Default grid data is extracted from [CMD web interface](http://stev.oapd.inaf.it/cgi-bin/cmd).
-Credit: PARSEC and COLIBRI tracks (Marigo et al. (2017)).
+Default grid data is extracted from [PARSEC STELLAR EVOLUTION CODE](https://people.sissa.it/~sbressan/parsec.html).
 
-The **phase labels** in the default grid file are described [here](https://people.sissa.it/~sbressan/CAF09_V1.2S_M36_LT/readme.txt), StIFT uses these:
+The **phase labels** in the default grid file are described [here](https://people.sissa.it/~sbressan/CAF09_V1.2S_M36_LT/readme.txt), the default grid in the StIFT uses these:
 #Value | Phase | Description
 --- | --- | ---
 4 | NEAR_ZAM | This point is very near the ZAMS
 5 | MS_BEG | H burning fully active
-6 | POINT_B | Almost end of the H burning. Small contraction phase begins here for interm. & massive stars   
+6 | POINT_B | Almost end of the H burning. Small contraction phase begins here for interm. & massive stars
 7 | POINT_C | Small contraction ends here and star move toward RG
 8 | RG_BASE | RG base
 9 | RG_BMP1 | RGB bump in Low Mass Stars (marked also for other masses)

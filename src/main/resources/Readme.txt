@@ -8,49 +8,48 @@ please contact me at xsupikov@fi.muni.cz.
 Any feedback is highly appreciated.
 ==============================
 
-Default grid data is extracted from http://stev.oapd.inaf.it/cgi-bin/cmd.
-PARSEC and COLIBRI tracks Marigo et al. (2017).
+The default grid data is extracted from PARSEC STELLAR EVOLUTION CODE:
+https://people.sissa.it/~sbressan/parsec.html
 
 StIFT finds 4 neighbours for input coordinates,
 interpolates to create line points and interpolates
 again to obtain result estimation.
 
-The method is described by Malkov et al. (2010)
+The method is described by Malkov et al. (2010):
 https://doi.org/10.1111/j.1365-2966.2009.15696.x
 
-The uncertainty is computed using 1000 estimations
-following the Monte Carlo simulations, used also by
-S. G. Sichevskij (2017):
-https://doi.org/10.1134/S1063772917030076
+The uncertainty is computed from the Monte Carlo simulation on a thousand of points with a normal distribution.
+
 To turn off computing the uncertainty and speed the estimation up,
 uncheck the Compute uncertainty option. Uncertainty that is equal
 to 0 is overwritten to uncertainty coming from points in evolutionary line.
 
 To upload custom grid, choose Grid > Upload new grid.
 Any header lines need to start with '#' sign to be parsed correctly.
-Grid data need to be grouped by initial mass and
-sorted by evolutionary phase. The GUI shows only
+Grid data need to be a) labeled (isochrones) or b) grouped by initial mass and
+sorted by evolutionary phase (evolutionary tracks). The GUI shows only
 a part of the grid data, but all points are taken
 into account when computing. Accepted format is
 a .txt file. Use space or ',' delimiter between
 attributes. To obtain correct uncertainty results,
 please follow the results table's header for
 specification of values representation:
-#Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase
+#lgTeff[K] lgL[Lsun] lgAge[yrs] Rad[Rsun] Mass[Msun] Phase
 3.66943 -0.72127 8.23306 10.66660 0.75000 5.00000
 3.66932 -0.72112 8.26683 10.66690 0.75000 5.00053
 3.66922 -0.72095 8.30172 10.66718 0.75000 5.00112
 3.66912 -0.72077 8.33767 10.66747 0.75000 5.00179
 ...
 or
-#Teff[lg K] Lum[lg Lsun] Age[dex yrs] Rad[Rsun] Mass[Msun] Phase Label
+#lgTeff[K] lgL[Lsun] lgAge[yrs] Rad[Rsun] Mass[Msun] Phase Label
 3.66943 -0.72127 8.23306 10.66660 0.75000 5.00000 1
 3.66932 -0.72112 8.26683 10.66690 0.75000 5.00053 1
 3.66922 -0.72095 8.30172 10.66718 0.75000 5.00112 1
 3.66912 -0.72077 8.33767 10.66747 0.75000 5.00179 1
 ...
 to specify how points should be separated into tracks - if no label
-is provided to identify tracks, tracks are separated by mass delimiter (0.01).
+is provided, points are separated into tracks when the value of phase
+drops (as the data should be sorted by phase within tracks).
 
 To upload input data, choose Data > Upload input data file.
 Provide a .txt file and comment out header lines with '#' symbol:

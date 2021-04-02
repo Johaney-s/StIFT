@@ -60,7 +60,7 @@ public class TextOnly {
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);
             ComputationStats stats = data.estimateStats(x, y, x_unc, y_unc, rounding);
             System.out.println("Estimation method: " + stats.getResult().getResultType());
-            System.out.println("Teff[lg] Lum[lg] Age[dex] Rad Mass Phase");
+            System.out.println("lgTeff[K] lgL[Lsun] lgAge[yrs] Rad[Rsun] Mass[Msun] Phase");
 
             if (stats.getStar11() != null || stats.getStar12() != null || stats.getStar21() != null || stats.getStar22() != null) {
                 System.out.println("Neighbours:");

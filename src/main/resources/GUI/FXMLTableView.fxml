@@ -6,9 +6,9 @@
 
 <TableView id="table-view" fx:id="tableView" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="619.0" stylesheets="@Styles.css" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.FXMLTableController">
     <columns>
-        <TableColumn fx:id="tempCol" editable="false" prefWidth="75.0" sortable="false" text="Teff [lg K]" />
-        <TableColumn fx:id="lumCol" editable="false" prefWidth="75.0" sortable="false" text="Lum. [lg L☉]" />
-        <TableColumn fx:id="ageCol" editable="false" prefWidth="75.0" sortable="false" text="Age [dex yrs]" />
+        <TableColumn fx:id="tempCol" editable="false" prefWidth="75.0" sortable="false" text="log Teff [K]" />
+        <TableColumn fx:id="lumCol" editable="false" prefWidth="75.0" sortable="false" text="log Lum. [L☉]" />
+        <TableColumn fx:id="ageCol" editable="false" prefWidth="75.0" sortable="false" text="log Age [yrs]" />
         <TableColumn fx:id="radCol" editable="false" prefWidth="75.0" sortable="false" text="Radius [R☉]" />
         <TableColumn fx:id="massCol" editable="false" prefWidth="75.0" sortable="false" text="Mass [M☉]" />
         <TableColumn fx:id="phaseCol" editable="false" prefWidth="75.0" sortable="false" />

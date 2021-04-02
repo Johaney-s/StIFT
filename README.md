@@ -30,6 +30,35 @@ In target folder run with `java -jar stift-1.0-SNAPSHOT.jar` or open the .jar fi
 This app is the topic of my bachelor's thesis at FI MUNI. It should be useful to astrophysicists as some stellar characteristics cannot be directly observed and need to be estimated from known data. The process of estimation is called isochrone fitting and is step by step described in
 > MALKOV, O. Yu.; SICHEVSKIJ, S. G.; KOVALEVA, D. A.: "Parametrization of single and binary stars", Monthly Notices of the Royal Astronomical Society. (2009), vol. 401, no. 1: 695.  https://doi.org/10.1111/j.1365-2966.2009.15696.x
 
-The grid data is grouped by mass and sorted by evolutionary status (phase). The default grid data is extracted from [CMD web interface](http://stev.oapd.inaf.it/cgi-bin/cmd) containing
-PARSEC and COLIBRI tracks (Marigo et al. (2017)).
+Evolutionary tracks or isochrones can be imported as the grid data. The default grid data is extracted from [PARSEC STELLAR EVOLUTION CODE](https://people.sissa.it/~sbressan/parsec.html):
+> BRESSAN, A. et al: "PARSEC: stellar tracks and isochrones with the PAdova and TRieste Stellar Evolution Code", Monthly Notices of the Royal Astronomical Society. (2012), vol. 427, no. 1: 127.  https://doi.org/10.1111/j.1365-2966.2012.21948.x
+
 After the input is entered, four neighbours are found in the grid data and interpolated for line points estimation. Line points are then interpolated for final result estimation. The uncertainty is computed from the Monte Carlo simulation on a thousand of points with a normal distribution.
+
+## Thanks
+My thanks go to Ernst Paunzen for the insight and consultations and to Martin Kuba for technical advice and supervision.
+
+## License
+
+MIT License
+
+Copyright (c) 2021 Johana Supíková
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+

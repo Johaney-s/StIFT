@@ -92,12 +92,20 @@ public abstract class Statistics {
             return;
         }
 
-        if (statistics[0].getN() < (N * 0.95)) { //more than 5% points are not estimated
-            for (int i = 2; i < 6; i++) {
+        if (statistics[0].getN() < (N * 0.95)) { //more than 5% points are not estimated -> mirror uncertainties
+            for (int i = 3; i < 6; i++) {
                 Double[] uncertainty = result.getUncertainty(i);
                 double maxUncertainty = Math.max(Math.abs(uncertainty[0]), Math.abs(uncertainty[1]));
                 result.setUncertainty(i, -maxUncertainty, maxUncertainty);
             }
+            //special handling for age
+            Double[] ageUncertainty = result.getUncertainty(2);
+            double ageAbsUncertainty = Math.max(
+                    Math.abs(UnitsConverter.fromDex(result.getAge() + ageUncertainty[0]) - UnitsConverter.fromDex(result.getAge())),
+                    Math.abs(UnitsConverter.fromDex(result.getAge() + ageUncertainty[1]) - UnitsConverter.fromDex(result.getAge())));
+            double agePositiveError = UnitsConverter.toDex(UnitsConverter.fromDex(result.getAge()) + ageAbsUncertainty) - result.getAge();
+            double ageNegativeError = UnitsConverter.toDex(UnitsConverter.fromDex(result.getAge()) - ageAbsUncertainty) - result.getAge();
+            result.setUncertainty(2, ageNegativeError, agePositiveError);
         }
 
         fixToZero(result);

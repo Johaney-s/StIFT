@@ -15,7 +15,6 @@ import static backend.Geometry.lineIntersection;
 public class Data {
     private final ArrayList<ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
-    public static double TRACKS_DELIMITER = 0.01;
     private final HashSet<Short> currentPhases;
     private int currentLabel = 0;
     private final ZAMS zams = new ZAMS();
@@ -30,9 +29,8 @@ public class Data {
      * Add star to relevant group
      * @param star New star
      */
-    public void addStar(Star star){        
-        if (!currentGroup.isEmpty() && Math.abs(currentGroup.get(currentGroup.size() - 1).getMass() - star.getMass())
-                > TRACKS_DELIMITER) {
+    public void addStar(Star star){
+        if (!currentGroup.isEmpty() && currentGroup.get(currentGroup.size() - 1).getPhase() > star.getPhase()) {
             addCurrentGroupToGroupedData();
             currentGroup = new ArrayList<>();
         }
