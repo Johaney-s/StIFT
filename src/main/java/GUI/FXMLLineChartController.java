@@ -42,6 +42,16 @@ public class FXMLLineChartController implements Initializable {
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(false);
 
+        //
+        NumberAxis xAxis = (NumberAxis)lineChart.getXAxis();
+        xAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(xAxis) {
+            @Override
+            public String toString(Number value) {
+                //minus value FIXME if you can
+                return String.format("%.1f", -value.doubleValue());
+            }
+        });
+
         //-- Tooltip for lineChart
         mouseLocationInScene = new SimpleObjectProperty<>();
         tooltip = new Tooltip();
@@ -51,7 +61,7 @@ public class FXMLLineChartController implements Initializable {
             double x = getXMouseCoordinate();
             double y = getYMouseCoordinate();
             tooltip.show(lineChart, evt.getScreenX() + 50, evt.getScreenY());
-            tooltip.setText(String.format("[%.4f; %.4f]", x, y));
+            tooltip.setText(String.format("[%.4f; %.4f]", -x, y));
         });
     }
     
@@ -63,7 +73,7 @@ public class FXMLLineChartController implements Initializable {
     @FXML
     public void graphClicked() {
         if (!lineChart.getData().isEmpty()) {
-            double x = Double.parseDouble(String.format("%.4f", getXMouseCoordinate())); //use showed values in tooltip
+            double x = -Double.parseDouble(String.format("%.4f", getXMouseCoordinate())); //use showed values in tooltip
             double y = Double.parseDouble(String.format("%.4f", getYMouseCoordinate()));
             mainController.manageInput(x, y, 0.0, 0.0, (short)2);
         }
@@ -129,7 +139,8 @@ public class FXMLLineChartController implements Initializable {
                     int index = 0;
                     for (Star s : isochrone) {
                         if (index % 4 != 0) { index++; continue; } //faster rendering
-                        series.getData().add(new XYChart.Data(s.getTemperature(), s.getLuminosity()));
+                        //need to invert x-axis and this solution sucks, but FIXME later
+                        series.getData().add(new XYChart.Data(-s.getTemperature(), s.getLuminosity()));
                         index++;
                     }
 
@@ -150,10 +161,10 @@ public class FXMLLineChartController implements Initializable {
 
         //ZAMS
         XYChart.Series series = new XYChart.Series();
-        series.setName("ZAMS_track");
         ArrayList<Star> track = GridFileParser.getCurrentData().getZAMS().getTrack();
         for (int i = 0; i < track.size(); i++) {
-            series.getData().add(new XYChart.Data(track.get(i).getTemperature(), track.get(i).getLuminosity()));
+            //also need to invert x-axis and this solution sucks, but FIXME later
+            series.getData().add(new XYChart.Data(-track.get(i).getTemperature(), track.get(i).getLuminosity()));
         }
         lineChart.getData().add(series);
     }
