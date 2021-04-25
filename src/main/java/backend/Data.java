@@ -107,7 +107,9 @@ public class Data {
                                     >= intersection(first, second, stats.getX(), stats.getY())[1]) {
                                 upperLeft = first;
                                 upperRight = second;
-                                upperZAMS = list.get(0);
+                                if (zams.getTrack().contains(list.get(0))) {
+                                    upperZAMS = list.get(0);
+                                }
                             }
                         }
                     }
@@ -120,7 +122,7 @@ public class Data {
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
 
-        if (upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.get_phase())) { //give ZAMS a chance
+        if (upperZAMS != null && upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.get_phase())) { //give ZAMS a chance
             fillWithZAMS(stats, upperZAMS);
         }
 
