@@ -41,7 +41,7 @@ public class TableModel {
      */
     public void exportResults(File file) throws IOException {
         FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write("#lgTeff[K] lgTeff lgL[Lsun] e_lgL lgAge[yrs] e_lgAge e_lgAge R[Rsun] e_R e_R M[Msun] e_M e_M Phase e_Phase e_Phase estType" + System.getProperty("line.separator"));
+        fileWriter.write("#lgTeff[K] e_lgTeff lgL[Lsun] e_lgL lgAge[yrs] e_lgAge e_lgAge R[Rsun] e_R e_R M[Msun] e_M e_M Phase e_Phase e_Phase estType" + System.getProperty("line.separator"));
         for (ResultStar result : filteredList) {
             fileWriter.write(String.format("%s %s %s %s %s %s %s" + System.getProperty("line.separator"),
                     result.getFormattedTemperature(), result.getFormattedLuminosity(), result.getFormattedAge(),
