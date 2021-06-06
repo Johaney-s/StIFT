@@ -93,11 +93,15 @@ public class FXMLLineChartController implements Initializable {
     
     /**
      * Takes input data file, extracts data and shows in graph
-     * @return true if successfull, false otherwise
+     * @param isDefault true if stream refers to default file (use predefined settings)
+     * @return true if successful, false otherwise
      */
-    public boolean showGraph(InputStream inStream) {
+    public boolean showGraph(InputStream inStream, boolean isDefault) {
         try {
             Data newData = GridFileParser.extract(inStream);
+            Data.setCurrentData(newData);
+            mainController.showAlert("Settings", Data.getCurrentData().getCurrentPhases().toString(), Alert.AlertType.CONFIRMATION);
+            //SHOW WINDOW WITH OPTIONS HERE
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData());
         } catch (IOException ex) {
@@ -108,10 +112,10 @@ public class FXMLLineChartController implements Initializable {
         return true;
     }
     
-    public boolean showGraph(File file) {
+    public boolean showGraph(File file, boolean isDefault) {
         try {
             InputStream inStream = new FileInputStream(file);
-            return showGraph(inStream);
+            return showGraph(inStream, isDefault);
         } catch (FileNotFoundException ex) {
             mainController.showAlert("File not found", ex.getMessage(), Alert.AlertType.ERROR);
             return false;
@@ -161,7 +165,7 @@ public class FXMLLineChartController implements Initializable {
 
         //ZAMS
         XYChart.Series series = new XYChart.Series();
-        ArrayList<Star> track = GridFileParser.getCurrentData().getZAMS().getTrack();
+        ArrayList<Star> track = Data.getCurrentData().getZAMS().getTrack();
         for (int i = 0; i < track.size(); i++) {
             //also need to invert x-axis and this solution sucks, but FIXME later
             series.getData().add(new XYChart.Data(-track.get(i).getTemperature(), track.get(i).getLuminosity()));

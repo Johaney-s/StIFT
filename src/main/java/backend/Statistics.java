@@ -53,8 +53,7 @@ public abstract class Statistics {
                 new SynchronizedDescriptiveStatistics(), //3 - phase
         };
 
-        Data model = GridFileParser.getCurrentData();
-        //double start = System.currentTimeMillis();
+        Data model = Data.getCurrentData();
         ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         for (int i = 0; i < N; i++) {
@@ -62,7 +61,6 @@ public abstract class Statistics {
                 double rand_x = (xDistribution == null) ? mean_x : xDistribution.sample();
                 double rand_y = (yDistribution == null) ? mean_y : yDistribution.sample();
                 Double[] attributes = model.estimateStar(rand_x, rand_y, 0, 0, stats.getIgnoredPhases()).getResult().getAllAttributes();
-                //System.out.println(Arrays.toString(attributes));
 
                 if (attributes != null && attributes[2] != null){
                     statistics[0].addValue(UnitsConverter.fromDex(attributes[2]));
@@ -82,9 +80,6 @@ public abstract class Statistics {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //double end = System.currentTimeMillis();
-        //System.out.println("Execution time: " + (end - start) + " ms");
-        //System.out.println("N: " + statistics[0].getN());
 
         if (statistics[0].getN() > (N / 3)) { //more than 33% estimated points required
             fillStatistics(statistics, result);
@@ -116,18 +111,13 @@ public abstract class Statistics {
         //special handling for age in dex
         double lowerBound = statistics[0].getPercentile(25);
         double upperBound = statistics[0].getPercentile(75);
-        //System.out.println("Param: " + 2 + ".\t" + UnitsConverter.toDex(statistics[0].getPercentile(25)) + "\t"
-        //        + UnitsConverter.toDex(statistics[0].getPercentile(75)));
         result.setUncertainty(2, UnitsConverter.toDex(lowerBound) - attributes[2], UnitsConverter.toDex(upperBound) - attributes[2]);
-        //System.out.println("Min: " + UnitsConverter.toDex(statistics[0].getMin()) + " max: " + UnitsConverter.toDex(statistics[0].getMax()));
 
 
         for (int i = 3; i < 6; i++) { //handling rest of output parameters
             lowerBound = statistics[i - 2].getPercentile(25);
             upperBound = statistics[i - 2].getPercentile(75);
-            //System.out.println("Param: " + i + ".\t" + statistics[i - 2].getPercentile(25) + "\t" + statistics[i - 2].getPercentile(75));
             result.setUncertainty(i, lowerBound - attributes[i], upperBound - attributes[i]);
-            //System.out.println("Min: " + statistics[i - 2].getMin() + " max: " + statistics[i - 2].getMax());
         }
     }
 

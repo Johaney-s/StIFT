@@ -1,5 +1,6 @@
 package GUI;
 
+import backend.Data;
 import backend.GridFileParser;
 import backend.objects.ResultStar;
 import java.io.File;
@@ -79,7 +80,7 @@ public class FXMLMainController implements Initializable {
 
         lineChartController.setMainController(this);
         InputStream inStream = getClass().getResourceAsStream("/Data.txt");
-        lineChartController.showGraph(inStream);
+        lineChartController.showGraph(inStream, true);
         fillPhaseBoxes();
         tableViewController.getTableModel().reset();
         tableViewController.setLoadingController(loadingController);
@@ -134,7 +135,7 @@ public class FXMLMainController implements Initializable {
         
         File file = fileChooser.showOpenDialog(vBox.getScene().getWindow());
         if (file != null) {
-            if (lineChartController.showGraph(file)) {
+            if (lineChartController.showGraph(file, false)) {
                 tableViewController.reset();
                 fillPhaseBoxes();
                 showAlert("Upload new grid", "New grid uploaded successfully.", AlertType.INFORMATION);
@@ -179,7 +180,7 @@ public class FXMLMainController implements Initializable {
                     AlertType.CONFIRMATION);
         if (alert.getResult() != null && alert.getResult().equals(ButtonType.OK)) {
             InputStream inStream = getClass().getResourceAsStream("/Data.txt");
-            lineChartController.showGraph(inStream);
+            lineChartController.showGraph(inStream, true);
             tableViewController.reset();
             fillPhaseBoxes();
             showAlert("Reset grid", "Grid successfully reset to default.", AlertType.INFORMATION);
@@ -252,9 +253,9 @@ public class FXMLMainController implements Initializable {
     private void fillPhaseBoxes() {
         phasePane.getChildren().clear();
         allCheckBoxes.clear();
-        List<Short> phasesValues = new ArrayList<>(GridFileParser.getCurrentData().getCurrentPhases());
+        List<Short> phasesValues = new ArrayList<>(Data.getCurrentData().getCurrentPhases());
         phasesValues.sort(Comparator.naturalOrder());
-        if (GridFileParser.getCurrentData().getCurrentPhases().size() > 12) {
+        if (Data.getCurrentData().getCurrentPhases().size() > 12) {
             phasePane.add(new Label("Not"), 0, 0);
             phasePane.add(new Label("available"), 0, 1);
         } else {
@@ -330,7 +331,7 @@ public class FXMLMainController implements Initializable {
         }
 
         Runnable runnable = () -> {
-            ResultStar result = GridFileParser.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, rounding, ignoredPhases);
+            ResultStar result = Data.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, rounding, ignoredPhases);
             tableViewController.handleNewResult(result);
             if (executor.getQueue().size() > 0) {
                 Platform.runLater(() -> {
@@ -365,5 +366,27 @@ public class FXMLMainController implements Initializable {
             return false;
         }
         return true;
+    }
+
+    private void evokeSettingsDialog() {
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(this.getClass().getResource("/question.png").toString()));
+        alert.setHeaderText("Unsaved results");
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node
+                -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE)); //fix for broken linux dialogues
+        alert.showAndWait();
+        List<Short> phasesValues = new ArrayList<>(Data.getCurrentData().getCurrentPhases());
+        phasesValues.sort(Comparator.naturalOrder());
+        if (Data.getCurrentData().getCurrentPhases().size() > 12) {
+            phasePane.add(new Label("Not"), 0, 0);
+            phasePane.add(new Label("available"), 0, 1);
+        } else {
+            for (int i = 0; i < phasesValues.size(); i++) {
+                CheckBox checkBox = new CheckBox(phasesValues.get(i).toString());
+                allCheckBoxes.add(checkBox);
+                phasePane.add(checkBox, i % 3, i / 3);
+                checkBox.setSelected(true);
+            }
+        }
     }
 }

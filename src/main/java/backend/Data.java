@@ -13,6 +13,7 @@ import static backend.Geometry.lineIntersection;
  * Data divided into lists of isochrones
  */
 public class Data {
+    private static Data currentData;
     private final ArrayList<ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
     private final HashSet<Short> currentPhases;
@@ -71,7 +72,7 @@ public class Data {
      * @return true if 4 neighbours found, false otherwise (including star match)
      */
     public boolean findNearestStars(ComputationStats stats, HashSet<Short> ignoredPhases) {
-        if (ignoredPhases.size() == GridFileParser.getCurrentData().getCurrentPhases().size()) { return false; }
+        if (ignoredPhases.size() == currentData.getCurrentPhases().size()) { return false; }
         Star upperLeft = null;
         Star upperRight = null;
         Star lowerRight = null;
@@ -366,5 +367,13 @@ public class Data {
         }
 
         return null;
+    }
+
+    public static void setCurrentData(Data newData) {
+        Data.currentData = newData;
+    }
+
+    public static Data getCurrentData() {
+        return currentData;
     }
 }

@@ -40,6 +40,7 @@ public class FastMode {
                 System.out.println("Grid file: default (PARSEC + COLIBRI)");
             }
             data = GridFileParser.extract(is);
+            Data.setCurrentData(data);
             System.out.println("Export file: " + exportFile);
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
