@@ -55,6 +55,14 @@ public class TextOnly {
                 System.out.println("Grid file: default (PARSEC + COLIBRI)");
             }
             data = GridFileParser.extract(is);
+            Settings settings = new Settings();
+            if (args.length == 6 || args.length == 4) {
+                settings.setDefaultSettings();
+            } else {
+                settings = new Settings(data.getCurrentPhases(), null, false);
+            }
+            data.applySettings(settings);
+            Data.setCurrentData(data);
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
             System.out.printf("Input:%n%.4f\t%.4f uncertainties: %.4f\t%.4f%n", x, y, x_unc, y_unc);

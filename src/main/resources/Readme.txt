@@ -51,6 +51,10 @@ to specify how points should be separated into tracks - if no label
 is provided, points are separated into tracks when the value of phase
 drops (as the data should be sorted by phase within tracks).
 
+After successfull parsing of the grid file, you can specify
+which phase represents the ZAMS (this will help to estimate near-ZAMS points)
+and choose which phases you want to exclude from the data.
+
 To upload input data, choose Data > Upload input data file.
 Provide a .txt file and comment out header lines with '#' symbol:
 #TEMPERATURE LUMINOSITY

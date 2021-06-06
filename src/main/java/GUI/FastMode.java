@@ -11,7 +11,7 @@ public class FastMode {
     public static void main(String[] args) {
         Data data;
         File inputFile;
-        File gridFile = null;
+        File gridFile;
         File exportFile;
         System.out.println("========= StIFT fast mode =========");
 
@@ -40,6 +40,14 @@ public class FastMode {
                 System.out.println("Grid file: default (PARSEC + COLIBRI)");
             }
             data = GridFileParser.extract(is);
+            Settings settings = new Settings();
+            if (gridFile == null) {
+                settings.setDefaultSettings();
+            } else {
+                settings = new Settings(data.getCurrentPhases(), null, false);
+            }
+            data.applySettings(settings);
+            Data.setCurrentData(data);
             System.out.println("Export file: " + exportFile);
 
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
