@@ -113,26 +113,33 @@ public class FXMLLineChartController implements Initializable {
     public boolean showGraph(InputStream inStream, boolean isDefault) {
         try {
             Data newData = GridFileParser.extract(inStream);
+            Settings newSettings = new Settings();
 
             //manage settings
             if (!isDefault) {
-                Settings newSettings = manageSettings(newData);
+                newSettings = manageSettings(newData);
                 if (newSettings == null) {
                     return false;
                 }
-
-                newSettings.setSettings(newSettings);
-                if (!newSettings.getPhases().containsAll(newData.getCurrentPhases())) {
-                    //filter out missing phases
-                }
-                if (newSettings.getPhaseZams() != null) {
-                    //set and create zams line
-                }
+            } else {
+                newSettings.setDefaultSettings();
             }
 
+            newData = newData.applySettings(newSettings, newData);
             Data.setCurrentData(newData);
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData());
+
+            //ZAMS
+            if (newSettings.getPhaseZams() != null) {
+                XYChart.Series series = new XYChart.Series();
+                ArrayList<Star> track = Data.getCurrentData().getZAMS().getTrack();
+                for (int i = 0; i < track.size(); i++) {
+                    //also need to invert x-axis and this solution sucks, but FIXME later
+                    series.getData().add(new XYChart.Data(-track.get(i).getTemperature(), track.get(i).getLuminosity()));
+                }
+                lineChart.getData().add(series);
+            }
         } catch (IOException ex) {
             mainController.showAlert("Error while parsing grid data", ex.getMessage(), Alert.AlertType.ERROR);
             return false;
@@ -191,15 +198,6 @@ public class FXMLLineChartController implements Initializable {
             th.setDaemon(true);
             th.start();
         }
-
-        //ZAMS
-        XYChart.Series series = new XYChart.Series();
-        ArrayList<Star> track = Data.getCurrentData().getZAMS().getTrack();
-        for (int i = 0; i < track.size(); i++) {
-            //also need to invert x-axis and this solution sucks, but FIXME later
-            series.getData().add(new XYChart.Data(-track.get(i).getTemperature(), track.get(i).getLuminosity()));
-        }
-        lineChart.getData().add(series);
     }
 
 

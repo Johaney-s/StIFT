@@ -18,7 +18,7 @@ public class Data {
     private ArrayList<Star> currentGroup;
     private final HashSet<Short> currentPhases;
     private int currentLabel = 0;
-    private final ZAMS zams = new ZAMS();
+    private ZAMS zams;
     
     public Data() {
        groupedData = new ArrayList<>();
@@ -56,14 +56,24 @@ public class Data {
      */
     public void addCurrentGroupToGroupedData() {
         if (currentGroup.size() > 1) {
-            if (groupedData.isEmpty()) {
-                zams.set_phase(currentGroup.get(0).getPhase());
-            }
-            if (currentGroup.get(0).getPhase() == zams.get_phase()) {
-                zams.add(currentGroup.get(0));
-            }
             groupedData.add(currentGroup);
         }
+    }
+
+    public Data applySettings(Settings settings, Data newData) {
+        Short zamsPhase = settings.getPhaseZams();
+        ZAMS newZams = new ZAMS();
+        newZams.set_phase(zamsPhase);
+
+        for (List<Star> line : newData.getGroupedData()) {
+            if (zamsPhase != null && settings.getPhases().contains(zamsPhase)) {
+                if (line.get(0).getPhase() == zamsPhase.doubleValue()) {
+                    newZams.add(line.get(0));
+                }
+            }
+        }
+        newData.setZAMS(newZams);
+        return newData;
     }
     
     /**
@@ -375,5 +385,9 @@ public class Data {
 
     public static Data getCurrentData() {
         return currentData;
+    }
+
+    public void setZAMS(ZAMS zams) {
+        this.zams = zams;
     }
 }

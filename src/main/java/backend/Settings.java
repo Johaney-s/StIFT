@@ -1,5 +1,6 @@
 package backend;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,7 +9,6 @@ import java.util.List;
 public class Settings {
     private List<Short> allowedPhases;
     private Short phaseZams;
-    private static Settings instance;
     private boolean isDefault;
 
     public Settings(List<Short> allowedPhases, Short phaseZams, boolean isDefault) {
@@ -17,11 +17,8 @@ public class Settings {
         this.isDefault = isDefault;
     }
 
-    /**
-     * Save new settings
-     */
-    public void setSettings(Settings newSettings) {
-        this.instance = instance;
+    public Settings() {
+
     }
 
     /**
@@ -43,5 +40,14 @@ public class Settings {
      */
     public boolean isDefault() {
         return this.isDefault;
+    }
+
+    /**
+     * Set settings for default grid file
+     */
+    public void setDefaultSettings() {
+        phaseZams = 5;
+        isDefault = true;
+        allowedPhases = List.of((short)5, (short)6, (short)7, (short)8, (short)9, (short)10, (short)11);
     }
 }
