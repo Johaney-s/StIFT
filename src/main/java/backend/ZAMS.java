@@ -9,7 +9,7 @@ import java.util.Comparator;
  * Class of ZAMS stars and the phase identifier
  */
 public class ZAMS {
-    private double zams_phase;
+    private Short zams_phase;
     private final ArrayList<Star> zams_track = new ArrayList<>();
 
     public void add(Star star) {
@@ -21,7 +21,7 @@ public class ZAMS {
         return zams_track;
     }
 
-    public void set_phase(double phase) {
+    public void setPhase(Short phase) {
         zams_phase = phase;
     }
 

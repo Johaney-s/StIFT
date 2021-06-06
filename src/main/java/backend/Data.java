@@ -60,19 +60,40 @@ public class Data {
         }
     }
 
+    /**
+     * Remove unwanted phases and set ZAMS if applicable
+     */
     public Data applySettings(Settings settings, Data newData) {
         Short zamsPhase = settings.getPhaseZams();
         ZAMS newZams = new ZAMS();
-        newZams.set_phase(zamsPhase);
+        newZams.setPhase(zamsPhase);
 
+        List<List<Star>> removeIsochrones = new ArrayList<>();
         for (List<Star> line : newData.getGroupedData()) {
-            if (zamsPhase != null && settings.getPhases().contains(zamsPhase)) {
-                if (line.get(0).getPhase() == zamsPhase.doubleValue()) {
-                    newZams.add(line.get(0));
+
+            //remove every star with unwanted phase
+            List<Star> removeStars = new ArrayList<>();
+            for (Star star : line) {
+                if (!settings.getPhases().contains(star.getPhase().shortValue())) {
+                    removeStars.add(star);
                 }
             }
+            line.removeAll(removeStars);
+
+            //remove isochrones containing less than 2 stars
+            if (line.size() < 2) {
+                removeIsochrones.add(line);
+                continue;
+            }
+
+            //add ZAMS if applicable
+            if (zamsPhase != null && line.get(0).getPhase() == zamsPhase.doubleValue()) {
+                    newZams.add(line.get(0));
+            }
         }
+        newData.removeIsochrones(removeIsochrones);
         newData.setZAMS(newZams);
+
         return newData;
     }
     
@@ -389,5 +410,12 @@ public class Data {
 
     public void setZAMS(ZAMS zams) {
         this.zams = zams;
+    }
+
+    /**
+     * Remove groups of stars (isochrones) from data
+     */
+    public void removeIsochrones(List<List<Star>> removeIsochrones) {
+        this.groupedData.removeAll(removeIsochrones);
     }
 }
