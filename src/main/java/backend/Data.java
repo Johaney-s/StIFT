@@ -63,13 +63,20 @@ public class Data {
     /**
      * Remove unwanted phases and set ZAMS if applicable
      */
-    public Data applySettings(Settings settings, Data newData) {
+    public Data applySettings(Settings settings) {
         Short zamsPhase = settings.getPhaseZams();
         ZAMS newZams = new ZAMS();
         newZams.setPhase(zamsPhase);
 
+        // no changes to be made
+        if (settings.getPhases().containsAll(this.getCurrentPhases())
+                && settings.getPhaseZams() == null) {
+            this.zams = newZams;
+            return this;
+        }
+
         List<ArrayList<Star>> removeIsochrones = new ArrayList<>();
-        for (ArrayList<Star> line : newData.getGroupedData()) {
+        for (ArrayList<Star> line : this.getGroupedData()) {
 
             //remove every star with unwanted phase
             List<Star> removeStars = new ArrayList<>();
@@ -91,10 +98,10 @@ public class Data {
                     newZams.add(line.get(0));
             }
         }
-        newData.removeIsochrones(removeIsochrones);
-        newData.setZAMS(newZams);
-        newData.setCurrentPhases(settings.getPhases());
-        return newData;
+        this.removeIsochrones(removeIsochrones);
+        this.setZAMS(newZams);
+        this.setCurrentPhases(settings.getPhases());
+        return this;
     }
     
     /**

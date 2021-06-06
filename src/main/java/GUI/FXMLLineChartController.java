@@ -126,7 +126,7 @@ public class FXMLLineChartController implements Initializable {
                 newSettings.setDefaultSettings();
             }
 
-            newData = newData.applySettings(newSettings, newData);
+            newData.applySettings(newSettings);
             Data.setCurrentData(newData);
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData());
