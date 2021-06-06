@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -130,7 +131,7 @@ public class FXMLLineChartController implements Initializable {
             lineChart.getData().clear();
             addIsochronesToChart(newData.getGroupedData());
 
-            //ZAMS
+            // add ZAMS track
             if (newSettings.getPhaseZams() != null) {
                 XYChart.Series series = new XYChart.Series();
                 ArrayList<Star> track = Data.getCurrentData().getZAMS().getTrack();
@@ -220,15 +221,15 @@ public class FXMLLineChartController implements Initializable {
 
         //Phases
         List<CheckBox> phaseBoxes = new ArrayList<>();
-        List<Short> selectedPhases = new ArrayList<>(Data.getCurrentData().getCurrentPhases());
+        List<Short> availablePhases = new ArrayList<>(loadedData.getCurrentPhases());
         GridPane allowedPhasesPane = new GridPane();
-        selectedPhases.sort(Comparator.naturalOrder());
+        availablePhases.sort(Comparator.naturalOrder());
         if (Data.getCurrentData().getCurrentPhases().size() > 12) {
             allowedPhasesPane.add(new Label("Too many"), 0, 0);
             allowedPhasesPane.add(new Label("phases!"), 0, 1);
         } else {
-            for (int i = 0; i < selectedPhases.size(); i++) {
-                CheckBox checkBox = new CheckBox(selectedPhases.get(i).toString());
+            for (int i = 0; i < availablePhases.size(); i++) {
+                CheckBox checkBox = new CheckBox(availablePhases.get(i).toString());
                 phaseBoxes.add(checkBox);
                 allowedPhasesPane.add(checkBox, i % 3, i / 3);
                 checkBox.setSelected(true);
@@ -249,6 +250,7 @@ public class FXMLLineChartController implements Initializable {
             @Override
             public Settings call(ButtonType b) {
                 if (b==buttonTypeOk) {
+                    HashSet<Short> selectedPhases = new HashSet<>();
                     for (CheckBox checkBox : phaseBoxes) {
                         if (checkBox.isSelected()) { selectedPhases.add(Short.parseShort(checkBox.getText())); }
                     }

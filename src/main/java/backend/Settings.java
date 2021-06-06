@@ -1,17 +1,17 @@
 package backend;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * Class storing current settings for parsing grid file
  */
 public class Settings {
-    private List<Short> allowedPhases;
+    private HashSet<Short> allowedPhases;
     private Short phaseZams;
     private boolean isDefault;
 
-    public Settings(List<Short> allowedPhases, Short phaseZams, boolean isDefault) {
+    public Settings(HashSet<Short> allowedPhases, Short phaseZams, boolean isDefault) {
         this.allowedPhases = allowedPhases;
         this.phaseZams = phaseZams;
         this.isDefault = isDefault;
@@ -24,7 +24,7 @@ public class Settings {
     /**
      * Phases to be used from grid file
      */
-    public List<Short> getPhases() {
+    public HashSet<Short> getPhases() {
         return this.allowedPhases;
     }
 
@@ -48,6 +48,6 @@ public class Settings {
     public void setDefaultSettings() {
         phaseZams = 5;
         isDefault = true;
-        allowedPhases = List.of((short)5, (short)6, (short)7, (short)8, (short)9, (short)10, (short)11);
+        allowedPhases = new HashSet<>(List.of((short)4, (short)5, (short)6, (short)7, (short)8, (short)9, (short)10, (short)11));
     }
 }

@@ -73,6 +73,10 @@ If labels are provided:
 
 points with the same label (in a continuous block of data) create a track. This way isochrones can be loaded.
 
+After successfull parsing of the grid file, you can specify
+which phase represents the ZAMS (this will help to estimate near-ZAMS points)
+and choose which phases you want to exclude from the data.
+
 Default grid data is extracted from [PARSEC STELLAR EVOLUTION CODE](https://people.sissa.it/~sbressan/parsec.html).
 
 The **phase labels** in the default grid file are described [here](https://people.sissa.it/~sbressan/CAF09_V1.2S_M36_LT/readme.txt), the default grid in the StIFT uses these:

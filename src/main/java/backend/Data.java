@@ -16,7 +16,7 @@ public class Data {
     private static Data currentData;
     private final ArrayList<ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
-    private final HashSet<Short> currentPhases;
+    private HashSet<Short> currentPhases;
     private int currentLabel = 0;
     private ZAMS zams;
     
@@ -68,8 +68,8 @@ public class Data {
         ZAMS newZams = new ZAMS();
         newZams.setPhase(zamsPhase);
 
-        List<List<Star>> removeIsochrones = new ArrayList<>();
-        for (List<Star> line : newData.getGroupedData()) {
+        List<ArrayList<Star>> removeIsochrones = new ArrayList<>();
+        for (ArrayList<Star> line : newData.getGroupedData()) {
 
             //remove every star with unwanted phase
             List<Star> removeStars = new ArrayList<>();
@@ -93,7 +93,7 @@ public class Data {
         }
         newData.removeIsochrones(removeIsochrones);
         newData.setZAMS(newZams);
-
+        newData.setCurrentPhases(settings.getPhases());
         return newData;
     }
     
@@ -112,7 +112,7 @@ public class Data {
 
         for (ArrayList<Star> list : groupedData) {
             if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))) {
-                return false; ///NO NEIGHBOURS returned, BUT MATCH
+                return false; //NO NEIGHBOURS returned, BUT MATCH
             }
 
             if (list.size() > 1) {
@@ -124,7 +124,7 @@ public class Data {
                     } //ignore ignored phase
                     if (starsMatch(stats, second)) {
                         return false;
-                    }///NO NEIGHBOURS returned, BUT MATCH
+                    } //NO NEIGHBOURS returned, BUT MATCH
 
                     if ((first.getTemperature() <= stats.getX() && second.getTemperature() > stats.getX()) ||
                             (first.getTemperature() > stats.getX() && second.getTemperature() <= stats.getX())) {
@@ -154,7 +154,8 @@ public class Data {
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
 
-        if (upperZAMS != null && upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.get_phase())) { //give ZAMS a chance
+        //give ZAMS a chance
+        if (upperZAMS != null && upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.getPhase())) {
             fillWithZAMS(stats, upperZAMS);
         }
 
@@ -255,11 +256,13 @@ public class Data {
             return stats;
         }
 
+        //give ZAMS a chance
         if (!Interpolator.determineEvolutionaryStatus(stats)) {
             stats.setResult(new ResultStar(x, y, null, null, null, null));
             stats.getResult().setResultType(stats.getResultType());
             return stats;
         }
+
         Interpolator.interpolateAllCharacteristics(stats);
         stats.changeResultType(ResultType.FULL_ESTIMATION);
         stats.getResult().setResultType(stats.getResultType());
@@ -415,7 +418,11 @@ public class Data {
     /**
      * Remove groups of stars (isochrones) from data
      */
-    public void removeIsochrones(List<List<Star>> removeIsochrones) {
+    public void removeIsochrones(List<ArrayList<Star>> removeIsochrones) {
         this.groupedData.removeAll(removeIsochrones);
+    }
+
+    public void setCurrentPhases(HashSet<Short> phases) {
+        this.currentPhases = phases;
     }
 }
