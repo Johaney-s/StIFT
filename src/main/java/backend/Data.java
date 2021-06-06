@@ -13,11 +13,12 @@ import static backend.Geometry.lineIntersection;
  * Data divided into lists of isochrones
  */
 public class Data {
+    private static Data currentData;
     private final ArrayList<ArrayList<Star>> groupedData;
     private ArrayList<Star> currentGroup;
-    private final HashSet<Short> currentPhases;
+    private HashSet<Short> currentPhases;
     private int currentLabel = 0;
-    private final ZAMS zams = new ZAMS();
+    private ZAMS zams;
     
     public Data() {
        groupedData = new ArrayList<>();
@@ -55,14 +56,52 @@ public class Data {
      */
     public void addCurrentGroupToGroupedData() {
         if (currentGroup.size() > 1) {
-            if (groupedData.isEmpty()) {
-                zams.set_phase(currentGroup.get(0).getPhase());
-            }
-            if (currentGroup.get(0).getPhase() == zams.get_phase()) {
-                zams.add(currentGroup.get(0));
-            }
             groupedData.add(currentGroup);
         }
+    }
+
+    /**
+     * Remove unwanted phases and set ZAMS if applicable
+     */
+    public Data applySettings(Settings settings) {
+        Short zamsPhase = settings.getPhaseZams();
+        ZAMS newZams = new ZAMS();
+        newZams.setPhase(zamsPhase);
+
+        // no changes to be made
+        if (settings.getPhases().containsAll(this.getCurrentPhases())
+                && settings.getPhaseZams() == null) {
+            this.zams = newZams;
+            return this;
+        }
+
+        List<ArrayList<Star>> removeIsochrones = new ArrayList<>();
+        for (ArrayList<Star> line : this.getGroupedData()) {
+
+            //remove every star with unwanted phase
+            List<Star> removeStars = new ArrayList<>();
+            for (Star star : line) {
+                if (!settings.getPhases().contains(star.getPhase().shortValue())) {
+                    removeStars.add(star);
+                }
+            }
+            line.removeAll(removeStars);
+
+            //remove isochrones containing less than 2 stars
+            if (line.size() < 2) {
+                removeIsochrones.add(line);
+                continue;
+            }
+
+            //add ZAMS if applicable
+            if (zamsPhase != null && line.get(0).getPhase() == zamsPhase.doubleValue()) {
+                    newZams.add(line.get(0));
+            }
+        }
+        this.removeIsochrones(removeIsochrones);
+        this.setZAMS(newZams);
+        this.setCurrentPhases(settings.getPhases());
+        return this;
     }
     
     /**
@@ -71,7 +110,7 @@ public class Data {
      * @return true if 4 neighbours found, false otherwise (including star match)
      */
     public boolean findNearestStars(ComputationStats stats, HashSet<Short> ignoredPhases) {
-        if (ignoredPhases.size() == GridFileParser.getCurrentData().getCurrentPhases().size()) { return false; }
+        if (ignoredPhases.size() == currentData.getCurrentPhases().size()) { return false; }
         Star upperLeft = null;
         Star upperRight = null;
         Star lowerRight = null;
@@ -80,7 +119,7 @@ public class Data {
 
         for (ArrayList<Star> list : groupedData) {
             if (!ignoredPhases.contains(list.get(0).getPhase().shortValue()) && starsMatch(stats, list.get(0))) {
-                return false; ///NO NEIGHBOURS returned, BUT MATCH
+                return false; //NO NEIGHBOURS returned, BUT MATCH
             }
 
             if (list.size() > 1) {
@@ -92,7 +131,7 @@ public class Data {
                     } //ignore ignored phase
                     if (starsMatch(stats, second)) {
                         return false;
-                    }///NO NEIGHBOURS returned, BUT MATCH
+                    } //NO NEIGHBOURS returned, BUT MATCH
 
                     if ((first.getTemperature() <= stats.getX() && second.getTemperature() > stats.getX()) ||
                             (first.getTemperature() > stats.getX() && second.getTemperature() <= stats.getX())) {
@@ -122,7 +161,8 @@ public class Data {
         stats.setStar21(lowerLeft);
         stats.setStar22(lowerRight);
 
-        if (upperZAMS != null && upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.get_phase())) { //give ZAMS a chance
+        //give ZAMS a chance
+        if (upperZAMS != null && upperLeft != null && lowerRight == null && !ignoredPhases.contains((short)zams.getPhase())) {
             fillWithZAMS(stats, upperZAMS);
         }
 
@@ -223,11 +263,13 @@ public class Data {
             return stats;
         }
 
+        //give ZAMS a chance
         if (!Interpolator.determineEvolutionaryStatus(stats)) {
             stats.setResult(new ResultStar(x, y, null, null, null, null));
             stats.getResult().setResultType(stats.getResultType());
             return stats;
         }
+
         Interpolator.interpolateAllCharacteristics(stats);
         stats.changeResultType(ResultType.FULL_ESTIMATION);
         stats.getResult().setResultType(stats.getResultType());
@@ -366,5 +408,28 @@ public class Data {
         }
 
         return null;
+    }
+
+    public static void setCurrentData(Data newData) {
+        Data.currentData = newData;
+    }
+
+    public static Data getCurrentData() {
+        return currentData;
+    }
+
+    public void setZAMS(ZAMS zams) {
+        this.zams = zams;
+    }
+
+    /**
+     * Remove groups of stars (isochrones) from data
+     */
+    public void removeIsochrones(List<ArrayList<Star>> removeIsochrones) {
+        this.groupedData.removeAll(removeIsochrones);
+    }
+
+    public void setCurrentPhases(HashSet<Short> phases) {
+        this.currentPhases = phases;
     }
 }

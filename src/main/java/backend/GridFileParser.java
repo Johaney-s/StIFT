@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
 /** Extractor and parser for data from file */
 public abstract class GridFileParser {
 
-    private static Data currentData;
-
     /**
      * Reads csv file, checks validity, returns parsed data
      * @return Array of Stars objects
@@ -69,15 +67,6 @@ public abstract class GridFileParser {
         reader.close();
         inStream.close();
         data.addCurrentGroupToGroupedData();
-        currentData = data;
         return data;
-    }
-    
-    /**
-     * Get currently operated data
-     * @return Current data
-     */
-    public static Data getCurrentData() {
-        return currentData;
     }
 }

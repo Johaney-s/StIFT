@@ -109,7 +109,7 @@ public abstract class InputFileParser {
                             rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : rounding;
                         }
 
-                        newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc, rounding));
+                        newResults.add(Data.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc, rounding));
                         row = reader.readLine();
                     }
 
@@ -158,7 +158,7 @@ public abstract class InputFileParser {
                     rounding = (splittedUnc.length > 1 && splittedUnc[1].length() > 1) ? (short)splittedUnc[1].length() : rounding;
                 }
 
-                newResults.add(GridFileParser.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc, rounding));
+                newResults.add(Data.getCurrentData().estimate(temperature, luminosity, temp_unc, lum_unc, rounding));
                 System.out.println("Processed " + counter + ". row.");
                 row = reader.readLine();
             } catch (NumberFormatException ex) {
