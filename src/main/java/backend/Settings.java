@@ -6,12 +6,12 @@ import java.util.List;
  * Class storing current settings for parsing grid file
  */
 public class Settings {
-    private List<Integer> allowedPhases;
+    private List<Short> allowedPhases;
     private Short phaseZams;
     private static Settings instance;
     private boolean isDefault;
 
-    public Settings(List<Integer> allowedPhases, Short phaseZams, boolean isDefault) {
+    public Settings(List<Short> allowedPhases, Short phaseZams, boolean isDefault) {
         this.allowedPhases = allowedPhases;
         this.phaseZams = phaseZams;
         this.isDefault = isDefault;
@@ -27,7 +27,7 @@ public class Settings {
     /**
      * Phases to be used from grid file
      */
-    public List<Integer> getPhases() {
+    public List<Short> getPhases() {
         return this.allowedPhases;
     }
 

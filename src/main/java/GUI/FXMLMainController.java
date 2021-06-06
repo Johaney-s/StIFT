@@ -1,7 +1,6 @@
 package GUI;
 
 import backend.Data;
-import backend.GridFileParser;
 import backend.objects.ResultStar;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +28,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 /**
  * Main controller class
@@ -366,27 +367,5 @@ public class FXMLMainController implements Initializable {
             return false;
         }
         return true;
-    }
-
-    private void evokeSettingsDialog() {
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(this.getClass().getResource("/question.png").toString()));
-        alert.setHeaderText("Unsaved results");
-        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node
-                -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE)); //fix for broken linux dialogues
-        alert.showAndWait();
-        List<Short> phasesValues = new ArrayList<>(Data.getCurrentData().getCurrentPhases());
-        phasesValues.sort(Comparator.naturalOrder());
-        if (Data.getCurrentData().getCurrentPhases().size() > 12) {
-            phasePane.add(new Label("Not"), 0, 0);
-            phasePane.add(new Label("available"), 0, 1);
-        } else {
-            for (int i = 0; i < phasesValues.size(); i++) {
-                CheckBox checkBox = new CheckBox(phasesValues.get(i).toString());
-                allCheckBoxes.add(checkBox);
-                phasePane.add(checkBox, i % 3, i / 3);
-                checkBox.setSelected(true);
-            }
-        }
     }
 }
