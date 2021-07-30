@@ -97,6 +97,7 @@ public class TextOnly {
             data.applySettings(settings);
             Data.setCurrentData(data);
 
+            System.out.println("===================================");
             System.out.println("Total number of isochrones: " + data.getGroupedData().size());
             if(settings.getPhaseZams()!=null)
                 System.out.println("ZAMS phase: " + settings.getPhaseZams().toString());
