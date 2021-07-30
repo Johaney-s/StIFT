@@ -330,6 +330,7 @@ public class FXMLMainController implements Initializable {
         }
 
         Runnable runnable = () -> {
+            lineChartController.highlightPoint(x, y);
             ResultStar result = Data.getCurrentData().estimate(x, y, temp_unc, lum_unc, includeDeviation, rounding, ignoredPhases);
             tableViewController.handleNewResult(result);
             if (executor.getQueue().size() > 0) {

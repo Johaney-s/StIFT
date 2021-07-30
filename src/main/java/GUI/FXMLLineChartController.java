@@ -5,6 +5,8 @@ import backend.Data;
 import backend.GridFileParser;
 import backend.Settings;
 import backend.objects.Star;
+
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -88,7 +91,7 @@ public class FXMLLineChartController implements Initializable {
     @FXML
     public void graphClicked() {
         if (!lineChart.getData().isEmpty()) {
-            double x = -Double.parseDouble(String.format("%.4f", getXMouseCoordinate())); //use showed values in tooltip
+            double x = -Double.parseDouble(String.format("%.4f", getXMouseCoordinate())); //use shown values in tooltip
             double y = Double.parseDouble(String.format("%.4f", getYMouseCoordinate()));
             mainController.manageInput(x, y, 0.0, 0.0, (short)2);
         }
@@ -201,6 +204,37 @@ public class FXMLLineChartController implements Initializable {
         }
     }
 
+    /**
+     * Highlight selected point in the linechart
+     * @param x
+     * @param y
+     */
+    public void highlightPoint(double x, double y) {
+        final XYChart.Series series = new XYChart.Series();
+
+        Thread thread = new Thread(() -> {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        // inverting X, FIXME later
+                        XYChart.Data<Number, Number> data = new XYChart.Data<>(-x, y);
+                        data.setNode(new Circle(5, javafx.scene.paint.Color.GREY));
+                        series.getData().add(data);
+                        lineChart.getData().add(series);
+                    }
+                });
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // interrupted
+            }
+
+            Platform.runLater(() -> lineChart.getData().remove(series));
+        });
+
+        thread.start();
+    }
 
     /**
      * Evoke dialog to specify custom settings
